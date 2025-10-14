@@ -1,17 +1,14 @@
-import React from "react";
 import Player from "lottie-react"; // or use 'lottie-react'
 import animationData from "../assets/lottie/Flight.json"; // relative path inside src
 
 type Props = {
   active: boolean;
   text?: string;
-  dark?: boolean;
 };
 
 export default function AestheticLoader({
   active,
   text = "Preparing map & fetching photos…",
-  dark = true,
 }: Props) {
   if (!active) return null;
 

@@ -1,6 +1,5 @@
-// src/components/GalleryModal.tsx
 import React, { useState, useEffect } from "react";
-import Lightbox from "yet-another-react-lightbox";
+import Lightbox, { type ThumbnailsRef } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
@@ -23,7 +22,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
   images,
 }) => {
   const [open, setOpen] = useState(false);
-  const thumbnailsRef = React.useRef(null);
+  const thumbnailsRef = React.useRef<ThumbnailsRef>(null);
 
   useEffect(() => {
     setOpen(isOpen);

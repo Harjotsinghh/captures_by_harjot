@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useMemo, useState, type JSX } from "react";
+import { useMemo, useState, type JSX } from "react";
 import MapView from "./components/MapView";
 import GalleryModal from "./components/GalleryModal";
 import useDriveManifest, { type DriveImage } from "./hooks/useDriveManifest";

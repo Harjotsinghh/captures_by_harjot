@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -26,7 +26,7 @@ interface MapViewProps {
 
 export default function MapView({ images, onMarkerClick }: MapViewProps) {
   // Determine map center (average lat/lng)
-  const center = useMemo(() => {
+  const center = useMemo<[number, number]>(() => {
     if (images.length === 0) return [20, 0];
     const avgLat = images.reduce((s, i) => s + i.lat, 0) / images.length;
     const avgLng = images.reduce((s, i) => s + i.lng, 0) / images.length;
