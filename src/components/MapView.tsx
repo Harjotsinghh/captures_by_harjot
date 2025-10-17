@@ -51,7 +51,7 @@ export default function MapView({ images, onMarkerClick }: MapViewProps) {
   const coords = places.map((l) => [l.lat, l.lng] as [number, number]);
 
   return (
-    <MapContainer center={center} zoom={13} className="mapBox">
+    <MapContainer center={center} zoom={6} className="mapBox">
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
