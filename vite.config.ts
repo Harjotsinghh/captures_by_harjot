@@ -10,5 +10,5 @@ export default defineConfig({
       },
     }),
   ],
-  base: "captures_by_harjot",
+  base: "/",
 });
