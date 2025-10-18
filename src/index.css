@@ -40,13 +40,13 @@ body {
 }
 
 .mapBox {
-  min-height: 65vh;
+  min-height: 70vh;
   height: auto;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
-  margin: 1rem auto 2rem auto;
+  margin: 0rem auto 2rem auto;
   max-width: "80%";
 }
 

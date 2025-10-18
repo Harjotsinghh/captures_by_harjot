@@ -11,7 +11,7 @@ const Header: React.FC = () => {
         alignItems: "center",
         justifyContent: "center",
         gap: "0.6rem",
-        padding: "2.6rem 1rem 1.6rem",
+        padding: "2.6rem 1rem 1rem ",
         width: "100%",
       }}
     >

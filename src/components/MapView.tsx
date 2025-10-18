@@ -59,12 +59,12 @@ export default function MapView({ images, onMarkerClick }: MapViewProps) {
       {places.map((place, idx) => (
         <Marker key={idx} position={[place.lat, place.lng]}>
           <Popup autoClose={false} keepInView autoPan>
-            <div style={{ width: 200 }}>
+            <div style={{ width: "auto" }}>
               <div style={{ fontWeight: 600 }}>
                 {place.images.length} photo(s) here
               </div>
               <div style={{ marginTop: 6 }}>
-                <div style={{ display: "flex", gap: 6 }}>
+                <div style={{ display: "flex", gap: 4 }}>
                   {place.images.slice(0, 3).map((im) => (
                     <img
                       key={im.id}
@@ -74,20 +74,20 @@ export default function MapView({ images, onMarkerClick }: MapViewProps) {
                         width: 56,
                         height: 40,
                         objectFit: "cover",
-                        borderRadius: 6,
+                        borderRadius: 4,
                       }}
                     />
                   ))}
                 </div>
               </div>
-              <div style={{ marginTop: 12 }}>
+              <div style={{ marginTop: 8 }}>
                 <button
                   onClick={() => onMarkerClick(place.images)}
                   style={{
                     background: "#0ea5a4",
                     color: "#fff",
                     border: "none",
-                    borderRadius: 6,
+                    borderRadius: 4,
                     padding: "4px 8px",
                     cursor: "pointer",
                   }}
@@ -100,7 +100,13 @@ export default function MapView({ images, onMarkerClick }: MapViewProps) {
         </Marker>
       ))}
 
-      <Polyline positions={coords} color="#1f77b4" weight={3} />
+      <Polyline
+        positions={coords}
+        color="#1f77b4"
+        weight={3}
+        opacity={0.6}
+        lineJoin="miter"
+      />
     </MapContainer>
   );
 }
