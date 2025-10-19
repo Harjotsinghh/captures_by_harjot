@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Lightbox, { type ThumbnailsRef } from "yet-another-react-lightbox";
+import Lightbox, {
+  FullscreenRef,
+  type ThumbnailsRef,
+} from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
@@ -8,6 +11,7 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Share from "yet-another-react-lightbox/plugins/share";
 import Counter from "yet-another-react-lightbox/plugins/counter";
 import Download from "yet-another-react-lightbox/plugins/download";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import "yet-another-react-lightbox/plugins/counter.css";
 
 interface GalleryModalProps {
@@ -39,7 +43,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
   return (
     <Lightbox
       open={open}
-      plugins={[Thumbnails, Share, Counter, Download]}
+      plugins={[Thumbnails, Share, Counter, Download, Fullscreen]}
       close={() => {
         setOpen(false);
         onClose();
