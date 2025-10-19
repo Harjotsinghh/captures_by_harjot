@@ -52,7 +52,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
             : thumbnailsRef.current?.show)?.();
         },
       }}
-      thumbnails={{ ref: thumbnailsRef, position: "end" }}
+      thumbnails={{ ref: thumbnailsRef, showToggle: true }}
       slides={slides}
       carousel={{ finite: false, imageFit: "contain" }}
       controller={{ closeOnBackdropClick: true }}
