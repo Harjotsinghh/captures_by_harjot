@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
           <FaInstagram size={18} />
         </a>
         <a
-          href="https://github.com/"
+          href="https://github.com/Harjotsinghh/captures_by_harjot"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: "#333", textDecoration: "none" }}
