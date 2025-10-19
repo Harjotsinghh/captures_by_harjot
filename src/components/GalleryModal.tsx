@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Lightbox, {
-  FullscreenRef,
-  type ThumbnailsRef,
-} from "yet-another-react-lightbox";
+import Lightbox, { type ThumbnailsRef } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
@@ -55,7 +52,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
             : thumbnailsRef.current?.show)?.();
         },
       }}
-      thumbnails={{ ref: thumbnailsRef }}
+      thumbnails={{ ref: thumbnailsRef, position: "end" }}
       slides={slides}
       carousel={{ finite: false, imageFit: "contain" }}
       controller={{ closeOnBackdropClick: true }}
