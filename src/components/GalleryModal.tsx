@@ -9,6 +9,7 @@ import Share from "yet-another-react-lightbox/plugins/share";
 import Counter from "yet-another-react-lightbox/plugins/counter";
 import Download from "yet-another-react-lightbox/plugins/download";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/plugins/counter.css";
 
 interface GalleryModalProps {
@@ -40,7 +41,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
   return (
     <Lightbox
       open={open}
-      plugins={[Thumbnails, Share, Counter, Download, Fullscreen]}
+      plugins={[Thumbnails, Share, Counter, Download, Fullscreen, Zoom]}
       close={() => {
         setOpen(false);
         onClose();
@@ -52,6 +53,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
             : thumbnailsRef.current?.show)?.();
         },
       }}
+      render={{ iconZoomIn: () => undefined, iconZoomOut: () => undefined }}
       thumbnails={{ ref: thumbnailsRef, showToggle: true }}
       slides={slides}
       carousel={{ finite: false, imageFit: "contain" }}
