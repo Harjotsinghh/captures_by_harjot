@@ -36,6 +36,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
     src: img.fileUrl,
     alt: img.date,
     title: img.title,
+    referrerPolicy: "no-referrer",
   }));
 
   return (

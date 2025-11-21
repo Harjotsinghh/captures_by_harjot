@@ -37,6 +37,9 @@ body {
   gap: 1.5rem;
   min-height: 100vh;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  /* Ensure content is above Vanta background */
 }
 
 /* Map Card */
