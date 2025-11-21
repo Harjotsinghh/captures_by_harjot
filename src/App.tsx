@@ -1,32 +1,16 @@
 // src/App.tsx
-import { useMemo, useState, type JSX } from "react";
+import { useState, type JSX } from "react";
 import MapView from "./components/MapView";
 import GalleryModal from "./components/GalleryModal";
-import useDriveManifest, { type DriveImage } from "./hooks/useDriveManifest";
+import usePhotos from "./hooks/usePhotos";
 import type { Photo } from "./data/images";
 import Footer from "./components/Footer";
 import AestheticLoader from "./components/Loader";
 import Header from "./components/MotionHeader";
+import "./App.css";
 
 export default function App(): JSX.Element {
-  const { images: driveImages, loading, error } = useDriveManifest();
-
-  // Map DriveImage -> Photo shape expected by existing components
-  const images: Photo[] | null = useMemo(() => {
-    if (!driveImages) return null;
-    return driveImages.map((d: DriveImage) => ({
-      id: d.id,
-      title: d.name,
-      fileUrl: d.fileUrl,
-      lat: typeof d.lat === "number" ? d.lat : 0,
-      lng: typeof d.lng === "number" ? d.lng : 0,
-      timestamp:
-        d.timestamp ??
-        (d.date ? `${d.date}T00:00:00` : new Date().toISOString()),
-      date: d.date ?? "",
-      location: d.locationName ?? "",
-    }));
-  }, [driveImages]);
+  const { images, loading, error } = usePhotos();
 
   const [selected, setSelected] = useState<Photo[] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -42,31 +26,50 @@ export default function App(): JSX.Element {
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-container">
       <Header />
-      <div className="container grid">
+
+      {/* Map Section */}
+      <main className={loading ? "map-placeholder" : "map-card"}>
         <AestheticLoader active={loading} />
-        {!loading && (
-          <div>
-            {error && (
-              <div style={{ padding: 20, color: "crimson" }}>
-                Error: {error}
-              </div>
-            )}
-            {!error && images && images.length === 0 && (
-              <div style={{ padding: 20 }}>
-                No photos found in the manifest.
-              </div>
-            )}
-            {!error && images && images.length > 0 && (
-              <MapView images={images} onMarkerClick={openGallery} />
-            )}
+
+        {!loading && error && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            padding: 20,
+            color: "crimson",
+            background: "rgba(255,255,255,0.9)",
+            borderRadius: 8
+          }}>
+            Error: {error}
           </div>
         )}
-      </div>
-      <GalleryModal isOpen={isOpen} onClose={closeGallery} images={selected} />
 
-      <Footer />
+        {!loading && !error && images && images.length === 0 && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            padding: 20,
+            background: "rgba(255,255,255,0.9)",
+            borderRadius: 8
+          }}>
+            No photos found in the manifest.
+          </div>
+        )}
+
+        {!error && images && images.length > 0 && (
+          <MapView images={images} onMarkerClick={openGallery} />
+        )}
+      </main>
+
+      {!loading && <Footer />}
+
+      <GalleryModal isOpen={isOpen} onClose={closeGallery} images={selected} />
     </div>
   );
 }

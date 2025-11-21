@@ -1,8 +1,78 @@
+:root {
+  font-family: 'Outfit', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  background-color: #f8f9fa;
+  /* Light, clean background */
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
+}
+
 #root {
-  max-width: 1280px;
+  width: 100%;
+  min-height: 100vh;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main Container */
+.app-container {
+  width: 100%;
+  max-width: 100%;
+  /* Full width */
+  margin: 0;
+  padding: 1rem 2rem;
+  /* Keep padding as requested */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Map Card */
+.map-card {
+  width: 100%;
+  min-height: 70vh;
+  /* Minimum height as requested */
+  flex: 1;
+  /* Allow it to grow and fill space */
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+  background: #e5e7eb;
+  z-index: 1;
+}
+
+/* Loading Placeholder: Same size, no visuals */
+.map-placeholder {
+  width: 100%;
+  min-height: 70vh;
+  /* Match map-card */
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Leaflet Container Override */
+.mapBox {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: relative;
+  /* Ensure it stacks correctly */
 }
 
 .logo {
@@ -11,9 +81,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +94,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -39,4 +112,48 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Remove focus outline from Leaflet markers */
+.leaflet-marker-icon:focus,
+.leaflet-interactive:focus,
+.custom-map-marker:focus,
+.custom-map-marker:focus-visible {
+  outline: none !important;
+
+}
+
+/* Ensure no child elements get focus ring */
+.custom-map-marker * {
+  outline: none !important;
+}
+
+/* Responsive Header & Footer */
+.responsive-header,
+.responsive-footer-top,
+.responsive-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .responsive-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .responsive-footer-top {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .responsive-footer-bottom {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
 }

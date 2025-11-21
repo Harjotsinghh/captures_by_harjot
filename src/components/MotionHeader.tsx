@@ -1,97 +1,80 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { RiCameraLensAiFill } from "react-icons/ri";
+import { config } from "../config";
 
 const Header: React.FC = () => {
   return (
     <header
+      className="responsive-header"
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "0.6rem",
-        padding: "2.6rem 1rem 1rem ",
-        width: "100%",
+        padding: "0.5rem 0.5rem",
       }}
     >
-      {/* Main row: icon + text */}
+      {/* Left: Logo & Title */}
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <motion.div
-          initial={{ opacity: 0, rotate: -10, scale: 0.95 }}
-          animate={{ opacity: 1, rotate: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          initial={{ rotate: -20, scale: 0.8 }}
+          animate={{ rotate: 0, scale: 1 }}
+          transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
           style={{
-            flexShrink: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            background: "linear-gradient(135deg, #e0eafc, #cfdef3)",
+            padding: "10px",
+            borderRadius: "12px",
           }}
         >
-          <RiCameraLensAiFill size={60} strokeWidth={1.6} color="#111827" />
+          <RiCameraLensAiFill size={24} color="#1f2937" />
         </motion.div>
 
-        {/* Text stack */}
-        <motion.div
-          initial={{ opacity: 0, x: -12 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}
-        >
-          <div
+        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+          <span
             style={{
-              fontFamily:
-                "Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
-              fontSize: "0.9rem",
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: "0.75rem",
               fontWeight: 600,
-              letterSpacing: "1.4px",
-              textAlign: "left",
-              background: "linear-gradient(90deg, #ff6a00, #ee0979, #00c3ff)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              textTransform: "uppercase",
+              letterSpacing: "2px",
+              color: "#6b7280",
             }}
           >
-            Captures by
-          </div>
-
-          <div
+            {config.author.title}
+          </span>
+          <span
             style={{
-              marginTop: 4,
-              fontFamily:
-                "Poppins, 'Satoshi', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
-              fontSize: "2rem",
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: "1.5rem",
               fontWeight: 800,
-              letterSpacing: "0.3px",
-              background: "linear-gradient(90deg, #111827, #3b3b3b)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              textAlign: "left",
+              letterSpacing: "-0.5px",
+              color: "#111827",
             }}
           >
-            Harjot
-          </div>
-        </motion.div>
+            {config.author.firstName}
+          </span>
+        </div>
       </div>
 
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.12, ease: "easeOut" }}
-        style={{
-          marginTop: 10,
-          fontSize: "1rem",
-          color: "#6b7280",
-          maxWidth: 780,
-          fontFamily:
-            "'Poppins', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-          fontStyle: "italic",
-          textAlign: "center",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
+      {/* Right: Quote */}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
       >
-        "Through the lens, I chase the poetry of light."
-      </motion.p>
+        <p
+          style={{
+            fontSize: "0.95rem",
+            color: "#4b5563",
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            fontWeight: 500,
+            margin: 0,
+          }}
+        >
+          "{config.author.quote}"
+        </p>
+      </motion.div>
     </header>
   );
 };
