@@ -4,10 +4,15 @@ import { EffectCoverflow, Pagination, Navigation, Autoplay } from "swiper/module
 import { FaImages } from "react-icons/fa";
 import type { Photo } from "../data/images";
 
+
 // Import Swiper styles
+// @ts-ignore
 import "swiper/css";
+// @ts-ignore
 import "swiper/css/effect-coverflow";
+// @ts-ignore
 import "swiper/css/pagination";
+// @ts-ignore
 import "swiper/css/navigation";
 
 interface Gallery3DViewProps {

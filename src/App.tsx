@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import MapView from "./components/MapView";
 import GalleryModal from "./components/GalleryModal";
 import usePhotos from "./hooks/usePhotos";
@@ -29,7 +29,7 @@ export default function App(): JSX.Element {
   };
 
   if (loading) return <AestheticLoader active={true} />;
-  if (error) return <div className="error-message">Error loading photos: {error.message}</div>;
+  if (error) return <div className="error-message">Error loading photos: {error}</div>;
 
   return (
     <>
