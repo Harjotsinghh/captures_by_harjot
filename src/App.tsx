@@ -1,30 +1,35 @@
-// src/App.tsx
-import { useState, type JSX } from "react";
+
+import { useState } from "react";
 import MapView from "./components/MapView";
 import GalleryModal from "./components/GalleryModal";
 import usePhotos from "./hooks/usePhotos";
-import type { Photo } from "./data/images";
 import Footer from "./components/Footer";
 import AestheticLoader from "./components/Loader";
 import Header from "./components/MotionHeader";
 import ParticleNetwork from "./components/ParticleNetwork";
+import Gallery3DView from "./components/Gallery3DView";
+import { FaMapMarkedAlt, FaImages } from "react-icons/fa";
 import "./App.css";
 
 export default function App(): JSX.Element {
   const { images, loading, error } = usePhotos();
-
-  const [selected, setSelected] = useState<Photo[] | null>(null);
+  const [selected, setSelected] = useState<any[] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'map' | 'gallery'>('map');
 
-  function openGallery(imgs: Photo[]) {
-    setSelected(imgs);
+  const openGallery = (photos: any | any[]) => {
+    const selectedPhotos = Array.isArray(photos) ? photos : [photos];
+    setSelected(selectedPhotos);
     setIsOpen(true);
-  }
+  };
 
-  function closeGallery() {
+  const closeGallery = () => {
     setIsOpen(false);
     setSelected(null);
-  }
+  };
+
+  if (loading) return <AestheticLoader active={true} />;
+  if (error) return <div className="error-message">Error loading photos: {error.message}</div>;
 
   return (
     <>
@@ -32,45 +37,32 @@ export default function App(): JSX.Element {
       <div className="app-container">
         <Header />
 
-        {/* Map Section */}
-        <main className={loading ? "map-placeholder" : "map-card"}>
-          <AestheticLoader active={loading} />
+        {/* View Toggle */}
+        <div className="view-toggle">
+          <button
+            className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
+            onClick={() => setViewMode('map')}
+          >
+            <FaMapMarkedAlt /> Map
+          </button>
+          <button
+            className={`toggle-btn ${viewMode === 'gallery' ? 'active' : ''}`}
+            onClick={() => setViewMode('gallery')}
+          >
+            <FaImages /> Gallery
+          </button>
+        </div>
 
-          {!loading && error && (
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              padding: 20,
-              color: "crimson",
-              background: "rgba(255,255,255,0.9)",
-              borderRadius: 8
-            }}>
-              Error: {error}
-            </div>
-          )}
-
-          {!loading && !error && images && images.length === 0 && (
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              padding: 20,
-              background: "rgba(255,255,255,0.9)",
-              borderRadius: 8
-            }}>
-              No photos found in the manifest.
-            </div>
-          )}
-
-          {!error && images && images.length > 0 && (
-            <MapView images={images} onMarkerClick={openGallery} />
+        {/* Main Content Area */}
+        <main className={viewMode === 'map' ? "map-card" : "gallery-3d-container"}>
+          {viewMode === 'map' ? (
+            <MapView images={images || []} onMarkerClick={openGallery} />
+          ) : (
+            <Gallery3DView images={images || []} onPhotoClick={openGallery} />
           )}
         </main>
 
-        {!loading && <Footer />}
+        <Footer />
 
         <GalleryModal isOpen={isOpen} onClose={closeGallery} images={selected} />
       </div>

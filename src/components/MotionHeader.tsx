@@ -29,42 +29,53 @@ const Header: React.FC = () => {
           <RiCameraLensAiFill size={24} color="#1f2937" />
         </motion.div>
 
-        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-          <span
+        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1, padding: "2px 0" }}>
+          <motion.span
+            initial={{ backgroundPosition: "0% 50%" }}
+            animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
             style={{
               fontFamily: "'Outfit', sans-serif",
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "2px",
-              color: "#6b7280",
-            }}
-          >
-            {config.author.title}
-          </span>
-          <span
-            style={{
-              fontFamily: "'Outfit', sans-serif",
-              fontSize: "1.5rem",
+              fontSize: "clamp(1.2rem, 5vw, 1.8rem)",
               fontWeight: 800,
               letterSpacing: "-0.5px",
-              color: "#111827",
+              background: "linear-gradient(to right, #111827, #4b5563, #111827)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              textTransform: "uppercase",
+              display: "inline-block",
+              paddingBottom: "2px", // Extra buffer for descenders/gradient
             }}
           >
-            {config.author.firstName}
+            {config.author.firstName}'s
+          </motion.span>
+          <span
+            style={{
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: "0.65rem",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "4px",
+              color: "#6b7280",
+              marginLeft: "2px",
+            }}
+          >
+            Gallery
           </span>
         </div>
       </div>
 
       {/* Right: Quote */}
       <motion.div
+        className="header-quote"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
         <p
           style={{
-            fontSize: "0.95rem",
+            fontSize: "0.9rem",
             color: "#4b5563",
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
