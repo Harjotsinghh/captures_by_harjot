@@ -8,6 +8,7 @@ import AestheticLoader from "./components/Loader";
 import Header from "./components/MotionHeader";
 import ParticleNetwork from "./components/ParticleNetwork";
 import Gallery3DView from "./components/Gallery3DView";
+import ErrorScreen from "./components/ErrorScreen";
 import { FaMapMarkedAlt, FaImages } from "react-icons/fa";
 import "./App.css";
 
@@ -29,7 +30,7 @@ export default function App(): JSX.Element {
   };
 
   if (loading) return <AestheticLoader active={true} />;
-  if (error) return <div className="error-message">Error loading photos: {error}</div>;
+  if (error) return <ErrorScreen message={typeof error === 'string' ? error : "An unexpected error occurred"} />;
 
   return (
     <>
