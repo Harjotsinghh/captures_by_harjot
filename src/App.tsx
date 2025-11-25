@@ -38,24 +38,24 @@ export default function App(): JSX.Element {
       <div className="app-container">
         <Header />
 
-        {/* View Toggle */}
-        <div className="view-toggle">
-          <button
-            className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
-            onClick={() => setViewMode('map')}
-          >
-            <FaMapMarkedAlt /> Map
-          </button>
-          <button
-            className={`toggle-btn ${viewMode === 'gallery' ? 'active' : ''}`}
-            onClick={() => setViewMode('gallery')}
-          >
-            <FaImages /> Gallery
-          </button>
-        </div>
-
         {/* Main Content Area */}
         <main className={viewMode === 'map' ? "map-card" : "gallery-3d-container"}>
+          {/* View Toggle Overlay */}
+          <div className="view-toggle">
+            <button
+              className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
+              onClick={() => setViewMode('map')}
+            >
+              <FaMapMarkedAlt /> Map
+            </button>
+            <button
+              className={`toggle-btn ${viewMode === 'gallery' ? 'active' : ''}`}
+              onClick={() => setViewMode('gallery')}
+            >
+              <FaImages /> Gallery
+            </button>
+          </div>
+
           {viewMode === 'map' ? (
             <MapView images={images || []} onMarkerClick={openGallery} />
           ) : (
