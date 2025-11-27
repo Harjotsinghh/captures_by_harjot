@@ -1,8 +1,29 @@
 :root {
-  --bg: #fafafa;
-  --card: #ffffff;
-  --muted: #6b7280;
-  --accent: #0ea5a4;
+  /* Light Mode (Default) */
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --border-color: #e5e7eb;
+  --accent-color: #0ea5a4;
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --overlay-bg: rgba(255, 255, 255, 0.9);
+}
+
+.dark {
+  /* Dark Mode */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --border-color: #334155;
+  --accent-color: #2dd4bf;
+  --glass-bg: rgba(30, 41, 59, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --overlay-bg: rgba(15, 23, 42, 0.9);
 }
 
 * {
@@ -83,6 +104,7 @@ body {
   .grid {
     grid-template-columns: 1fr;
   }
+
   .mapBox {
     height: auto;
   }

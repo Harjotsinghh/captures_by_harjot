@@ -15,18 +15,18 @@ const ErrorScreen: React.FC<ErrorScreenProps> = ({ message, onRetry }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "linear-gradient(135deg, #f3f4f6, #e5e7eb)",
+                background: "var(--bg-primary)",
                 padding: "1rem",
             }}
         >
             <div
                 style={{
-                    background: "rgba(255, 255, 255, 0.7)",
+                    background: "var(--glass-bg)",
                     backdropFilter: "blur(10px)",
-                    border: "1px solid rgba(255, 255, 255, 0.5)",
+                    border: "1px solid var(--glass-border)",
                     padding: "2.5rem",
                     borderRadius: "24px",
-                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)",
+                    boxShadow: "var(--card-shadow)",
                     maxWidth: "400px",
                     textAlign: "center",
                     display: "flex",
@@ -55,7 +55,7 @@ const ErrorScreen: React.FC<ErrorScreenProps> = ({ message, onRetry }) => {
                         margin: 0,
                         fontFamily: "'Outfit', sans-serif",
                         fontSize: "1.5rem",
-                        color: "#111827",
+                        color: "var(--text-primary)",
                     }}
                 >
                     Something went wrong
@@ -65,7 +65,7 @@ const ErrorScreen: React.FC<ErrorScreenProps> = ({ message, onRetry }) => {
                     style={{
                         margin: 0,
                         fontFamily: "'Outfit', sans-serif",
-                        color: "#6b7280",
+                        color: "var(--text-secondary)",
                         fontSize: "0.95rem",
                         lineHeight: 1.5,
                     }}
@@ -78,8 +78,8 @@ const ErrorScreen: React.FC<ErrorScreenProps> = ({ message, onRetry }) => {
                     style={{
                         marginTop: "0.5rem",
                         padding: "10px 24px",
-                        background: "#111827",
-                        color: "white",
+                        background: "var(--text-primary)",
+                        color: "var(--bg-primary)",
                         border: "none",
                         borderRadius: "12px",
                         fontFamily: "'Outfit', sans-serif",

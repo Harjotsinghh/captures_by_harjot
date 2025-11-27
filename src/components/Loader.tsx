@@ -25,8 +25,8 @@ export default function AestheticLoader({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#111827", // Dark cinematic background
-        color: "white",
+        background: "var(--bg-primary)", // Theme background
+        color: "var(--text-primary)",
       }}
     >
       <div
@@ -60,7 +60,7 @@ export default function AestheticLoader({
             fontFamily: "'Outfit', sans-serif",
             letterSpacing: "1px",
             textTransform: "uppercase",
-            background: "linear-gradient(to right, #fff, #9ca3af, #fff)", // Light gradient
+            background: "linear-gradient(to right, var(--text-primary), var(--text-secondary), var(--text-primary))", // Theme gradient
             backgroundSize: "200% auto",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
@@ -78,7 +78,7 @@ export default function AestheticLoader({
           style={{
             margin: 0,
             fontSize: "0.85rem",
-            color: "#9ca3af", // Light gray
+            color: "var(--text-secondary)", // Theme secondary text
             fontFamily: "'Outfit', sans-serif",
             letterSpacing: "0.5px",
             fontWeight: 500,

@@ -2,12 +2,15 @@ import {
   MapContainer,
   TileLayer,
   Polyline,
+  useMap,
 } from "react-leaflet";
+import { useEffect } from "react";
 import L from "leaflet";
 import type { Photo } from "../data/images";
 import "leaflet/dist/leaflet.css";
 import useMapData from "../hooks/useMapData";
 import MapMarker from "./MapMarker";
+import { useTheme } from "../context/ThemeContext";
 
 // Fix default marker icon paths for Vite bundling
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -23,9 +26,28 @@ interface MapViewProps {
   onMarkerClick: (images: Photo[]) => void;
 }
 
+// Component to auto-center map on markers
+const AutoCenterMap: React.FC<{ places: any[] }> = ({ places }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (places.length > 0) {
+      const bounds = L.latLngBounds(places.map(p => [p.lat, p.lng]));
+      map.fitBounds(bounds, { padding: [80, 80] });
+    }
+  }, [places, map]);
+
+  return null;
+};
+
 export default function MapView({ images, onMarkerClick }: MapViewProps) {
   const { center, places } = useMapData(images);
+  const { theme } = useTheme();
   const coords = places.map((l) => [l.lat, l.lng] as [number, number]);
+
+  const tileUrl = theme === 'dark'
+    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+    : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
 
   return (
     <MapContainer
@@ -35,9 +57,10 @@ export default function MapView({ images, onMarkerClick }: MapViewProps) {
       touchZoom={true}
       className="mapBox"
     >
+      <AutoCenterMap places={places} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        url={tileUrl}
       />
       {places.map((place, idx) => (
         <MapMarker key={idx} place={place} onClick={onMarkerClick} />
@@ -46,7 +69,7 @@ export default function MapView({ images, onMarkerClick }: MapViewProps) {
       <Polyline
         positions={coords}
         pathOptions={{
-          color: "#555",
+          color: theme === 'dark' ? "#a3a3a3" : "#555",
           weight: 2,
           opacity: 0.6,
           dashArray: "10, 10",

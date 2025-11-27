@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { RiCameraLensAiFill } from "react-icons/ri";
 import { config } from "../config";
+import ThemeToggle from "./ThemeToggle";
 
 const Header: React.FC = () => {
   return (
@@ -21,12 +22,13 @@ const Header: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "linear-gradient(135deg, #e0eafc, #cfdef3)",
+            background: "var(--bg-secondary)",
             padding: "10px",
             borderRadius: "12px",
+            border: "1px solid var(--border-color)",
           }}
         >
-          <RiCameraLensAiFill size={30} color="#1f2937" />
+          <RiCameraLensAiFill size={30} color="var(--text-primary)" />
         </motion.div>
 
         <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1, padding: "2px 0" }}>
@@ -39,10 +41,12 @@ const Header: React.FC = () => {
               fontSize: "clamp(1.2rem, 5vw, 1.8rem)",
               fontWeight: 800,
               letterSpacing: "-0.5px",
-              background: "linear-gradient(to right, #111827, #4b5563, #111827)",
+              background: "linear-gradient(to right, var(--text-primary), var(--text-secondary), var(--text-primary))",
               backgroundSize: "200% auto",
+              backgroundClip: "text",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
+              color: "transparent",
               textTransform: "uppercase",
               display: "inline-block",
               paddingBottom: "2px", // Extra buffer for descenders/gradient
@@ -57,7 +61,7 @@ const Header: React.FC = () => {
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "4px",
-              color: "#6b7280",
+              color: "var(--text-secondary)",
               marginLeft: "2px",
             }}
           >
@@ -66,26 +70,32 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Right: Quote */}
-      <motion.div
-        className="header-quote"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <p
-          style={{
-            fontSize: "0.9rem",
-            color: "#4b5563",
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            fontWeight: 500,
-            margin: 0,
-          }}
+      {/* Right: Quote & Toggle */}
+      <div className="header-right" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <motion.div
+          className="header-quote"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
-          "{config.author.quote}"
-        </p>
-      </motion.div>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              color: "var(--text-secondary)",
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              fontWeight: 500,
+              margin: 0,
+            }}
+          >
+            "{config.author.quote}"
+          </p>
+        </motion.div>
+
+        <div className="desktop-only-toggle">
+          <ThemeToggle />
+        </div>
+      </div>
     </header>
   );
 };

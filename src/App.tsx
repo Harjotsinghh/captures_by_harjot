@@ -11,6 +11,8 @@ import Gallery3DView from "./components/Gallery3DView";
 import ErrorScreen from "./components/ErrorScreen";
 import { motion } from "framer-motion";
 import { FaMapMarkedAlt, FaImages } from "react-icons/fa";
+import { ThemeProvider } from "./context/ThemeContext";
+import ThemeToggle from "./components/ThemeToggle";
 import "./App.css";
 
 export default function App(): JSX.Element {
@@ -33,7 +35,7 @@ export default function App(): JSX.Element {
   };
 
   return (
-    <>
+    <ThemeProvider>
       {/* Loader Layer (Background) - Only show if intro not finished */}
       {!introFinished && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
@@ -65,8 +67,10 @@ export default function App(): JSX.Element {
           style={{
             position: 'relative',
             zIndex: 10,
-            background: '#f8f9fa',
-            minHeight: '100vh'
+            background: 'var(--bg-primary)',
+            minHeight: '100vh',
+            color: 'var(--text-primary)',
+            transition: 'background-color 0.3s ease, color 0.3s ease'
           }}
         >
           <AmbientBackground />
@@ -87,8 +91,12 @@ export default function App(): JSX.Element {
                   className={`toggle-btn ${viewMode === 'gallery' ? 'active' : ''}`}
                   onClick={() => setViewMode('gallery')}
                 >
+
                   <FaImages /> Gallery
                 </button>
+                <div className="mobile-only-toggle">
+                  <ThemeToggle />
+                </div>
               </div>
 
               {viewMode === 'map' ? (
@@ -104,6 +112,6 @@ export default function App(): JSX.Element {
           </div>
         </motion.div>
       )}
-    </>
+    </ThemeProvider>
   );
 }

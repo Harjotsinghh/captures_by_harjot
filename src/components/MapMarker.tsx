@@ -8,8 +8,16 @@ interface MapMarkerProps {
   onClick: (images: Photo[]) => void;
 }
 
+import { useTheme } from "../context/ThemeContext";
+
 export default function MapMarker({ place, onClick }: MapMarkerProps) {
+  const { theme } = useTheme();
   const hasMultiple = place.images.length > 1;
+
+  // Theme-based colors
+  const strokeColor = theme === 'dark' ? '#e5e7eb' : 'white'; // Light grey leg for dark mode
+  const pinColor = theme === 'dark' ? '#dc2626' : 'white';    // Dark red for dark mode
+  const ringColor = theme === 'dark' ? '#e5e7eb' : 'white';   // Light grey ring for dark mode
   const image1 = place.images[0];
   const image2 = hasMultiple ? place.images[1] : null;
 
@@ -24,10 +32,10 @@ export default function MapMarker({ place, onClick }: MapMarkerProps) {
       ">
         <svg viewBox="0 0 100 140" style="width: 100%; height: 100%; display: block; overflow: visible;">
           <!-- Vertical Pin Line -->
-          <line x1="50" y1="95" x2="50" y2="140" stroke="white" stroke-width="4" stroke-linecap="round" />
+          <line x1="50" y1="95" x2="50" y2="140" stroke="${strokeColor}" stroke-width="4" stroke-linecap="round" />
           
           <!-- Pin Head Background -->
-          <circle cx="50" cy="50" r="50" fill="white" />
+          <circle cx="50" cy="50" r="50" fill="${pinColor}" />
           
           <defs>
             <clipPath id="circleView">
@@ -62,7 +70,7 @@ export default function MapMarker({ place, onClick }: MapMarkerProps) {
               onerror="this.href.baseVal='https://placehold.co/100x100?text=Error'"
             />
             <!-- Divider -->
-            <line x1="50" y1="4" x2="50" y2="96" stroke="white" stroke-width="2" />
+            <line x1="50" y1="4" x2="50" y2="96" stroke="${strokeColor}" stroke-width="2" />
             `
         : `
             <!-- Single Image -->
@@ -78,7 +86,7 @@ export default function MapMarker({ place, onClick }: MapMarkerProps) {
       }
           
           <!-- Border Ring -->
-          <circle cx="50" cy="50" r="46" fill="none" stroke="white" stroke-width="4" />
+          <circle cx="50" cy="50" r="46" fill="none" stroke="${ringColor}" stroke-width="4" />
         </svg>
 
         ${place.images.length > 1
