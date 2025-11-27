@@ -1,4 +1,5 @@
 import Player from "lottie-react";
+import { motion } from "framer-motion";
 import animationData from "../assets/lottie/Flight.json";
 
 type Props = {
@@ -8,70 +9,84 @@ type Props = {
 
 export default function AestheticLoader({
   active,
-  text = "Preparing your journey",
+  text = "Curating Visuals",
 }: Props) {
   if (!active) return null;
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
       style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
         width: "100%",
         height: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 99,
-        pointerEvents: "auto",
+        background: "#111827", // Dark cinematic background
+        color: "white",
       }}
-      role="status"
-      aria-live="polite"
     >
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "1rem",
+          gap: "0.5rem", // Tighter spacing
           textAlign: "center",
         }}
       >
         {/* Lottie Animation */}
-        <Player
-          autoplay
-          loop
-          style={{ height: 180, width: "auto" }}
-          animationData={animationData}
-        />
+        <div style={{ width: "150px", height: "150px", marginBottom: "0.5rem" }}>
+          <Player
+            autoplay
+            loop
+            animationData={animationData}
+            style={{ width: "100%", height: "100%" }}
+          />
+        </div>
 
         {/* Title */}
-        <div
+        <motion.h2
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
           style={{
-            fontSize: "1.25rem",
-            fontWeight: 700,
-            color: "#111827",
+            margin: 0,
+            fontSize: "1.2rem",
+            fontWeight: 800,
             fontFamily: "'Outfit', sans-serif",
-            letterSpacing: "-0.3px",
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            background: "linear-gradient(to right, #fff, #9ca3af, #fff)", // Light gradient
+            backgroundSize: "200% auto",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            display: "inline-block",
           }}
         >
           {text}
-        </div>
+        </motion.h2>
 
         {/* Subtitle */}
-        <div
+        <motion.p
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
           style={{
-            fontSize: "0.9rem",
-            color: "#6b7280",
+            margin: 0,
+            fontSize: "0.85rem",
+            color: "#9ca3af", // Light gray
             fontFamily: "'Outfit', sans-serif",
-            lineHeight: 1.5,
-            maxWidth: "320px",
+            letterSpacing: "0.5px",
+            fontWeight: 500,
           }}
         >
-          Mapping moments from around the world
-        </div>
+          Gathering moments from across the globe...
+        </motion.p>
       </div>
-    </div>
+    </motion.div>
   );
 }

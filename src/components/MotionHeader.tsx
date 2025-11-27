@@ -12,7 +12,7 @@ const Header: React.FC = () => {
       }}
     >
       {/* Left: Logo & Title */}
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
         <motion.div
           initial={{ rotate: -20, scale: 0.8 }}
           animate={{ rotate: 0, scale: 1 }}
@@ -26,7 +26,7 @@ const Header: React.FC = () => {
             borderRadius: "12px",
           }}
         >
-          <RiCameraLensAiFill size={24} color="#1f2937" />
+          <RiCameraLensAiFill size={30} color="#1f2937" />
         </motion.div>
 
         <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1, padding: "2px 0" }}>
