@@ -105,3 +105,17 @@ footer {
   margin-top: auto;
   width: 100%;
 }
+
+/* Map Dark Mode Enhancements */
+.map-dark-mode .leaflet-tile-pane {
+  filter: contrast(1.1) saturation(1.2) brightness(0.9);
+}
+
+.map-dark-mode .leaflet-control-attribution {
+  background: rgba(0, 0, 0, 0.5) !important;
+  color: #aaa !important;
+}
+
+.map-dark-mode .leaflet-control-attribution a {
+  color: #ccc !important;
+}

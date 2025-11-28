@@ -50,7 +50,7 @@ function MapView({ images, onMarkerClick }: MapViewProps) {
     () =>
       theme === "dark"
         ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
     [theme]
   );
 
@@ -70,7 +70,7 @@ function MapView({ images, onMarkerClick }: MapViewProps) {
         zoom={6}
         trackResize={true}
         touchZoom={true}
-        className="mapBox"
+        className={`mapBox ${theme === 'dark' ? 'map-dark-mode' : ''}`}
       >
         <AutoCenterMap places={places} />
         <TileLayer

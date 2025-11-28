@@ -16,9 +16,10 @@ function MapMarker({ place, onClick }: MapMarkerProps) {
   const hasMultiple = place.images.length > 1;
 
   // Theme-based colors
-  const strokeColor = theme === 'dark' ? '#e5e7eb' : 'white'; // Light grey leg for dark mode
-  const pinColor = theme === 'dark' ? '#dc2626' : 'white';    // Dark red for dark mode
-  const ringColor = theme === 'dark' ? '#e5e7eb' : 'white';   // Light grey ring for dark mode
+  // Theme-based colors
+  const strokeColor = theme === 'dark' ? '#0ea5a4' : 'white'; // Cyan leg for dark mode
+  const pinColor = theme === 'dark' ? '#0f172a' : 'white';    // Dark background for dark mode
+  const ringColor = theme === 'dark' ? '#0ea5a4' : 'white';   // Cyan ring for dark mode
   const image1 = place.images[0];
   const image2 = hasMultiple ? place.images[1] : null;
 
@@ -95,8 +96,8 @@ function MapMarker({ place, onClick }: MapMarkerProps) {
               position: absolute;
               top: 0;
               right: 0;
-              background: #ff5252;
-              color: white;
+              background: ${theme === 'dark' ? '#0ea5a4' : '#ff5252'};
+              color: ${theme === 'dark' ? '#0f172a' : 'white'};
               font-size: 11px;
               font-weight: bold;
               width: 20px;
@@ -105,7 +106,7 @@ function MapMarker({ place, onClick }: MapMarkerProps) {
               display: flex;
               align-items: center;
               justify-content: center;
-              border: 2px solid white;
+              border: 2px solid ${theme === 'dark' ? '#0f172a' : 'white'};
               box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             ">
               ${place.images.length}
