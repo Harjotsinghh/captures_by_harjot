@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from "swiper/modules";
 import { FaImages } from "react-icons/fa";
@@ -27,7 +27,7 @@ interface LocationGroup {
     photos: Photo[];
 }
 
-const Gallery3DView: React.FC<Gallery3DViewProps> = ({ images, onPhotoClick }) => {
+const Gallery3DView = memo<Gallery3DViewProps>(({ images, onPhotoClick }) => {
     // Group images by location
     const locationGroups: LocationGroup[] = useMemo(() => {
         const groups: Record<string, Photo[]> = {};
@@ -96,6 +96,8 @@ const Gallery3DView: React.FC<Gallery3DViewProps> = ({ images, onPhotoClick }) =
             </Swiper>
         </div>
     );
-};
+});
+
+Gallery3DView.displayName = 'Gallery3DView';
 
 export default Gallery3DView;

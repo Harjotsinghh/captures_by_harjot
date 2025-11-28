@@ -252,6 +252,8 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  will-change: background-color, border-color;
+  transform: translateZ(0);
 }
 
 .toggle-btn.active {
@@ -272,10 +274,13 @@ body {
   width: 100%;
   height: calc(100vh - 150px);
   /* Account for header (80px) and bottom sheet (~70px) */
+  padding-bottom: 100px;
+  /* Additional padding to prevent overlap with bottom sheet */
   position: fixed;
   top: 80px;
   left: 0;
   right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -313,6 +318,8 @@ body {
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .slide-content:hover img {
@@ -331,6 +338,8 @@ body {
   transform: translateY(20px);
   opacity: 0;
   transition: all 0.3s ease;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .swiper-slide-active .slide-info {
@@ -493,6 +502,8 @@ body {
   /* Gallery 3D Container */
   .gallery-3d-container {
     padding-top: 120px;
+    padding-bottom: 120px;
+    /* Add extra space for bottom sheet on mobile */
     align-items: flex-start;
   }
 

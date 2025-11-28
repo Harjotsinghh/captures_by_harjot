@@ -1,5 +1,5 @@
 
-import { useState, type JSX } from "react";
+import { useState, useCallback, type JSX } from "react";
 import MapView from "./components/MapView";
 import GalleryModal from "./components/GalleryModal";
 import usePhotos from "./hooks/usePhotos";
@@ -23,16 +23,16 @@ export default function App(): JSX.Element {
 
   const [viewMode, setViewMode] = useState<'map' | 'gallery'>('map');
 
-  const openGallery = (photos: any | any[]) => {
+  const openGallery = useCallback((photos: any | any[]) => {
     const selectedPhotos = Array.isArray(photos) ? photos : [photos];
     setSelected(selectedPhotos);
     setIsOpen(true);
-  };
+  }, []);
 
-  const closeGallery = () => {
+  const closeGallery = useCallback(() => {
     setIsOpen(false);
     setSelected(null);
-  };
+  }, []);
 
   return (
     <ThemeProvider>
@@ -53,13 +53,14 @@ export default function App(): JSX.Element {
       {/* Main App Layer (Foreground with Reveal Animation) */}
       {!error && (
         <motion.div
-          initial={{ clipPath: "circle(0% at 50% 50%)" }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{
-            clipPath: loading ? "circle(0% at 50% 50%)" : "circle(150% at 50% 50%)"
+            opacity: loading ? 0 : 1,
+            scale: loading ? 0.95 : 1
           }}
           transition={{
-            duration: 1.5,
-            ease: [0.43, 0.13, 0.23, 0.96] // Custom easing for cinematic feel
+            duration: 0.8,
+            ease: [0.43, 0.13, 0.23, 0.96]
           }}
           onAnimationComplete={() => {
             if (!loading) setIntroFinished(true);
@@ -70,7 +71,8 @@ export default function App(): JSX.Element {
             background: 'var(--bg-primary)',
             minHeight: '100vh',
             color: 'var(--text-primary)',
-            transition: 'background-color 0.3s ease, color 0.3s ease'
+            transition: 'background-color 0.3s ease, color 0.3s ease',
+            willChange: 'opacity, transform'
           }}
         >
           <AmbientBackground />

@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { RiCameraLensAiFill } from "react-icons/ri";
 import { config } from "../config";
@@ -6,7 +6,7 @@ import ThemeToggle from "./ThemeToggle";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import "./MotionHeader.css";
 
-const Header: React.FC = () => {
+const Header = memo(() => {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
@@ -58,6 +58,8 @@ const Header: React.FC = () => {
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = 'MotionHeader';
 
 export default Header;

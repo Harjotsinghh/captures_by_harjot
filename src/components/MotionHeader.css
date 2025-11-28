@@ -57,6 +57,8 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
     text-transform: uppercase;
+    will-change: background-position;
+    transform: translateZ(0);
     display: inline-block;
     padding-bottom: 2px;
 }

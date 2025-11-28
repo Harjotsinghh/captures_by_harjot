@@ -4,7 +4,7 @@ import {
   Polyline,
   useMap,
 } from "react-leaflet";
-import { useEffect } from "react";
+import { useEffect, useMemo, memo } from "react";
 import L from "leaflet";
 import type { Photo } from "../data/images";
 import "leaflet/dist/leaflet.css";
@@ -27,7 +27,7 @@ interface MapViewProps {
 }
 
 // Component to auto-center map on markers
-const AutoCenterMap: React.FC<{ places: any[] }> = ({ places }) => {
+const AutoCenterMap = memo<{ places: any[] }>(({ places }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -38,16 +38,25 @@ const AutoCenterMap: React.FC<{ places: any[] }> = ({ places }) => {
   }, [places, map]);
 
   return null;
-};
+});
 
-export default function MapView({ images, onMarkerClick }: MapViewProps) {
+AutoCenterMap.displayName = 'AutoCenterMap';
+
+function MapView({ images, onMarkerClick }: MapViewProps) {
   const { center, places } = useMapData(images);
   const { theme } = useTheme();
-  const coords = places.map((l) => [l.lat, l.lng] as [number, number]);
 
-  const tileUrl = theme === 'dark'
-    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-    : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+  const coords = useMemo(
+    () => places.map((l) => [l.lat, l.lng] as [number, number]),
+    [places]
+  );
+
+  const tileUrl = useMemo(
+    () => theme === 'dark'
+      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    [theme]
+  );
 
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden' }}>
@@ -81,3 +90,5 @@ export default function MapView({ images, onMarkerClick }: MapViewProps) {
     </div>
   );
 }
+
+export default memo(MapView);

@@ -1,10 +1,10 @@
-import React from "react";
+import { memo } from "react";
 import { Sheet } from "react-modal-sheet";
 import Footer from "./Footer";
 import { useTheme } from "../context/ThemeContext";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 
-const BottomSheet: React.FC = () => {
+const BottomSheet = memo(() => {
     const { theme } = useTheme();
     const isDarkMode = theme === 'dark';
     const isMobile = useMediaQuery("(max-width: 768px)");
@@ -46,6 +46,8 @@ const BottomSheet: React.FC = () => {
             {/* No backdrop shadow */}
         </Sheet>
     );
-};
+});
+
+BottomSheet.displayName = 'BottomSheet';
 
 export default BottomSheet;

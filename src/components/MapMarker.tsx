@@ -1,4 +1,5 @@
 import { Marker } from "react-leaflet";
+import { useMemo, memo } from "react";
 import L from "leaflet";
 import type { Place } from "../hooks/useMapData";
 import type { Photo } from "../data/images";
@@ -10,7 +11,7 @@ interface MapMarkerProps {
 
 import { useTheme } from "../context/ThemeContext";
 
-export default function MapMarker({ place, onClick }: MapMarkerProps) {
+function MapMarker({ place, onClick }: MapMarkerProps) {
   const { theme } = useTheme();
   const hasMultiple = place.images.length > 1;
 
@@ -21,7 +22,7 @@ export default function MapMarker({ place, onClick }: MapMarkerProps) {
   const image1 = place.images[0];
   const image2 = hasMultiple ? place.images[1] : null;
 
-  const customIcon = L.divIcon({
+  const customIcon = useMemo(() => L.divIcon({
     className: "custom-map-marker",
     html: `
       <div style="
@@ -115,7 +116,7 @@ export default function MapMarker({ place, onClick }: MapMarkerProps) {
     `,
     iconSize: [50, 70],
     iconAnchor: [25, 70], // Anchor at the bottom of the line
-  });
+  }), [strokeColor, pinColor, ringColor, image1, image2, hasMultiple, place.images.length]);
 
   return (
     <Marker
@@ -127,3 +128,5 @@ export default function MapMarker({ place, onClick }: MapMarkerProps) {
     />
   );
 }
+
+export default memo(MapMarker);
