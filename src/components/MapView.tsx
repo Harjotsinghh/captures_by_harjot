@@ -28,7 +28,7 @@ const AutoCenterMap = memo<{ places: any[] }>(({ places }) => {
   useEffect(() => {
     if (places.length > 0) {
       const bounds = L.latLngBounds(places.map((p) => [p.lat, p.lng]));
-      map.fitBounds(bounds, { padding: [200, 200] });
+      map.fitBounds(bounds, { padding: [100, 100] });
     }
   }, [places, map]);
 
