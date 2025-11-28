@@ -3,7 +3,6 @@ import { useState, type JSX } from "react";
 import MapView from "./components/MapView";
 import GalleryModal from "./components/GalleryModal";
 import usePhotos from "./hooks/usePhotos";
-import Footer from "./components/Footer";
 import AestheticLoader from "./components/Loader";
 import Header from "./components/MotionHeader";
 import AmbientBackground from "./components/AmbientBackground";
@@ -13,6 +12,7 @@ import { motion } from "framer-motion";
 import { FaMapMarkedAlt, FaImages } from "react-icons/fa";
 import { ThemeProvider } from "./context/ThemeContext";
 import ThemeToggle from "./components/ThemeToggle";
+import BottomSheet from "./components/BottomSheet";
 import "./App.css";
 
 export default function App(): JSX.Element {
@@ -106,7 +106,8 @@ export default function App(): JSX.Element {
               )}
             </main>
 
-            <Footer />
+            {/* Bottom Sheet for both Mobile and Desktop */}
+            {!loading && <BottomSheet />}
 
             <GalleryModal isOpen={isOpen} onClose={closeGallery} images={selected} />
           </div>

@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Outfit', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Manrope', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   background-color: var(--bg-primary);
@@ -28,36 +28,32 @@ body {
 .app-container {
   width: 100%;
   max-width: 100%;
-  /* Full width */
   margin: 0;
-  padding: 1rem 2rem;
-  /* Keep padding as requested */
+  padding: 0;
+  /* Full bleed */
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   min-height: 100vh;
   box-sizing: border-box;
   position: relative;
-  z-index: 1;
-  /* Ensure content is above Vanta background */
+  overflow: hidden;
+  /* Prevent scroll on body, scroll handles by sheet/map */
 }
 
-/* Map Card */
+/* Map Card - Fixed Full Screen */
 .map-card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
-  min-height: 70vh;
-  /* Minimum height as requested */
-  flex: 1;
-  /* Allow it to grow and fill space */
-  display: flex;
-  flex-direction: column;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: var(--card-shadow);
-  border: 1px solid var(--glass-border);
-  position: relative;
-  /* background: #e5e7eb; Removed to prevent bottom line issue */
-  z-index: 1;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  z-index: 0;
+  /* Behind everything */
+  margin: 0;
 }
 
 /* Loading Placeholder: Same size, no visuals */
@@ -72,16 +68,20 @@ body {
 }
 
 /* Leaflet Container Override */
+/* Leaflet Container Override */
 .mapBox {
   width: 100%;
   height: 100%;
   position: absolute !important;
-  /* Force fill */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1;
+  z-index: 1;
+  background: transparent;
+  margin: 0 !important;
+  /* Override rogue margin */
 }
 
 .logo {
@@ -167,7 +167,21 @@ body {
 }
 
 /* Responsive Header & Footer */
-.responsive-header,
+.responsive-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+  pointer-events: none;
+}
+
 .responsive-footer-top,
 .responsive-footer-bottom {
   display: flex;
@@ -176,87 +190,115 @@ body {
   width: 100%;
 }
 
-@media (max-width: 768px) {
-  .responsive-header {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
-    padding: 1rem 0;
-  }
+/* Toggle Switch Styles */
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  transition: all 0.3s ease;
+}
 
-  .header-right {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem !important;
-    width: 100%;
-  }
+.theme-toggle-btn:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  box-shadow: var(--card-shadow);
+}
 
-  /* Show quote on mobile, but smaller */
-  .header-quote {
-    display: block;
-    width: 100%;
-    margin-top: 0;
-    /* Reset margin since gap handles it */
-    opacity: 0.8;
-  }
+.mobile-only-toggle {
+  display: none;
+}
 
-  .header-quote p {
-    font-size: 0.85rem !important;
-    text-align: center;
-  }
+.desktop-only-toggle {
+  display: block;
+}
 
-  .responsive-footer-top {
-    flex-direction: column;
-    gap: 1.5rem;
-    text-align: center;
-  }
+.view-toggle {
+  display: flex;
+  background: var(--glass-bg);
+  backdrop-filter: blur(4px);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  position: fixed;
+  top: 90px;
+  right: 2rem;
+  /* Move to right */
+  left: auto;
+  /* Reset left */
+  transform: none;
+  /* Reset transform */
+  z-index: 90;
+  box-shadow: var(--card-shadow);
+}
 
-  .responsive-footer-bottom {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
+.toggle-btn {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid var(--accent-color);
+  color: var(--text-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* 3D Gallery Styles */
 .gallery-3d-container {
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 150px);
+  /* Account for header (80px) and bottom sheet (~70px) */
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
-  position: relative;
-  /* Fix toggle positioning context */
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.gallery-3d-container .swiper-wrapper {
+  align-items: center;
 }
 
 .gallery-slide {
   background-position: center;
   background-size: cover;
-  width: 300px;
-  height: 450px;
+  height: 50vh;
+  /* Responsive - adjusts with window height */
+  width: calc(50vh * 0.67);
   border-radius: 20px;
   overflow: hidden;
-  /* Glassmorphism for the card itself */
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--card-shadow);
-}
-
-@media (max-width: 768px) {
-  .gallery-slide {
-    width: 250px;
-    height: 380px;
-  }
-}
-
-@media (max-width: 480px) {
-  .gallery-slide {
-    width: 200px;
-    height: 320px;
-  }
 }
 
 .slide-content {
@@ -318,79 +360,174 @@ body {
   background: #fff !important;
 }
 
-/* Toggle Switch Styles */
-.theme-toggle-btn {
-  background: rgba(255, 255, 255, 0.15);
-  /* Slightly more visible */
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  /* More defined border */
-  color: var(--text-primary);
-  padding: 8px;
-  border-radius: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: none;
-  transition: all 0.3s ease;
+/* Swiper Navigation Alignment */
+.gallery-3d-container .swiper-button-next,
+.gallery-3d-container .swiper-button-prev {
+  color: white !important;
+  /* Center vertically within container */
+  top: 50% !important;
+  transform: translateY(-50%) scale(0.8);
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.theme-toggle-btn:hover {
-  background: var(--bg-secondary);
-  border-color: var(--border-color);
-  box-shadow: var(--card-shadow);
+/* Leaflet Control Positioning */
+.leaflet-top {
+  top: 90px !important;
 }
 
-.mobile-only-toggle {
-  display: none;
-}
-
-.desktop-only-toggle {
-  display: block;
-}
-
-.view-toggle {
-  display: flex;
-  background: var(--glass-bg);
-  backdrop-filter: blur(4px);
-  padding: 4px;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border);
-
-  /* Desktop: Absolute Top-Right Overlay */
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  z-index: 1000;
-  box-shadow: var(--card-shadow);
-}
-
+/* Mobile Layout Improvements */
 @media (max-width: 768px) {
-  .view-toggle {
-    position: fixed;
-    bottom: 2rem;
-    top: auto;
-    /* Reset top */
-    right: auto;
-    /* Reset right */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    margin-bottom: 0;
-    background: var(--glass-bg);
-    backdrop-filter: blur(0.7px);
-    -webkit-backdrop-filter: blur(0.7px);
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--glass-border);
-    gap: 8px;
-    align-items: center;
+  .leaflet-top {
+    top: 80px !important;
+    /* Push below the expanded mobile header */
   }
 
-  /* Style buttons inside the container */
-  .view-toggle .toggle-btn,
-  .view-toggle .theme-toggle-btn {
+  .app-container {
+    padding: 0;
+    gap: 0;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* Full Screen Map */
+  .map-card {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100dvh;
+    border-radius: 0;
+    border: none;
+    z-index: 0;
+    margin: 0;
+  }
+
+  /* Compact Fixed Header */
+  .responsive-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--glass-bg, rgba(255, 255, 255, 0.8));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 0.5rem 1rem;
+    flex-direction: row;
+    justify-content: center;
+    /* Center logo on mobile */
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    height: 60px;
+    /* Compact for mobile */
+  }
+
+  .header-right {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem !important;
+    width: auto;
+  }
+
+  .logo {
+    height: 2.5em;
+    padding: 0;
+  }
+
+  /* Show quote on mobile, but smaller */
+  .header-quote {
+    display: block;
+    width: auto;
+    margin-top: 0;
+    opacity: 0.8;
+    order: 3;
+  }
+
+  .header-quote p {
+    font-size: 0.7rem !important;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+
+  .responsive-footer-top {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .responsive-footer-bottom {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .footer-copyright,
+  .footer-socials,
+  .footer-disclaimer,
+  .footer-built-with {
+    justify-content: center !important;
+    width: 100%;
+    text-align: center;
+  }
+
+  .glass-header {
+    background: var(--glass-bg, rgba(255, 255, 255, 0.8));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Gallery 3D Container */
+  .gallery-3d-container {
+    padding-top: 120px;
+    align-items: flex-start;
+  }
+
+  .gallery-slide {
+    width: 250px;
+    height: 380px;
+  }
+
+  /* View Toggle: Float below header */
+  .view-toggle {
+    position: fixed;
+    top: 75px;
+    /* Below compact header */
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: auto;
+    right: auto;
+    z-index: 90;
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    padding: 2px;
+    border-radius: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 0;
+  }
+
+  .view-toggle .toggle-btn {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    gap: 4px;
     background: transparent;
-    /* Container provides the glass background */
     border: none;
     box-shadow: none;
   }
@@ -404,20 +541,15 @@ body {
   }
 
   .view-toggle .theme-toggle-btn {
+    background: transparent;
     border: 1px solid transparent;
-    /* Maintain size */
+    box-shadow: none;
     padding: 6px;
   }
 
   .view-toggle .theme-toggle-btn svg {
     width: 16px;
     height: 16px;
-  }
-
-  .view-toggle .toggle-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    gap: 4px;
   }
 
   .mobile-only-toggle {
@@ -429,34 +561,4 @@ body {
   .desktop-only-toggle {
     display: none;
   }
-}
-
-.toggle-btn {
-  padding: 8px 16px;
-  border: 1px solid transparent;
-  /* Prevent layout shift */
-  background: transparent;
-  color: var(--text-secondary);
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.toggle-btn.active {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  border: 1px solid var(--accent-color);
-  color: var(--text-primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.toggle-btn:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.1);
 }

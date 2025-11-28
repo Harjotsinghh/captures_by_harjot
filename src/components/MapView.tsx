@@ -50,32 +50,34 @@ export default function MapView({ images, onMarkerClick }: MapViewProps) {
     : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
 
   return (
-    <MapContainer
-      center={center}
-      zoom={6}
-      trackResize={true}
-      touchZoom={true}
-      className="mapBox"
-    >
-      <AutoCenterMap places={places} />
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url={tileUrl}
-      />
-      {places.map((place, idx) => (
-        <MapMarker key={idx} place={place} onClick={onMarkerClick} />
-      ))}
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden' }}>
+      <MapContainer
+        center={center}
+        zoom={6}
+        trackResize={true}
+        touchZoom={true}
+        className="mapBox"
+      >
+        <AutoCenterMap places={places} />
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url={tileUrl}
+        />
+        {places.map((place, idx) => (
+          <MapMarker key={idx} place={place} onClick={onMarkerClick} />
+        ))}
 
-      <Polyline
-        positions={coords}
-        pathOptions={{
-          color: theme === 'dark' ? "#a3a3a3" : "#555",
-          weight: 2,
-          opacity: 0.6,
-          dashArray: "10, 10",
-          lineCap: "round",
-        }}
-      />
-    </MapContainer>
+        <Polyline
+          positions={coords}
+          pathOptions={{
+            color: theme === 'dark' ? "#a3a3a3" : "#555",
+            weight: 2,
+            opacity: 0.6,
+            dashArray: "10, 10",
+            lineCap: "round",
+          }}
+        />
+      </MapContainer>
+    </div>
   );
 }

@@ -4,8 +4,12 @@ import { FaLinkedin, FaInstagram, FaGithub } from "react-icons/fa";
 import { SiReact, SiVite } from "react-icons/si";
 import { config } from "../config";
 
-const Footer: React.FC = () => {
-  const year = new Date().getFullYear();
+interface FooterProps {
+  inBottomSheet?: boolean;
+}
+
+const Footer: React.FC<FooterProps> = ({ inBottomSheet }) => {
+
 
   const socialLinkStyle = {
     color: "#6b7280",
@@ -26,9 +30,10 @@ const Footer: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
-        padding: "1rem 0.5rem 2rem",
+        padding: inBottomSheet ? "0 1.5rem 1.5rem" : "1rem 1.5rem 2rem",
         marginTop: "auto",
         fontFamily: "'Outfit', sans-serif",
+        borderRadius: inBottomSheet ? "0" : undefined, // Ensure no rounded corners on container
       }}
     >
       <div
@@ -39,6 +44,7 @@ const Footer: React.FC = () => {
       >
         {/* Left: Copyright */}
         <div
+          className="footer-copyright"
           style={{
             fontSize: "0.85rem",
             color: "#6b7280",
@@ -48,14 +54,14 @@ const Footer: React.FC = () => {
             gap: "0.5rem",
           }}
         >
-          <span>© {year}</span>
+          <span>© {2025}</span>
           <span style={{ fontWeight: 600, color: "#374151" }}>
             {config.author.name}
           </span>
         </div>
 
         {/* Right: Socials */}
-        <div style={{ display: "flex", gap: "0.8rem" }}>
+        <div className="footer-socials" style={{ display: "flex", gap: "0.8rem" }}>
           {[
             {
               icon: FaLinkedin,
@@ -103,9 +109,10 @@ const Footer: React.FC = () => {
           width: "100%",
         }}
       >
-        <div style={{ fontStyle: "italic" }}>{config.meta.disclaimer}</div>
+        <div className="footer-disclaimer" style={{ fontStyle: "italic" }}>{config.meta.disclaimer}</div>
 
         <div
+          className="footer-built-with"
           style={{
             display: "flex",
             alignItems: "center",
