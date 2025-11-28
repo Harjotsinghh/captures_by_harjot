@@ -290,6 +290,8 @@ body {
 
 .gallery-3d-container .swiper-wrapper {
   align-items: center;
+  pointer-events: none;
+  /* Prevent wrapper from blocking clicks */
 }
 
 .gallery-slide {
@@ -304,6 +306,8 @@ body {
   backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--card-shadow);
+  pointer-events: auto;
+  /* Re-enable clicks on slides */
 }
 
 .slide-content {
@@ -311,6 +315,10 @@ body {
   height: 100%;
   position: relative;
   cursor: pointer;
+  z-index: 2;
+  /* Ensure slide content is above wrapper */
+  pointer-events: auto;
+  /* Ensure content receives clicks */
 }
 
 .slide-content img {
