@@ -19,7 +19,7 @@ const Header = memo(() => {
           animate={{ rotate: 0, scale: 1 }}
           transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
         >
-          <RiCameraLensAiFill size={30} color="var(--text-primary)" />
+          <RiCameraLensAiFill size={24} color="var(--text-primary)" />
         </motion.div>
 
         <div className="logo-text-container">
