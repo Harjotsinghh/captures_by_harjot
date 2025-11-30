@@ -9,13 +9,9 @@ interface MapMarkerProps {
   onClick: (images: Photo[], mapState?: { center: [number, number], zoom: number }) => void;
 }
 
-import { useTheme } from "../context/ThemeContext";
-
 function MapMarker({ place, onClick }: MapMarkerProps) {
-  const { theme } = useTheme();
   const hasMultiple = place.images.length > 1;
 
-  // Theme-based colors
   // Theme-based colors
   const map = useMap();
 

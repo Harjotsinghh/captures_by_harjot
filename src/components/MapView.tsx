@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Polyline, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { useEffect, useMemo, memo } from "react";
 import L from "leaflet";
 import type { Photo } from "../data/images";
@@ -59,11 +59,6 @@ const FlyToController = ({ targetState }: { targetState?: { center: [number, num
 function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
   const { center, places } = useMapData(images);
   const { theme } = useTheme();
-
-  const coords = useMemo(
-    () => places.map((l) => [l.lat, l.lng] as [number, number]),
-    [places]
-  );
 
   const tileUrl = useMemo(
     () =>
