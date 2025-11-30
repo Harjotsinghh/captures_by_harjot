@@ -188,12 +188,14 @@ body {
 
 /* Journey Path Animation */
 .journey-line-path {
-  animation: dash 12s linear infinite;
+  animation: journey-dash 12s linear infinite;
   /* Faster for shooting star look */
   filter: drop-shadow(0 0 6px var(--accent-color));
+  stroke-dasharray: 10, 20;
+  will-change: stroke-dashoffset;
 }
 
-@keyframes dash {
+@keyframes journey-dash {
   to {
     stroke-dashoffset: -100;
     /* Adjust for smoother loop with new dashArray */
