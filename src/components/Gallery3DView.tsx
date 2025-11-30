@@ -51,6 +51,7 @@ const Gallery3DView = memo<Gallery3DViewProps>(({ images, onPhotoClick }) => {
     return (
         <div className="gallery-3d-container">
             <Swiper
+                key={locationGroups.length}
                 effect={"coverflow"}
                 grabCursor={true}
                 centeredSlides={true}
@@ -74,6 +75,7 @@ const Gallery3DView = memo<Gallery3DViewProps>(({ images, onPhotoClick }) => {
                         <div
                             className="slide-content"
                             onClick={() => onPhotoClick(group.photos)}
+                            style={{ pointerEvents: 'auto' }}
                         >
                             <img
                                 src={group.coverPhoto.fileUrl}

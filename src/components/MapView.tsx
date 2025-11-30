@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css";
 import useMapData from "../hooks/useMapData";
 import MapMarker from "./MapMarker";
 import { useTheme } from "../context/ThemeContext";
+import JourneyPath from "./JourneyPath";
 
 // Fix default marker icon paths for Vite bundling
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -18,7 +19,8 @@ L.Icon.Default.mergeOptions({
 
 interface MapViewProps {
   images: Photo[];
-  onMarkerClick: (images: Photo[]) => void;
+  onMarkerClick: (images: Photo[], mapState?: { center: [number, number], zoom: number }) => void;
+  targetState?: { center: [number, number], zoom: number } | null;
 }
 
 // Component to auto-center map on markers
@@ -37,7 +39,24 @@ const AutoCenterMap = memo<{ places: any[] }>(({ places }) => {
 
 AutoCenterMap.displayName = "AutoCenterMap";
 
-function MapView({ images, onMarkerClick }: MapViewProps) {
+// Component to handle programmatic fly-to
+const FlyToController = ({ targetState }: { targetState?: { center: [number, number], zoom: number } | null }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (targetState) {
+      console.log("Flying back to:", targetState);
+      map.flyTo(targetState.center, targetState.zoom, {
+        duration: 0.8,
+        easeLinearity: 0.25
+      });
+    }
+  }, [targetState, map]);
+
+  return null;
+};
+
+function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
   const { center, places } = useMapData(images);
   const { theme } = useTheme();
 
@@ -73,6 +92,8 @@ function MapView({ images, onMarkerClick }: MapViewProps) {
         className={`mapBox ${theme === 'dark' ? 'map-dark-mode' : ''}`}
       >
         <AutoCenterMap places={places} />
+        <FlyToController targetState={targetState} />
+        <JourneyPath places={places} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url={tileUrl}
@@ -81,16 +102,7 @@ function MapView({ images, onMarkerClick }: MapViewProps) {
           <MapMarker key={idx} place={place} onClick={onMarkerClick} />
         ))}
 
-        <Polyline
-          positions={coords}
-          pathOptions={{
-            color: theme === "dark" ? "#a3a3a3" : "#555",
-            weight: 2,
-            opacity: 0.6,
-            dashArray: "10, 10",
-            lineCap: "round",
-          }}
-        />
+
       </MapContainer>
     </div>
   );

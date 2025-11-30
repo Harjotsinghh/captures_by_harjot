@@ -22,11 +22,15 @@ export default function App(): JSX.Element {
   const [introFinished, setIntroFinished] = useState(false);
 
   const [viewMode, setViewMode] = useState<'map' | 'gallery'>('map');
+  const [mapViewState, setMapViewState] = useState<{ center: [number, number], zoom: number } | null>(null);
 
-  const openGallery = useCallback((photos: any | any[]) => {
+  const openGallery = useCallback((photos: any | any[], previousMapState?: { center: [number, number], zoom: number }) => {
     const selectedPhotos = Array.isArray(photos) ? photos : [photos];
     setSelected(selectedPhotos);
     setIsOpen(true);
+    if (previousMapState) {
+      setMapViewState(previousMapState);
+    }
   }, []);
 
   const closeGallery = useCallback(() => {
@@ -101,9 +105,20 @@ export default function App(): JSX.Element {
                 </div>
               </div>
 
-              {viewMode === 'map' ? (
-                <MapView images={images || []} onMarkerClick={openGallery} />
-              ) : (
+              {/* Always render MapView to preserve state, hide via CSS/Z-index when not active */}
+              <div style={{
+                display: viewMode === 'map' ? 'block' : 'none',
+                width: '100%',
+                height: '100%'
+              }}>
+                <MapView
+                  images={images || []}
+                  onMarkerClick={openGallery}
+                  targetState={(!isOpen && viewMode === 'map') ? mapViewState : null}
+                />
+              </div>
+
+              {viewMode === 'gallery' && (
                 <Gallery3DView images={images || []} onPhotoClick={openGallery} />
               )}
             </main>
