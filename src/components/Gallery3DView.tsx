@@ -1,5 +1,6 @@
-import { useMemo, memo } from "react";
+import { useMemo, useState, memo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from "swiper/modules";
 import { FaImages } from "react-icons/fa";
 import type { Photo } from "../data/images";
@@ -48,6 +49,8 @@ const Gallery3DView = memo<Gallery3DViewProps>(({ images, onPhotoClick }) => {
         }));
     }, [images]);
 
+    const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+
     return (
         <div className="gallery-3d-container">
             <Swiper
@@ -64,6 +67,8 @@ const Gallery3DView = memo<Gallery3DViewProps>(({ images, onPhotoClick }) => {
                     modifier: 1,
                     slideShadows: true,
                 }}
+                slideToClickedSlide={true}
+                onSwiper={setSwiperInstance}
                 pagination={{ clickable: true }}
                 navigation={true}
                 modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
@@ -74,7 +79,11 @@ const Gallery3DView = memo<Gallery3DViewProps>(({ images, onPhotoClick }) => {
                     <SwiperSlide key={group.location} className="gallery-slide">
                         <div
                             className="slide-content"
-                            onClick={() => onPhotoClick(group.photos)}
+                            onClick={() => {
+                                if (swiperInstance && swiperInstance.clickedIndex === swiperInstance.activeIndex) {
+                                    onPhotoClick(group.photos);
+                                }
+                            }}
                             style={{ pointerEvents: 'auto' }}
                         >
                             <img

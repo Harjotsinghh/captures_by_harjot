@@ -406,6 +406,8 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
