@@ -43,7 +43,7 @@ export default function App(): JSX.Element {
       {/* Loader Layer (Background) - Only show if intro not finished */}
       {!introFinished && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
-          <AestheticLoader active={true} text="Calibrating Lens..." />
+          <AestheticLoader active={true} text="Curating Visuals" />
         </div>
       )}
 

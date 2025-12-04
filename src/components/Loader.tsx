@@ -1,16 +1,82 @@
 import Player from "lottie-react";
-import { motion } from "framer-motion";
-import animationData from "../assets/lottie/Flight.json";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import travelGlobeAnimation from "../assets/lottie/TravelTheGlobe.json";
+import manMapAnimation from "../assets/lottie/ManHoldingMap.json";
+import flightAnimation from "../assets/lottie/Flight.json";
+import cameraAnimation from "../assets/lottie/Camera.json";
 
 type Props = {
   active: boolean;
   text?: string;
 };
 
+// Define loader variants
+const LOADER_VARIANTS = [
+  {
+    id: "globe",
+    animation: travelGlobeAnimation,
+    messages: [
+      "Connecting to the World...",
+      "Discovering Locations...",
+      "Global Sync...",
+    ],
+  },
+  {
+    id: "map",
+    animation: manMapAnimation,
+    messages: [
+      "Unfolding the Journey...",
+      "Charting New Paths...",
+      "Finding Waypoints...",
+    ],
+  },
+  {
+    id: "flight",
+    animation: flightAnimation,
+    messages: [
+      "Preparing for Takeoff...",
+      "Cruising Altitude...",
+      "Arriving Soon...",
+    ],
+  },
+  {
+    id: "camera",
+    animation: cameraAnimation,
+    messages: [
+      "Adjusting Focus...",
+      "Capturing Moments...",
+      "Developing Memories...",
+    ],
+  },
+];
+
 export default function AestheticLoader({
   active,
   text = "Curating Visuals",
 }: Props) {
+  // State to hold the current variant
+  const [currentVariant, setCurrentVariant] = useState(LOADER_VARIANTS[0]);
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  // Update variant whenever active becomes true
+  useEffect(() => {
+    if (active) {
+      const randomIndex = Math.floor(Math.random() * LOADER_VARIANTS.length);
+      setCurrentVariant(LOADER_VARIANTS[randomIndex]);
+      setMessageIndex(0); // Reset message index
+    }
+  }, [active]);
+
+  // Cycle messages
+  useEffect(() => {
+    if (!active) return;
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % currentVariant.messages.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [active, currentVariant]);
+
   if (!active) return null;
 
   return (
@@ -20,72 +86,113 @@ export default function AestheticLoader({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
       style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
         width: "100%",
         height: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "var(--bg-primary)", // Theme background
+        background: "var(--bg-primary)",
         color: "var(--text-primary)",
+        zIndex: 9999,
+        overflow: "hidden",
+        fontFamily: "'Outfit', sans-serif",
       }}
     >
+      {/* Background Grid Effect (Subtle) */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          opacity: 0.03,
+          backgroundImage:
+            "linear-gradient(var(--text-primary) 1px, transparent 1px), linear-gradient(90deg, var(--text-primary) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          maskImage: "radial-gradient(circle at center, black 40%, transparent 80%)",
+        }}
+      />
+
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "0.5rem", // Tighter spacing
+          gap: "1.5rem",
           textAlign: "center",
+          position: "relative",
+          zIndex: 10,
         }}
       >
-        {/* Lottie Animation */}
-        <div style={{ width: "150px", height: "150px", marginBottom: "0.5rem" }}>
+        {/* Lottie Animation Container */}
+        <div style={{
+          width: "clamp(150px, 40vw, 280px)",
+          height: "clamp(150px, 40vw, 280px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}>
           <Player
             autoplay
             loop
-            animationData={animationData}
+            animationData={currentVariant.animation}
             style={{ width: "100%", height: "100%" }}
           />
         </div>
 
-        {/* Title */}
-        <motion.h2
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          style={{
-            margin: 0,
-            fontSize: "1.2rem",
-            fontWeight: 800,
-            fontFamily: "'Outfit', sans-serif",
-            letterSpacing: "1px",
-            textTransform: "uppercase",
-            background: "linear-gradient(to right, var(--text-primary), var(--text-secondary), var(--text-primary))", // Theme gradient
-            backgroundSize: "200% auto",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            display: "inline-block",
-          }}
-        >
-          {text}
-        </motion.h2>
+        {/* Text Container */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", minHeight: "60px" }}>
+          {/* Title */}
+          <motion.h2
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            style={{
+              margin: 0,
+              fontSize: "clamp(1rem, 4vw, 1.4rem)",
+              fontWeight: 700,
+              letterSpacing: "2px",
+              textTransform: "uppercase",
+              background: "linear-gradient(to right, var(--text-primary), var(--text-secondary), var(--text-primary))",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              display: "inline-block",
+              padding: "0 1rem",
+            }}
+          >
+            {text}
+          </motion.h2>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          style={{
-            margin: 0,
-            fontSize: "0.85rem",
-            color: "var(--text-secondary)", // Theme secondary text
-            fontFamily: "'Outfit', sans-serif",
-            letterSpacing: "0.5px",
-            fontWeight: 500,
-          }}
-        >
-          Gathering moments from across the globe...
-        </motion.p>
+          {/* Subtitle with Changing Text */}
+          <div style={{ position: "relative", height: "20px", width: "100%", display: "flex", justifyContent: "center" }}>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={messageIndex}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                  margin: 0,
+                  fontSize: "clamp(0.75rem, 3vw, 0.9rem)",
+                  color: "var(--text-secondary)",
+                  letterSpacing: "1px",
+                  fontWeight: 400,
+                  position: "absolute",
+                  width: "max-content",
+                  maxWidth: "90vw",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {currentVariant.messages[messageIndex]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
