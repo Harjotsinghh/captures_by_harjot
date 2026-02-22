@@ -8,12 +8,12 @@
   bottom: 24px;
   right: 24px;
   z-index: 10;
-  background: rgba(30, 30, 30, 0.4);
-  /* Made more transparent */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.85);
+  background: rgba(30, 30, 30, 0.15);
+  /* Significantly more transparent */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
   width: 48px;
   height: 48px;
   border-radius: 50%;

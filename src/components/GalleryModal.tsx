@@ -109,6 +109,10 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
         on={{
           view: ({ index }) => setCurrentIndex(index),
           click: () => {
+            if (showInfo) {
+              setShowInfo(false);
+              return;
+            }
             // Toggle thumbnails on click
             (thumbnailsRef.current?.visible
               ? thumbnailsRef.current?.hide
@@ -119,23 +123,19 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
           iconZoomIn: () => undefined,
           iconZoomOut: () => undefined,
           slideFooter: () => (
-            <AnimatePresence>
+            <>
               {!showInfo && (
-                <motion.button
+                <button
                   className="gallery-floating-info-btn"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowInfo(true);
                   }}
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                  transition={{ type: "spring", damping: 20, stiffness: 300, delay: 0.2 }}
                 >
                   <FaInfoCircle size={22} />
-                </motion.button>
+                </button>
               )}
-            </AnimatePresence>
+            </>
           ),
           controls: () => (
             <>
