@@ -52,14 +52,26 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
   const currentPhoto = images[currentIndex] || images[0];
 
   // Parse details for Info Panel
-  const d = new Date(currentPhoto.timestamp);
-  const dateStr = d.toLocaleDateString(undefined, {
+  let captureDate = new Date(currentPhoto.timestamp);
+
+  // If EXIF takenAt is available (format: "YYYY:MM:DD HH:MM:SS"), parse it for accurate local capture time
+  if (currentPhoto.takenAt) {
+    // Convert EXIF format to standard ISO-like string recognizable by JS "YYYY-MM-DDTHH:MM:SS"
+    const exifDateString = currentPhoto.takenAt.replace(/^(\d{4}):(\d{2}):(\d{2}) /, "$1-$2-$3T");
+    const parsedDate = new Date(exifDateString);
+    if (!isNaN(parsedDate.getTime())) {
+      captureDate = parsedDate;
+    }
+  }
+
+  const dateStr = captureDate.toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
   const timeStr = currentPhoto.takenAt
-    ? d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
+    ? captureDate.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
     : "";
 
   const cam = currentPhoto.camera;
