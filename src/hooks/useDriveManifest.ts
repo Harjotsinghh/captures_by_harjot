@@ -12,6 +12,15 @@ export interface DriveImage {
   timestamp?: string;
   lat?: number | null;
   lng?: number | null;
+  dimensions?: { width: number; height: number };
+  camera?: { make?: string; model?: string; lens?: string };
+  exposure?: {
+    iso?: number;
+    aperture?: number;
+    focalLength?: number;
+    shutter?: number;
+  };
+  takenAt?: string;
 }
 
 /**
@@ -67,6 +76,10 @@ export default function useDriveManifest(manifestUrl = MANIFEST_URL) {
               (item.date ? `${item.date}T00:00:00` : undefined),
             lat: item.lat ?? null,
             lng: item.lng ?? null,
+            dimensions: item.dimensions,
+            camera: item.camera,
+            exposure: item.exposure,
+            takenAt: item.takenAt,
           }))
           // filter out clearly invalid ones (no fileUrl)
           .filter((it) => it.fileUrl && it.fileUrl.startsWith("http"));

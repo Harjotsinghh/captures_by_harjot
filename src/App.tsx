@@ -1,4 +1,3 @@
-
 import { useState, useCallback, type JSX } from "react";
 import MapView from "./components/MapView";
 import GalleryModal from "./components/GalleryModal";

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaMapMarkerAlt, FaCompass } from "react-icons/fa";
 import type { Photo } from "../data/images";
 import { useScrollSpy } from "../hooks/useScrollSpy";
-import { useImageDimensions } from "../hooks/useImageDimensions";
+
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import "./MasonryGalleryView.css";
 
@@ -41,9 +41,6 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
         const labelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
         const isMobile = useMediaQuery("(max-width: 768px)");
 
-        // Load real image dimensions
-        const allSrcs = useMemo(() => images.map((img) => img.fileUrl), [images]);
-        const imageDims = useImageDimensions(allSrcs);
 
         // Group images by location
         const locationGroups: LocationGroup[] = useMemo(() => {
@@ -174,11 +171,10 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
 
                             <MasonryPhotoAlbum
                                 photos={group.photos.map((photo) => {
-                                    const dims = imageDims.get(photo.fileUrl);
                                     return {
                                         src: photo.fileUrl,
-                                        width: dims?.width ?? DEFAULT_WIDTH,
-                                        height: dims?.height ?? DEFAULT_HEIGHT,
+                                        width: photo.width ?? DEFAULT_WIDTH,
+                                        height: photo.height ?? DEFAULT_HEIGHT,
                                         key: photo.id,
                                         title: photo.title,
                                     };
