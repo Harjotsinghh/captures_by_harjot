@@ -13,6 +13,12 @@ import { ThemeProvider } from "./context/ThemeContext";
 import ThemeToggle from "./components/ThemeToggle";
 import BottomSheet from "./components/BottomSheet";
 import "./App.css";
+import ReactGA from "react-ga4";
+
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
+if (GA_MEASUREMENT_ID) {
+  ReactGA.initialize(GA_MEASUREMENT_ID);
+}
 
 export default function App(): JSX.Element {
   const { images, loading, error } = usePhotos();

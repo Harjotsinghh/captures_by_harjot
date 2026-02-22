@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactGA from "react-ga4";
 
 import Lightbox, { type ThumbnailsRef } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -41,7 +42,22 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
     }
   }, [isOpen]);
 
+  const currentPhoto = images ? images[currentIndex] || images[0] : null;
+
+  useEffect(() => {
+    if (open && currentPhoto) {
+      ReactGA.event({
+        category: "Gallery",
+        action: "View Photo",
+        label: currentPhoto.id || currentPhoto.title,
+      });
+    }
+  }, [currentIndex, open, currentPhoto]);
+
   if (!images || images.length === 0) return null;
+
+  // Now we know it's safe to use currentPhoto for parsing details below
+  const activePhoto = images[currentIndex] || images[0];
 
   const slides = images.map((img) => ({
     src: img.fileUrl,
@@ -49,15 +65,13 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
     referrerPolicy: "no-referrer" as const,
   }));
 
-  const currentPhoto = images[currentIndex] || images[0];
-
   // Parse details for Info Panel
-  let captureDate = new Date(currentPhoto.timestamp);
+  let captureDate = new Date(activePhoto.timestamp);
 
   // If EXIF takenAt is available (format: "YYYY:MM:DD HH:MM:SS"), parse it for accurate local capture time
-  if (currentPhoto.takenAt) {
+  if (activePhoto.takenAt) {
     // Convert EXIF format to standard ISO-like string recognizable by JS "YYYY-MM-DDTHH:MM:SS"
-    const exifDateString = currentPhoto.takenAt.replace(/^(\d{4}):(\d{2}):(\d{2}) /, "$1-$2-$3T");
+    const exifDateString = activePhoto.takenAt.replace(/^(\d{4}):(\d{2}):(\d{2}) /, "$1-$2-$3T");
     const parsedDate = new Date(exifDateString);
     if (!isNaN(parsedDate.getTime())) {
       captureDate = parsedDate;
@@ -70,15 +84,15 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
     day: "numeric",
   });
 
-  const timeStr = currentPhoto.takenAt
+  const timeStr = activePhoto.takenAt
     ? captureDate.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
     : "";
 
-  const cam = currentPhoto.camera;
+  const cam = activePhoto.camera;
   const camStr = cam ? `${cam.make ?? ""} ${cam.model ?? ""}`.trim() : "";
   const lensStr = cam?.lens ? cam.lens : "";
 
-  const exp = currentPhoto.exposure;
+  const exp = activePhoto.exposure;
   let hasExposure = false;
   let shutter = "", aperture = "", focal = "", iso = "";
   if (exp) {
@@ -164,7 +178,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
                         <div className="info-card-icon"><FaMapMarkerAlt /></div>
                         <div className="info-card-text">
                           <span className="info-label">Location</span>
-                          <span className="info-value">{currentPhoto.location}</span>
+                          <span className="info-value">{activePhoto.location}</span>
                         </div>
                       </div>
 
