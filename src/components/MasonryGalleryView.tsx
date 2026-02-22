@@ -1,11 +1,12 @@
 import { useMemo, useRef, useCallback, useState, useEffect, memo } from "react";
-import { RowsPhotoAlbum } from "react-photo-album";
-import "react-photo-album/rows.css";
+import { MasonryPhotoAlbum } from "react-photo-album";
+import "react-photo-album/masonry.css";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaCompass } from "react-icons/fa";
 import type { Photo } from "../data/images";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import { useImageDimensions } from "../hooks/useImageDimensions";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import "./MasonryGalleryView.css";
 
 interface MasonryGalleryViewProps {
@@ -36,6 +37,9 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
         const scrollContainerRef = useRef<HTMLDivElement>(null);
         const [scrollProgress, setScrollProgress] = useState(0);
         const [hoveredDot, setHoveredDot] = useState<string | null>(null);
+        const [dialOpen, setDialOpen] = useState(false);
+        const labelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+        const isMobile = useMediaQuery("(max-width: 768px)");
 
         // Load real image dimensions
         const allSrcs = useMemo(() => images.map((img) => img.fileUrl), [images]);
@@ -65,6 +69,12 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             rootMargin: "-20% 0px -60% 0px",
             threshold: 0.05,
         });
+
+        // Get active location name
+        const activeLocation = useMemo(
+            () => locationGroups.find((g) => g.id === activeId)?.location ?? "",
+            [locationGroups, activeId]
+        );
 
         // Track scroll progress
         useEffect(() => {
@@ -97,6 +107,31 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             }
         }, []);
 
+        // Show label temporarily (for tap on mobile)
+        const showLabelBriefly = useCallback((id: string) => {
+            if (labelTimerRef.current) clearTimeout(labelTimerRef.current);
+            setHoveredDot(id);
+            labelTimerRef.current = setTimeout(() => {
+                setHoveredDot(null);
+            }, 2000);
+        }, []);
+
+        // Desktop: show label briefly, then scroll
+        const handleDotClick = useCallback((sectionId: string) => {
+            showLabelBriefly(sectionId);
+            setTimeout(() => {
+                scrollToSection(sectionId);
+            }, 400);
+        }, [scrollToSection, showLabelBriefly]);
+
+        // Mobile dial: pick location, close, scroll
+        const handleDialPick = useCallback((sectionId: string) => {
+            setDialOpen(false);
+            setTimeout(() => {
+                scrollToSection(sectionId);
+            }, 200);
+        }, [scrollToSection]);
+
         if (!images || images.length === 0) {
             return (
                 <div className="masonry-gallery-wrapper">
@@ -112,20 +147,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             <div className="masonry-gallery-wrapper" ref={scrollContainerRef}>
                 <div className="masonry-header-spacer" />
 
-                {/* Top Location Pills */}
-                <div className="location-pills-top">
-                    {locationGroups.map((group) => (
-                        <button
-                            key={group.id}
-                            className={`location-pill ${activeId === group.id ? "active" : ""}`}
-                            onClick={() => scrollToSection(group.id)}
-                        >
-                            <FaMapMarkerAlt size={11} />
-                            {group.location}
-                            <span className="pill-count">({group.photos.length})</span>
-                        </button>
-                    ))}
-                </div>
+
 
                 {/* Photo Content */}
                 <div className="masonry-content">
@@ -150,7 +172,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                 </span>
                             </div>
 
-                            <RowsPhotoAlbum
+                            <MasonryPhotoAlbum
                                 photos={group.photos.map((photo) => {
                                     const dims = imageDims.get(photo.fileUrl);
                                     return {
@@ -161,13 +183,12 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                         title: photo.title,
                                     };
                                 })}
-                                targetRowHeight={(containerWidth) =>
-                                    containerWidth < 500 ? 100 : 160
-                                }
-                                rowConstraints={(containerWidth) => ({
-                                    minPhotos: containerWidth < 500 ? 2 : 1,
-                                    maxPhotos: containerWidth < 500 ? 5 : 4,
-                                })}
+                                columns={(containerWidth) => {
+                                    if (containerWidth < 400) return 2;
+                                    if (containerWidth < 600) return 3;
+                                    if (containerWidth < 900) return 4;
+                                    return 5;
+                                }}
                                 spacing={(containerWidth) =>
                                     containerWidth < 500 ? 6 : 10
                                 }
@@ -205,43 +226,103 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                     ))}
                 </div>
 
-                {/* Side Location Navigator */}
-                <nav className="side-loc-nav" aria-label="Location navigation">
-                    <div className="side-loc-track">
-                        <div
-                            className="side-loc-track-fill"
-                            style={{ height: `${scrollProgress * 100}%` }}
-                        />
-                    </div>
-
-                    {locationGroups.map((group) => (
-                        <div
-                            key={group.id}
-                            className={`side-loc-dot-wrapper ${activeId === group.id ? "active" : ""}`}
-                            onClick={() => scrollToSection(group.id)}
-                            onMouseEnter={() => setHoveredDot(group.id)}
-                            onMouseLeave={() => setHoveredDot(null)}
-                        >
-                            <div className="side-loc-dot" />
-                            <AnimatePresence>
-                                {hoveredDot === group.id && (
-                                    <motion.div
-                                        className="side-loc-label"
-                                        initial={{ opacity: 0, x: 6 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: 6 }}
-                                        transition={{ duration: 0.15 }}
-                                    >
-                                        {group.location}
-                                        <span className="side-loc-label-count">
-                                            {group.photos.length}
-                                        </span>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                {/* Desktop: Side Location Navigator */}
+                {!isMobile && (
+                    <nav className="side-loc-nav" aria-label="Location navigation">
+                        <div className="side-loc-track">
+                            <div
+                                className="side-loc-track-fill"
+                                style={{ height: `${scrollProgress * 100}%` }}
+                            />
                         </div>
-                    ))}
-                </nav>
+
+                        {locationGroups.map((group) => (
+                            <div
+                                key={group.id}
+                                className={`side-loc-dot-wrapper ${activeId === group.id ? "active" : ""}`}
+                                onClick={() => handleDotClick(group.id)}
+                                onMouseEnter={() => setHoveredDot(group.id)}
+                                onMouseLeave={() => setHoveredDot(null)}
+                            >
+                                <div className="side-loc-dot" />
+                                <AnimatePresence>
+                                    {hoveredDot === group.id && (
+                                        <motion.div
+                                            className="side-loc-label"
+                                            initial={{ opacity: 0, x: 6 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: 6 }}
+                                            transition={{ duration: 0.15 }}
+                                        >
+                                            {group.location}
+                                            <span className="side-loc-label-count">
+                                                {group.photos.length}
+                                            </span>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        ))}
+                    </nav>
+                )}
+
+                {/* Mobile: Floating Location Dial */}
+                {isMobile && (
+                    <>
+                        <motion.button
+                            className="loc-dial-fab"
+                            onClick={() => setDialOpen((prev) => !prev)}
+                            whileTap={{ scale: 0.9 }}
+                            aria-label="Open location picker"
+                        >
+                            <FaCompass size={16} />
+                            <span className="loc-dial-fab-label">{activeLocation}</span>
+                        </motion.button>
+
+                        <AnimatePresence>
+                            {dialOpen && (
+                                <>
+                                    <motion.div
+                                        className="loc-dial-backdrop"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        onClick={() => setDialOpen(false)}
+                                    />
+                                    <motion.div
+                                        className="loc-dial-sheet"
+                                        initial={{ opacity: 0, scale: 0.9, y: 10, originX: 1, originY: 1 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                                    >
+                                        <div className="loc-dial-header">
+                                            <span className="loc-dial-title">Jump to Location</span>
+                                            <span className="loc-dial-subtitle">
+                                                {locationGroups.length} locations · {images.length} photos
+                                            </span>
+                                        </div>
+                                        <div className="loc-dial-list">
+                                            {locationGroups.map((group) => (
+                                                <button
+                                                    key={group.id}
+                                                    className={`loc-dial-item ${activeId === group.id ? "active" : ""}`}
+                                                    onClick={() => handleDialPick(group.id)}
+                                                >
+                                                    <div className="loc-dial-item-dot" />
+                                                    <span className="loc-dial-item-name">{group.location}</span>
+                                                    <span className="loc-dial-item-count">
+                                                        {group.photos.length}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                </>
+                            )}
+                        </AnimatePresence>
+                    </>
+                )}
             </div>
         );
     }

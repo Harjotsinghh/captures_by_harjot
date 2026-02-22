@@ -22,66 +22,6 @@
   display: none;
 }
 
-/* ---- Top Location Pills (scrolls with content) ---- */
-.location-pills-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 24px 16px;
-  padding-right: 54px;
-  /* space for the side nav */
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.location-pills-top::-webkit-scrollbar {
-  display: none;
-}
-
-.location-pill {
-  flex-shrink: 0;
-  padding: 8px 18px;
-  border-radius: 100px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  font-family: "Outfit", sans-serif;
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  user-select: none;
-}
-
-.location-pill:hover {
-  border-color: var(--accent-color);
-  color: var(--text-primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.location-pill.active {
-  background: var(--accent-color);
-  color: #fff;
-  border-color: var(--accent-color);
-  box-shadow: 0 4px 16px rgba(14, 165, 164, 0.3);
-  font-weight: 600;
-}
-
-.pill-count {
-  font-size: 0.72rem;
-  opacity: 0.7;
-  font-weight: 400;
-}
-
-.location-pill.active .pill-count {
-  opacity: 0.9;
-}
 
 /* ---- Spacer for header + view toggle ---- */
 .masonry-header-spacer {
@@ -92,9 +32,8 @@
 .masonry-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px 120px;
-  padding-right: 54px;
-  /* space for the side nav */
+  /* Symmetric padding keeps the grid nicely centered while leaving 64px safe space on edges for dots to sit */
+  padding: 0 64px 120px;
 }
 
 /* ---- Location Section ---- */
@@ -368,19 +307,8 @@
     height: 120px;
   }
 
-  .location-pills-top {
-    padding: 8px 40px 12px 16px;
-    gap: 8px;
-  }
-
-  .location-pill {
-    padding: 6px 14px;
-    font-size: 0.76rem;
-  }
-
   .masonry-content {
     padding: 0 12px 100px;
-    padding-right: 40px;
   }
 
   .location-section {
@@ -415,26 +343,170 @@
   .masonry-photo-date {
     font-size: 0.55rem;
   }
+}
 
-  /* Compact side nav for mobile */
-  .side-loc-nav {
-    right: 4px;
-    padding: 8px 4px;
-  }
+/* ==========================================
+   Mobile Floating Location Dial
+   ========================================== */
 
-  .side-loc-dot {
-    width: 8px;
-    height: 8px;
-    border-width: 1.5px;
-  }
+.loc-dial-fab {
+  position: fixed;
+  bottom: 74px;
+  /* Higher than the 50px BottomSheet */
+  right: 16px;
+  z-index: 1001;
+  /* Higher than BottomSheet (1000) */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  color: var(--text-primary);
+  font-family: "Outfit", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
 
-  .side-loc-dot-wrapper {
-    padding: 7px 0;
-  }
+.loc-dial-fab:active {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
 
-  .side-loc-label {
-    right: calc(100% + 8px);
-    padding: 5px 10px;
-    font-size: 0.72rem;
-  }
+.loc-dial-fab svg {
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.loc-dial-fab-label {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Invisible click-away backdrop */
+.loc-dial-backdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 1002;
+}
+
+/* Floating Glass Popover Menu */
+.loc-dial-sheet {
+  position: fixed;
+  bottom: 130px;
+  /* Floats right above the FAB */
+  right: 16px;
+  width: 240px;
+  z-index: 1003;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 16px 12px;
+  max-height: 50vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Hide scrollbar for the popover */
+.loc-dial-sheet::-webkit-scrollbar {
+  display: none;
+}
+
+.loc-dial-sheet {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.loc-dial-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.loc-dial-title {
+  font-family: "Outfit", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.loc-dial-subtitle {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.loc-dial-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.loc-dial-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  width: 100%;
+  text-align: left;
+  font-family: "Outfit", sans-serif;
+}
+
+.loc-dial-item:active {
+  background: var(--bg-secondary);
+}
+
+.loc-dial-item.active {
+  background: var(--bg-secondary);
+}
+
+.loc-dial-item-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-color);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.loc-dial-item.active .loc-dial-item-dot {
+  background: var(--accent-color);
+  box-shadow: 0 0 8px rgba(14, 165, 164, 0.4);
+}
+
+.loc-dial-item-name {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.loc-dial-item.active .loc-dial-item-name {
+  color: var(--accent-color);
+}
+
+.loc-dial-item-count {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
