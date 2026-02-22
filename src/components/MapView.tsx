@@ -1,5 +1,5 @@
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
-import { useEffect, useMemo, memo } from "react";
+import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { useEffect, useMemo, useState, useCallback, memo } from "react";
 import L from "leaflet";
 import type { Photo } from "../data/images";
 import "leaflet/dist/leaflet.css";
@@ -45,7 +45,6 @@ const FlyToController = ({ targetState }: { targetState?: { center: [number, num
 
   useEffect(() => {
     if (targetState) {
-      console.log("Flying back to:", targetState);
       map.flyTo(targetState.center, targetState.zoom, {
         duration: 0.8,
         easeLinearity: 0.25
@@ -56,9 +55,30 @@ const FlyToController = ({ targetState }: { targetState?: { center: [number, num
   return null;
 };
 
+// Component to track zoom level
+const ZoomTracker = ({ onZoomChange }: { onZoomChange: (zoom: number) => void }) => {
+  const map = useMapEvents({
+    zoomend: () => {
+      onZoomChange(map.getZoom());
+    },
+  });
+
+  // Set initial zoom
+  useEffect(() => {
+    onZoomChange(map.getZoom());
+  }, [map, onZoomChange]);
+
+  return null;
+};
+
 function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
   const { center, places } = useMapData(images);
   const { theme } = useTheme();
+  const [zoom, setZoom] = useState(6);
+
+  const handleZoomChange = useCallback((newZoom: number) => {
+    setZoom(newZoom);
+  }, []);
 
   const tileUrl = useMemo(
     () =>
@@ -88,16 +108,15 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
       >
         <AutoCenterMap places={places} />
         <FlyToController targetState={targetState} />
+        <ZoomTracker onZoomChange={handleZoomChange} />
         <JourneyPath places={places} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url={tileUrl}
         />
         {places.map((place, idx) => (
-          <MapMarker key={idx} place={place} onClick={onMarkerClick} />
+          <MapMarker key={idx} place={place} onClick={onMarkerClick} zoom={zoom} />
         ))}
-
-
       </MapContainer>
     </div>
   );

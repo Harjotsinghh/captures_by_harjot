@@ -140,6 +140,7 @@ body {
 .custom-map-marker {
   background: transparent;
   border: none;
+  overflow: visible !important;
 }
 
 .marker-wrapper {
@@ -151,16 +152,16 @@ body {
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* Circular photo pin — fully restored */
 .marker-pin {
-  width: 48px;
-  height: 48px;
   border-radius: 50%;
   background: var(--bg-primary);
-  border: 2px solid white;
+  border: 2.5px solid white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   position: relative;
-  z-index: 2;
+  z-index: 3;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .marker-pin img {
@@ -168,7 +169,6 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
-  /* Remove bottom gap */
 }
 
 /* Marker Split for 2 Images */
@@ -186,32 +186,88 @@ body {
   display: block;
 }
 
+/* Label card — hidden behind the circle, slides right on hover */
+.marker-label-card {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  font-family: "Outfit", sans-serif;
+  font-weight: 600;
+  color: #333;
+  padding: 0 12px 0 8px;
+  z-index: 1;
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.marker-label-text {
+  font-weight: 600;
+}
+
+.marker-label-sep {
+  opacity: 0.35;
+  font-weight: 400;
+}
+
+.marker-label-num {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+/* Hover: slide out label, hide badge */
+.custom-map-marker:hover .marker-label-card {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.custom-map-marker:hover .marker-wrapper {
+  transform: translateY(-4px);
+  z-index: 1000 !important;
+}
+
+.custom-map-marker:hover .marker-pin {
+  border-color: var(--accent-color);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.custom-map-marker:hover .marker-badge {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.custom-map-marker:hover .marker-leg {
+  border-top-color: var(--accent-color);
+}
+
 /* Journey Path Animation */
 .journey-line-path {
-  animation: journey-dash 12s linear infinite;
-  /* Faster for shooting star look */
-  filter: drop-shadow(0 0 6px var(--accent-color));
-  stroke-dasharray: 10, 20;
+  animation: journey-dash 8s linear infinite;
+  filter: drop-shadow(0 0 4px var(--accent-color)) drop-shadow(0 0 10px var(--accent-color));
+  stroke-dasharray: 8, 16;
+  stroke-linecap: round;
   will-change: stroke-dashoffset;
 }
 
 @keyframes journey-dash {
   to {
-    stroke-dashoffset: -100;
-    /* Adjust for smoother loop with new dashArray */
+    stroke-dashoffset: -96;
   }
 }
 
 .marker-leg {
   width: 0;
   height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 10px solid white;
   margin-top: -2px;
-  /* Overlap slightly */
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
   z-index: 1;
+  transition: border-color 0.3s ease;
 }
 
 .marker-badge {
@@ -219,58 +275,28 @@ body {
   top: -5px;
   right: -5px;
   background: var(--accent-color);
-  color: var(--bg-primary);
-  font-size: 11px;
+  color: white;
   font-weight: 800;
-  width: 22px;
-  height: 22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--bg-primary);
+  border: 2px solid white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 10;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-/* Hover Effects */
-.custom-map-marker:hover .marker-wrapper {
-  transform: scale(1.1) translateY(-10px);
-  z-index: 1000;
-}
-
-.custom-map-marker:hover .marker-badge {
-  transform: scale(1.2) translate(2px, -2px);
-}
-
-.custom-map-marker:hover .marker-pin {
-  border-color: var(--accent-color);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-.custom-map-marker:hover .marker-leg {
-  border-top-color: var(--accent-color);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    opacity 0.2s ease;
 }
 
 /* Mobile Adjustments for Markers */
 @media (max-width: 768px) {
   .marker-pin {
-    width: 40px;
-    height: 40px;
     border-width: 1.5px;
   }
 
-  .marker-leg {
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 8px solid white;
-  }
-
-  .marker-badge {
-    width: 18px;
-    height: 18px;
-    font-size: 10px;
+  .custom-map-marker:hover .marker-label {
+    max-width: 120px;
+    padding: 0 8px 0 4px;
   }
 }
 
