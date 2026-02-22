@@ -6,7 +6,7 @@ import usePhotos from "./hooks/usePhotos";
 import AestheticLoader from "./components/Loader";
 import Header from "./components/MotionHeader";
 import AmbientBackground from "./components/AmbientBackground";
-import Gallery3DView from "./components/Gallery3DView";
+import MasonryGalleryView from "./components/MasonryGalleryView";
 import ErrorScreen from "./components/ErrorScreen";
 import { motion } from "framer-motion";
 import { FaMapMarkedAlt, FaImages } from "react-icons/fa";
@@ -119,7 +119,7 @@ export default function App(): JSX.Element {
               </div>
 
               {viewMode === 'gallery' && (
-                <Gallery3DView images={images || []} onPhotoClick={openGallery} />
+                <MasonryGalleryView images={images || []} onPhotoClick={openGallery} />
               )}
             </main>
 
