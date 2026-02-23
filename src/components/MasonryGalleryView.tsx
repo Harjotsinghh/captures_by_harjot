@@ -51,7 +51,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                 groups[loc].push(img);
             });
             return Object.entries(groups).map(([location, photos]) => ({
-                id: `loc-${location.replace(/\s+/g, "-").toLowerCase()}`,
+                id: `loc-${location.replace(/[^a-zA-Z0-9]+/g, "-").replace(/-+$/, "").toLowerCase()}`,
                 location,
                 photos,
             }));

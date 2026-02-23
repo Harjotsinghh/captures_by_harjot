@@ -1,68 +1,57 @@
-import { useState, useEffect, useRef, useCallback, type RefObject } from "react";
+import { useState, useEffect, type RefObject } from "react";
 
 /**
- * Custom hook that uses IntersectionObserver to track which section
- * is currently in view and returns its ID.
+ * Custom hook that tracks which section is currently in view
+ * by listening to scroll events on the given container.
  *
- * @param sectionIds - IDs of the DOM elements to observe
- * @param options.rootMargin - Margin around the root (default: "-20% 0px -60% 0px")
- * @param options.threshold - How much of the element must be visible (default: 0.1)
- * @param options.root - Optional ref to the scroll container. When omitted the viewport is used,
- *                       which can mis-fire on mobile when scrolling happens inside a nested container.
+ * Uses a simple scroll-position check: finds the last section whose
+ * top edge has scrolled past the 30% mark of the container. This is
+ * more reliable than IntersectionObserver which can miss fast scrolls.
+ *
+ * @param sectionIds - IDs of the DOM elements to track (must be in DOM order)
+ * @param options.root - Ref to the scroll container (required for reliable detection)
  */
 export function useScrollSpy(
     sectionIds: string[],
     options?: {
+        root?: RefObject<HTMLElement | null>;
+        // kept for API compat but no longer used
         rootMargin?: string;
         threshold?: number;
-        root?: RefObject<HTMLElement | null>;
     }
 ) {
     const [activeId, setActiveId] = useState<string>(sectionIds[0] ?? "");
-    const observerRef = useRef<IntersectionObserver | null>(null);
-
-    const rootMargin = options?.rootMargin ?? "-20% 0px -60% 0px";
-    const threshold = options?.threshold ?? 0.1;
     const rootRef = options?.root;
 
-    const setup = useCallback(() => {
-        // Cleanup previous observer
-        if (observerRef.current) {
-            observerRef.current.disconnect();
-        }
+    useEffect(() => {
+        const container = rootRef?.current;
+        if (!container || sectionIds.length === 0) return;
 
-        // If a root ref was provided but not yet mounted, bail and retry on next effect
-        if (rootRef && !rootRef.current) return;
+        const computeActive = () => {
+            const containerRect = container.getBoundingClientRect();
+            // Target line at 30% from the top of the container
+            const targetY = containerRect.top + containerRect.height * 0.3;
 
-        const callback: IntersectionObserverCallback = (entries) => {
-            // Find the entry that is intersecting with the highest intersection ratio
-            const intersecting = entries
-                .filter((entry) => entry.isIntersecting)
-                .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
-            if (intersecting.length > 0) {
-                setActiveId(intersecting[0].target.id);
+            // Walk sections in order; pick the last one whose top is above the target line
+            let current = sectionIds[0];
+            for (const id of sectionIds) {
+                const el = document.getElementById(id);
+                if (!el) continue;
+                if (el.getBoundingClientRect().top <= targetY) {
+                    current = id;
+                }
             }
+
+            setActiveId(current);
         };
 
-        observerRef.current = new IntersectionObserver(callback, {
-            root: rootRef?.current ?? null,
-            rootMargin,
-            threshold,
-        });
+        container.addEventListener("scroll", computeActive, { passive: true });
+        // Run once immediately so the pill shows the right location on mount
+        computeActive();
 
-        sectionIds.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) {
-                observerRef.current!.observe(el);
-            }
-        });
-    }, [sectionIds, rootMargin, threshold, rootRef]);
-
-    useEffect(() => {
-        setup();
-        return () => observerRef.current?.disconnect();
-    }, [setup]);
+        return () => container.removeEventListener("scroll", computeActive);
+    }, [sectionIds, rootRef]);
 
     return activeId;
 }
+
