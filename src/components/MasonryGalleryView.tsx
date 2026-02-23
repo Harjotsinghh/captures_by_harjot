@@ -181,8 +181,8 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                     };
                                 })}
                                 columns={(containerWidth) => {
-                                    if (containerWidth < 400) return 2;
-                                    if (containerWidth < 600) return 3;
+                                    if (containerWidth < 400) return 3;
+                                    if (containerWidth < 600) return 4;
                                     if (containerWidth < 900) return 4;
                                     return 5;
                                 }}
