@@ -65,6 +65,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
         const activeId = useScrollSpy(sectionIds, {
             rootMargin: "-20% 0px -60% 0px",
             threshold: 0.05,
+            root: scrollContainerRef,
         });
 
         // Get active location name
