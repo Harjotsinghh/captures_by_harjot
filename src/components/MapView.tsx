@@ -129,7 +129,14 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
     setZoom(newZoom);
   }, []);
 
-  const [mapType, setMapType] = useState<"simple" | "satellite">("simple");
+  const [mapType, setMapType] = useState<"simple" | "satellite">(() => {
+    return (localStorage.getItem("gallery-map-type") as "simple" | "satellite") || "simple";
+  });
+
+  const handleSetMapType = useCallback((type: "simple" | "satellite") => {
+    setMapType(type);
+    localStorage.setItem("gallery-map-type", type);
+  }, []);
 
   const cartoUrl = "https://{s}.basemaps.cartocdn.com/" + (theme === "dark" ? "dark_all" : "light_all") + "/{z}/{x}/{y}{r}.png";
   
@@ -162,7 +169,7 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
         className="mapBox"
         zoomControl={false}
       >
-        <MapUnifiedControls mapType={mapType} setMapType={setMapType} theme={theme} />
+        <MapUnifiedControls mapType={mapType} setMapType={handleSetMapType} theme={theme} />
         
         <AutoCenterMap places={places} />
         <FlyToController targetState={targetState} />
