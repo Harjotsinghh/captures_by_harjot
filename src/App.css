@@ -482,12 +482,17 @@ body {
 /* Post-Processing: Dark Mode Satellite */
 .map-wrapper.map-dark-mode.map-satellite-mode .leaflet-satellite-imagery-pane {
   /* Severely darkens the satellite imagery making the oceans midnight black and land subtly green/grey */
-  filter: sepia(0.2) contrast(1.4) brightness(0.35) saturate(0.7) hue-rotate(-10deg);
+  filter: sepia(0.05) contrast(1.2) brightness(0.4) saturate(0.85); /* Slightly lighter than before */
 }
 
 /* Invert labels for dark mode so they show cleanly */
 .map-wrapper.map-dark-mode.map-satellite-mode .leaflet-satellite-labels-pane {
-  filter: invert(1) hue-rotate(180deg);
+  filter: invert(1) brightness(1.2) hue-rotate(180deg);
+}
+
+/* Post-Processing: Simple Map (Dark Mode) Contrast Boost */
+.map-wrapper.map-dark-mode .mapBox .leaflet-layer:not(.leaflet-satellite-imagery-pane):not(.leaflet-satellite-labels-pane) {
+  filter: contrast(1.15) brightness(1.1); /* Makes simple dark mode labels much whiter and sharper */
 }
 
 /* Cinematic Edge Vignette Overlay */
@@ -500,13 +505,13 @@ body {
   height: 100%;
   pointer-events: none; /* Essential: Let clicks pass through to map */
   z-index: 800; /* Usually leaflet layers are 400-600, controls are 1000 */
-  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.25); /* Lighter vignette for light mode */
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.15); /* Significantly softer light-mode vignette */
   transition: box-shadow 0.5s ease;
 }
 
-/* Deepen vignette significantly in dark mode to complement deep black maps */
+/* Deepen vignette moderately in dark mode */
 .map-wrapper.map-dark-mode .mapBox::after {
-  box-shadow: inset 0 0 240px rgba(0, 0, 0, 0.95);
+  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.45); /* Softened from 240px @ 0.95 opacity */
 }
 
 /* ====================================

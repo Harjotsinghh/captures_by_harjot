@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, useMap, useMapEvents, LayerGroup, Pane } from "react-leaflet";
-import { useEffect, useState, useCallback, memo } from "react";
+import { useEffect, useState, useCallback, memo, Fragment } from "react";
 import L from "leaflet";
 import type { Photo } from "../data/images";
 import "leaflet/dist/leaflet.css";
@@ -87,31 +87,31 @@ const MapUnifiedControls = memo(({ mapType, setMapType, theme }: any) => {
           <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         </button>
         <div className="muc-divider" />
-        
+
         <div className="muc-dropdown-wrapper">
-          <button 
-            className={`muc-btn ${isOpen ? 'active' : ''}`} 
-            onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }} 
+          <button
+            className={`muc-btn ${isOpen ? 'active' : ''}`}
+            onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}
             title="Map Layers"
           >
             <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
           </button>
-          
+
           {isOpen && (
-             <div className="muc-dropdown">
-               <button 
-                 className={`muc-dropdown-item ${mapType === 'simple' ? 'selected' : ''}`}
-                 onClick={(e) => { e.stopPropagation(); setMapType('simple'); setIsOpen(false); }}
-               >
-                 Simple
-               </button>
-               <button 
-                 className={`muc-dropdown-item ${mapType === 'satellite' ? 'selected' : ''}`}
-                 onClick={(e) => { e.stopPropagation(); setMapType('satellite'); setIsOpen(false); }}
-               >
-                 Satellite
-               </button>
-             </div>
+            <div className="muc-dropdown">
+              <button
+                className={`muc-dropdown-item ${mapType === 'simple' ? 'selected' : ''}`}
+                onClick={(e) => { e.stopPropagation(); setMapType('simple'); setIsOpen(false); }}
+              >
+                Simple
+              </button>
+              <button
+                className={`muc-dropdown-item ${mapType === 'satellite' ? 'selected' : ''}`}
+                onClick={(e) => { e.stopPropagation(); setMapType('satellite'); setIsOpen(false); }}
+              >
+                Satellite
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -139,7 +139,7 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
   }, []);
 
   const cartoUrl = "https://{s}.basemaps.cartocdn.com/" + (theme === "dark" ? "dark_all" : "light_all") + "/{z}/{x}/{y}{r}.png";
-  
+
   const esriImageryUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
   const esriLabelsUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}";
 
@@ -157,54 +157,64 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
     >
       <MapContainer
         center={center}
-        zoom={6}
-        minZoom={3}
+        zoom={5}
+        minZoom={2}
         maxBounds={[
-          [-90, -180],
-          [90, 180]
+          [-85, -Infinity],
+          [85, Infinity]
         ]}
         maxBoundsViscosity={1.0}
         trackResize={true}
         touchZoom={true}
         className="mapBox"
         zoomControl={false}
+        worldCopyJump={true}
       >
         <MapUnifiedControls mapType={mapType} setMapType={handleSetMapType} theme={theme} />
-        
+
         <AutoCenterMap places={places} />
         <FlyToController targetState={targetState} />
         <ZoomTracker onZoomChange={handleZoomChange} />
         <JourneyPath places={places} />
-        
+
         {mapType === "simple" && (
           <TileLayer
             key="simple-map"
             attribution='&copy; CARTO'
             url={cartoUrl}
-            noWrap={true}
+            noWrap={false}
           />
         )}
-        
+
         {mapType === "satellite" && (
           <LayerGroup key="sat-map">
             <Pane name="satellite-imagery" style={{ zIndex: 100 }}>
               <TileLayer
                 attribution='Tiles &copy; Esri'
                 url={esriImageryUrl}
-                noWrap={true}
+                noWrap={false}
               />
             </Pane>
             <Pane name="satellite-labels" style={{ zIndex: 150 }}>
               <TileLayer
                 url={esriLabelsUrl}
-                noWrap={true}
+                noWrap={false}
               />
             </Pane>
           </LayerGroup>
         )}
 
-        {places.map((place, idx) => (
-          <MapMarker key={idx} place={place} onClick={onMarkerClick} zoom={zoom} />
+        {[-360, 0, 360].map((offset) => (
+          <Fragment key={offset}>
+            {places.map((place, idx) => (
+              <MapMarker
+                key={`${idx}-${offset}`}
+                place={{ ...place, lng: place.lng + offset }}
+                onClick={onMarkerClick}
+                zoom={zoom}
+              />
+            ))}
+          </Fragment>
         ))}
       </MapContainer>
     </div>
