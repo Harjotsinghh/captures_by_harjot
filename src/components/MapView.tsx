@@ -141,7 +141,9 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
   const cartoUrl = "https://{s}.basemaps.cartocdn.com/" + (theme === "dark" ? "dark_all" : "light_all") + "/{z}/{x}/{y}{r}.png";
 
   const esriImageryUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-  const esriLabelsUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}";
+  const cartoLabelsUrl = theme === "dark" 
+    ? "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+    : "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png";
 
   return (
     <div
@@ -175,7 +177,7 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
         <AutoCenterMap places={places} />
         <FlyToController targetState={targetState} />
         <ZoomTracker onZoomChange={handleZoomChange} />
-        <JourneyPath places={places} />
+        <JourneyPath places={places} mapType={mapType} />
 
         {mapType === "simple" && (
           <TileLayer
@@ -197,7 +199,7 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
             </Pane>
             <Pane name="satellite-labels" style={{ zIndex: 150 }}>
               <TileLayer
-                url={esriLabelsUrl}
+                url={cartoLabelsUrl}
                 noWrap={false}
               />
             </Pane>

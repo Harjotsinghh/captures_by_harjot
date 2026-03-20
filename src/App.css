@@ -472,22 +472,23 @@ body {
   background-color: #0b0f19 !important;
 }
 
-/* Post-Processing: Light Mode Satellite */
+/* Post-Processing: Light Mode Satellite (Bright & Sunny) */
 .map-wrapper.map-satellite-mode .leaflet-satellite-imagery-pane {
-  /* Brighten radically for light mode so it doesn't feel oppressively dark */
+  /* Restored high-brightness for sunny daytime feel */
   filter: contrast(1.1) brightness(1.35) saturate(1.1) hue-rotate(5deg);
   transition: filter 0.5s ease;
+}
+
+/* Force sharp contrast and a deep drop-shadow on all Satellite Labels to 'lift' them off the Earth noise */
+.map-wrapper.map-satellite-mode .leaflet-satellite-labels-pane {
+  /* The drop-shadow is key: it adds a sharp black outline to letters so they are readable anywhere */
+  filter: drop-shadow(0px 0px 2px rgba(0,0,0,1)) contrast(1.2) brightness(1.1);
 }
 
 /* Post-Processing: Dark Mode Satellite */
 .map-wrapper.map-dark-mode.map-satellite-mode .leaflet-satellite-imagery-pane {
   /* Severely darkens the satellite imagery making the oceans midnight black and land subtly green/grey */
-  filter: sepia(0.05) contrast(1.2) brightness(0.4) saturate(0.85); /* Slightly lighter than before */
-}
-
-/* Invert labels for dark mode so they show cleanly */
-.map-wrapper.map-dark-mode.map-satellite-mode .leaflet-satellite-labels-pane {
-  filter: invert(1) brightness(1.2) hue-rotate(180deg);
+  filter: contrast(1.3) brightness(0.45) saturate(1.0); 
 }
 
 /* Post-Processing: Simple Map (Dark Mode) Contrast Boost */
