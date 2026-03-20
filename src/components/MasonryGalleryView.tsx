@@ -1,4 +1,4 @@
-import { useMemo, useRef, useCallback, useState, useEffect, memo } from "react";
+import { useMemo, useRef, useCallback, useState, useEffect, memo, type ReactNode } from "react";
 import { MasonryPhotoAlbum } from "react-photo-album";
 import "react-photo-album/masonry.css";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,6 +12,9 @@ import "./MasonryGalleryView.css";
 interface MasonryGalleryViewProps {
     images: Photo[];
     onPhotoClick: (photos: Photo[]) => void;
+    variant?: "overlay" | "editorial";
+    header?: ReactNode;
+    footer?: ReactNode;
 }
 
 interface LocationGroup {
@@ -33,13 +36,15 @@ const sectionVariants = {
 } as const;
 
 const MasonryGalleryView = memo<MasonryGalleryViewProps>(
-    ({ images, onPhotoClick }) => {
+    ({ images, onPhotoClick, variant = "overlay", header, footer }) => {
         const scrollContainerRef = useRef<HTMLDivElement>(null);
         const [scrollProgress, setScrollProgress] = useState(0);
+        const [hideDial, setHideDial] = useState(false);
         const [hoveredDot, setHoveredDot] = useState<string | null>(null);
         const [dialOpen, setDialOpen] = useState(false);
         const labelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
         const isMobile = useMediaQuery("(max-width: 768px)");
+        const isEditorial = variant === "editorial";
 
 
         // Group images by location
@@ -81,11 +86,23 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             const onScroll = () => {
                 const { scrollTop, scrollHeight, clientHeight } = container;
                 const progress = scrollTop / (scrollHeight - clientHeight);
-                setScrollProgress(Math.min(Math.max(progress, 0), 1));
+                const normalized = Math.min(Math.max(progress, 0), 1);
+                const remaining = scrollHeight - clientHeight - scrollTop;
+                setScrollProgress(normalized);
+                setHideDial(isEditorial && remaining < 180);
+                if (isEditorial) {
+                    document.documentElement.style.setProperty("--gallery-scroll-progress", normalized.toFixed(4));
+                }
             };
+            onScroll();
             container.addEventListener("scroll", onScroll, { passive: true });
-            return () => container.removeEventListener("scroll", onScroll);
-        }, []);
+            return () => {
+                container.removeEventListener("scroll", onScroll);
+                if (isEditorial) {
+                    document.documentElement.style.removeProperty("--gallery-scroll-progress");
+                }
+            };
+        }, [isEditorial]);
 
         const scrollToSection = useCallback((sectionId: string) => {
             const el = document.getElementById(sectionId);
@@ -97,13 +114,13 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                     elementRect.top -
                     containerRect.top +
                     scrollContainerRef.current.scrollTop -
-                    150;
+                    (isEditorial ? (isMobile ? 108 : 118) : 150);
                 scrollContainerRef.current.scrollTo({
                     top: offset,
                     behavior: "smooth",
                 });
             }
-        }, []);
+        }, [isEditorial, isMobile]);
 
         // Show label temporarily (for tap on mobile)
         const showLabelBriefly = useCallback((id: string) => {
@@ -132,7 +149,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
 
         if (!images || images.length === 0) {
             return (
-                <div className="masonry-gallery-wrapper">
+                <div className={`masonry-gallery-wrapper ${isEditorial ? "editorial" : ""}`}>
                     <div className="masonry-empty">
                         <div className="masonry-empty-icon">📷</div>
                         <p>No photos to display</p>
@@ -142,13 +159,14 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
         }
 
         return (
-            <div className="masonry-gallery-wrapper" ref={scrollContainerRef}>
-                <div className="masonry-header-spacer" />
+            <div className={`masonry-gallery-wrapper ${isEditorial ? "editorial" : ""}`} ref={scrollContainerRef}>
+                {!isEditorial && <div className="masonry-header-spacer" />}
+                {header && <div className="masonry-header-shell">{header}</div>}
 
 
 
                 {/* Photo Content */}
-                <div className="masonry-content">
+                <div className={`masonry-content ${isEditorial ? "editorial" : ""}`}>
                     {locationGroups.map((group) => (
                         <motion.section
                             key={group.id}
@@ -221,7 +239,19 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                             />
                         </motion.section>
                     ))}
+
+                    {footer && !isEditorial && (
+                        <div className="masonry-footer-shell">
+                            {footer}
+                        </div>
+                    )}
                 </div>
+
+                {footer && isEditorial && (
+                    <div className="masonry-editorial-footer-shell">
+                        {footer}
+                    </div>
+                )}
 
                 {/* Desktop: Side Location Navigator */}
                 {!isMobile && (
@@ -267,7 +297,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                 {isMobile && (
                     <>
                         <motion.button
-                            className="loc-dial-fab"
+                            className={`loc-dial-fab ${isEditorial ? "editorial" : ""} ${hideDial && !dialOpen ? "is-hidden" : ""}`}
                             onClick={() => setDialOpen((prev) => !prev)}
                             whileTap={{ scale: 0.9 }}
                             aria-label="Open location picker"

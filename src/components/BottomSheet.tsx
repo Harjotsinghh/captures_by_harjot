@@ -1,21 +1,19 @@
 import { memo } from "react";
 import { Sheet } from "react-modal-sheet";
 import Footer from "./Footer";
-import { useTheme } from "../context/ThemeContext";
 import { useMediaQuery } from "../hooks/useMediaQuery";
+import "./BottomSheet.css";
+
+import { useTheme } from "../context/ThemeContext";
 
 const BottomSheet = memo(() => {
     const { theme } = useTheme();
     const isDarkMode = theme === 'dark';
     const isMobile = useMediaQuery("(max-width: 768px)");
 
-    const bgColor = isDarkMode ? "#141414" : "#ffffff";
-    const borderColor = isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)";
-
     // Snap Points (Ascending Order)
     // Index 0: 70px from bottom (Peek)
-    // Index 1: 1 (100% height - Open)
-    const snapPoints = [0, 50, 1];
+    const snapPoints = [0, 38, 1];
 
     return (
         <Sheet
@@ -29,15 +27,18 @@ const BottomSheet = memo(() => {
         >
             <Sheet.Container
                 style={{
-                    background: bgColor,
+                    backgroundColor: isDarkMode ? "rgba(20, 20, 20, 0.76)" : "rgba(255, 255, 255, 0.82)",
+                    backdropFilter: "blur(20px) saturate(145%)",
+                    WebkitBackdropFilter: "blur(20px) saturate(145%)",
                     zIndex: 1000,
-                    borderTopLeftRadius: "16px",
-                    borderTopRightRadius: "16px",
-                    boxShadow: `0px -2px 10px ${borderColor}`,
-                    // Full width on all devices
+                    borderTopLeftRadius: "24px",
+                    borderTopRightRadius: "24px",
+                    borderTop: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)"}`,
+                    boxShadow: "0px -8px 30px rgba(0, 0, 0, 0.1)",
+                    width: "100%",
                 }}
             >
-                <Sheet.Header style={{ height: "50px" }}>
+                <Sheet.Header style={{ height: "38px" }}>
                 </Sheet.Header>
                 <Sheet.Content style={{ height: "100%" }}>
                     <Footer inBottomSheet={true} />

@@ -56,17 +56,6 @@ body {
   margin: 0;
 }
 
-/* Loading Placeholder: Same size, no visuals */
-.map-placeholder {
-  width: 100%;
-  min-height: 70vh;
-  /* Match map-card */
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Leaflet Container Override */
 /* Leaflet Container Override */
 .mapBox {
@@ -82,45 +71,6 @@ body {
   background: transparent;
   margin: 0 !important;
   /* Override rogue margin */
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
 
 /* Remove focus outline from Leaflet markers */
@@ -329,25 +279,13 @@ body {
   border-bottom: none !important;
 }
 
-/* Responsive Header & Footer */
-/* Responsive Header & Footer */
-/* Header styles moved to MotionHeader.css */
-
-.responsive-footer-top,
-.responsive-footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
 /* Toggle Switch Styles */
 .theme-toggle-btn {
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--text-primary);
   padding: 8px;
-  border-radius: 50%;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -357,49 +295,47 @@ body {
 }
 
 .theme-toggle-btn:hover {
-  background: var(--bg-secondary);
-  border-color: var(--border-color);
-  box-shadow: var(--card-shadow);
+  background: color-mix(in srgb, var(--bg-secondary) 88%, transparent);
+  border-color: color-mix(in srgb, var(--accent-color) 22%, var(--border-color));
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
 }
 
-.mobile-only-toggle {
-  display: none;
-}
-
-.desktop-only-toggle {
-  display: block;
+.toggle-theme-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .view-toggle {
   display: flex;
-  background: var(--glass-bg);
-  backdrop-filter: blur(4px);
-  padding: 4px;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border);
+  align-items: center;
+  gap: 0.2rem;
+  background: color-mix(in srgb, var(--bg-secondary) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  padding: 0.35rem;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
   position: fixed;
-  top: 90px;
-  right: 2rem;
-  /* Move to right */
+  top: 1rem;
+  right: 1.5rem;
   left: auto;
-  /* Reset left */
   transform: none;
-  /* Reset transform */
-  z-index: 90;
-  box-shadow: var(--card-shadow);
+  z-index: 1100;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
 }
 
 .toggle-btn {
-  padding: 8px 16px;
+  padding: 0.72rem 1rem;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-secondary);
   font-family: "Outfit", sans-serif;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  border-radius: 14px;
+  transition: all 0.25s ease;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -408,16 +344,23 @@ body {
 }
 
 .toggle-btn.active {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  border: 1px solid var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 16%, var(--bg-secondary));
+  border: 1px solid color-mix(in srgb, var(--accent-color) 56%, var(--border-color));
   color: var(--text-primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(14, 165, 164, 0.18);
 }
 
 .toggle-btn:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--bg-secondary) 86%, transparent);
+  color: var(--text-primary);
+}
+
+.toggle-divider {
+  width: 1px;
+  height: 28px;
+  margin: 0 0.15rem;
+  background: color-mix(in srgb, var(--border-color) 80%, transparent);
+  border-radius: 999px;
 }
 
 
@@ -433,8 +376,7 @@ body {
 /* Mobile Layout Improvements */
 @media (max-width: 768px) {
   .leaflet-top {
-    top: 80px !important;
-    /* Push below the expanded mobile header */
+    top: 82px !important;
   }
 
   .app-container {
@@ -460,101 +402,251 @@ body {
     margin: 0;
   }
 
-  /* Compact Fixed Header - Moved to MotionHeader.css */
-
-  .responsive-footer-top {
-    flex-direction: column;
-    gap: 1.5rem;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .responsive-footer-bottom {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .footer-copyright,
-  .footer-socials,
-  .footer-disclaimer,
-  .footer-built-with {
-    justify-content: center !important;
-    width: 100%;
-    text-align: center;
-  }
-
-  .glass-header {
-    background: var(--glass-bg, rgba(255, 255, 255, 0.8));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  }
-
-
-
-  /* View Toggle: Float below header */
+  /* Desktop-only toggle rules retained for non-mobile renders */
   .view-toggle {
     position: fixed;
-    top: 75px;
-    /* Below compact header */
+    top: 4.15rem;
     left: 50%;
     transform: translateX(-50%);
     bottom: auto;
     right: auto;
-    z-index: 90;
-    background: var(--glass-bg);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--glass-border);
-    padding: 2px;
-    border-radius: 10px;
+    z-index: 1100;
+    background: color-mix(in srgb, var(--bg-secondary) 78%, transparent);
+    backdrop-filter: blur(16px) saturate(145%);
+    -webkit-backdrop-filter: blur(16px) saturate(145%);
+    border: 1px solid color-mix(in srgb, var(--border-color) 74%, transparent);
+    padding: 0.22rem;
+    border-radius: 15px;
     display: flex;
-    gap: 8px;
+    gap: 0.12rem;
     align-items: center;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
     margin-bottom: 0;
   }
 
   .view-toggle .toggle-btn {
-    padding: 4px 8px;
-    font-size: 0.75rem;
-    gap: 4px;
+    padding: 0.5rem 0.66rem;
+    font-size: 0.72rem;
+    gap: 0.28rem;
     background: transparent;
-    border: none;
+    border: 1px solid transparent;
     box-shadow: none;
+    border-radius: 12px;
   }
 
   .view-toggle .toggle-btn.active {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    border: 1px solid var(--accent-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: color-mix(in srgb, var(--accent-color) 20%, var(--bg-secondary));
+    border: 1px solid color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+    box-shadow: 0 6px 14px rgba(14, 165, 164, 0.16);
   }
 
   .view-toggle .theme-toggle-btn {
     background: transparent;
     border: 1px solid transparent;
     box-shadow: none;
-    padding: 6px;
+    padding: 0.52rem;
+    border-radius: 11px;
   }
 
   .view-toggle .theme-toggle-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
   }
 
-  .mobile-only-toggle {
-    display: block;
+  .toggle-divider {
+    height: 22px;
+    margin: 0 0.04rem;
+  }
+
+  .toggle-theme-slot {
     padding-left: 0;
-    border-left: none;
   }
+}
 
-  .desktop-only-toggle {
-    display: none;
-  }
+/* ====================================
+   Cinematic Safari Map Filters
+==================================== */
+
+/* Global base map background (so edges don't stick out white before load) */
+.mapBox {
+  background-color: #0b0f19 !important;
+}
+
+/* Post-Processing: Light Mode Satellite */
+.map-wrapper.map-satellite-mode .leaflet-satellite-imagery-pane {
+  /* Brighten radically for light mode so it doesn't feel oppressively dark */
+  filter: contrast(1.1) brightness(1.35) saturate(1.1) hue-rotate(5deg);
+  transition: filter 0.5s ease;
+}
+
+/* Post-Processing: Dark Mode Satellite */
+.map-wrapper.map-dark-mode.map-satellite-mode .leaflet-satellite-imagery-pane {
+  /* Severely darkens the satellite imagery making the oceans midnight black and land subtly green/grey */
+  filter: sepia(0.2) contrast(1.4) brightness(0.35) saturate(0.7) hue-rotate(-10deg);
+}
+
+/* Invert labels for dark mode so they show cleanly */
+.map-wrapper.map-dark-mode.map-satellite-mode .leaflet-satellite-labels-pane {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Cinematic Edge Vignette Overlay */
+.mapBox::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Essential: Let clicks pass through to map */
+  z-index: 800; /* Usually leaflet layers are 400-600, controls are 1000 */
+  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.25); /* Lighter vignette for light mode */
+  transition: box-shadow 0.5s ease;
+}
+
+/* Deepen vignette significantly in dark mode to complement deep black maps */
+.map-wrapper.map-dark-mode .mapBox::after {
+  box-shadow: inset 0 0 240px rgba(0, 0, 0, 0.95);
+}
+
+/* ====================================
+   Unified Map Controls
+==================================== */
+
+.map-unified-controls {
+  position: absolute;
+  top: 95px;
+  left: 15px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.muc-pill {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.85); /* Solid default for light mode */
+  backdrop-filter: blur(14px) saturate(145%);
+  -webkit-backdrop-filter: blur(14px) saturate(145%);
+  border: 1px solid rgba(0, 0, 0, 0.08); /* Darker border for light mode readability */
+  border-radius: 12px;
+  padding: 3px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.muc-btn {
+  background: transparent;
+  border: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111; /* Explicitly dark icons for light mode map */
+  opacity: 0.75;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.05rem;
+  padding: 0;
+}
+
+.muc-btn:hover, .muc-btn.active {
+  background: rgba(0, 0, 0, 0.05); /* Hover effect for light mode */
+  opacity: 1;
+}
+
+.muc-btn:active {
+  transform: scale(0.92);
+}
+
+.muc-divider {
+  width: 18px;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 3px auto;
+}
+
+/* Dropdown */
+.muc-dropdown-wrapper {
+  position: relative;
+}
+
+.muc-dropdown {
+  position: absolute;
+  top: 0;
+  left: 38px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  min-width: 100px;
+  font-family: inherit;
+  font-family: "Outfit", sans-serif;
+}
+
+.muc-dropdown-item {
+  background: transparent;
+  border: none;
+  padding: 6px 10px;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #555;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.muc-dropdown-item:hover {
+  color: #111;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.muc-dropdown-item.selected {
+  background: #f0f0f0;
+  color: #111;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* Dark Mode fixes for unified controls */
+.map-dark-mode .muc-pill,
+.map-dark-mode .muc-dropdown {
+  background: rgba(22, 22, 22, 0.8);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.map-dark-mode .muc-divider {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.map-dark-mode .muc-dropdown-item.selected {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.map-dark-mode .muc-btn {
+  color: #fff;
+}
+
+.map-dark-mode .muc-btn:hover, .map-dark-mode .muc-btn.active {
+  background: rgba(255, 255, 255, 0.08); /* Light hover for dark mode */
+}
+
+.map-dark-mode .muc-dropdown-item {
+  color: #aaa;
+}
+
+.map-dark-mode .muc-dropdown-item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
 }

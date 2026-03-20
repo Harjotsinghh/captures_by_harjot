@@ -22,10 +22,19 @@
   display: none;
 }
 
+.masonry-gallery-wrapper.editorial {
+  background: transparent;
+}
+
 
 /* ---- Spacer for header + view toggle ---- */
 .masonry-header-spacer {
   height: 140px;
+}
+
+.masonry-header-shell {
+  position: relative;
+  z-index: 5;
 }
 
 /* ---- Content Area ---- */
@@ -36,10 +45,19 @@
   padding: 0 64px 120px;
 }
 
+.masonry-content.editorial {
+  padding: 0 64px 160px;
+}
+
 /* ---- Location Section ---- */
 .location-section {
   padding-top: 24px;
   margin-bottom: 48px;
+}
+
+.masonry-gallery-wrapper.editorial .location-section {
+  margin-bottom: 56px;
+  position: relative;
 }
 
 .location-section-header {
@@ -49,6 +67,24 @@
   margin-bottom: 20px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-color);
+}
+
+.masonry-gallery-wrapper.editorial .location-section-header {
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom-color: var(--gallery-divider);
+}
+
+.masonry-gallery-wrapper.editorial .location-icon {
+  box-shadow: 0 10px 20px rgba(14, 165, 164, 0.18);
+}
+
+.masonry-gallery-wrapper.editorial .location-section-title {
+  color: var(--gallery-title-color);
+}
+
+.masonry-gallery-wrapper.editorial .location-section-count {
+  color: var(--gallery-muted);
 }
 
 .location-icon {
@@ -169,6 +205,10 @@
   align-items: center;
   gap: 0;
   padding: 12px 6px;
+}
+
+.masonry-gallery-wrapper.editorial .side-loc-nav {
+  right: 18px;
 }
 
 /* The vertical track line */
@@ -299,25 +339,39 @@
   opacity: 0.3;
 }
 
+.masonry-footer-shell {
+  margin-top: 3rem;
+  padding: 0.5rem 0 0;
+}
+
+.masonry-editorial-footer-shell {
+  width: 100%;
+  margin-top: 3.4rem;
+}
+
 /* ==========================================
    Mobile Adjustments
    ========================================== */
 @media (max-width: 768px) {
   .masonry-header-spacer {
-    height: 120px;
+    height: 92px;
   }
 
   .masonry-content {
-    padding: 0 12px 100px;
+    padding: 0 14px 108px;
+  }
+
+  .masonry-content.editorial {
+    padding: 0 14px 120px;
   }
 
   .location-section {
-    padding-top: 16px;
+    padding-top: 14px;
     margin-bottom: 32px;
   }
 
   .location-section-header {
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .location-icon {
@@ -342,6 +396,24 @@
 
   .masonry-photo-date {
     font-size: 0.55rem;
+  }
+
+  .masonry-gallery-wrapper.editorial .location-section-header {
+    margin-bottom: 14px;
+    padding-bottom: 11px;
+  }
+
+  .masonry-gallery-wrapper.editorial .location-section:first-child {
+    padding-top: 12px;
+  }
+
+  .masonry-footer-shell {
+    margin-top: 2rem;
+    padding-top: 1rem;
+  }
+
+  .masonry-editorial-footer-shell {
+    margin-top: 2rem;
   }
 }
 
@@ -372,6 +444,16 @@
   font-weight: 600;
   cursor: pointer;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.loc-dial-fab.editorial {
+  bottom: 22px;
+}
+
+.loc-dial-fab.is-hidden {
+  opacity: 0;
+  transform: translateY(18px);
+  pointer-events: none;
 }
 
 .loc-dial-fab:active {

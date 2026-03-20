@@ -1,0 +1,26 @@
+/* BottomSheet.css */
+
+
+
+/* Override the default drag handle to look like a soft glowing pill */
+.react-modal-sheet-drag-indicator {
+    background: color-mix(in srgb, var(--text-secondary) 40%, transparent) !important;
+    width: 48px !important;
+    height: 6px !important;
+    border-radius: 999px !important;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+@media (min-width: 769px) {
+    .custom-bottom-sheet {
+        max-width: 440px !important;
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .custom-bottom-sheet {
+        max-width: 94% !important;
+        width: 100% !important;
+    }
+}

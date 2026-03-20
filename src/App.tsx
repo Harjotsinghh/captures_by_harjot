@@ -4,14 +4,16 @@ import GalleryModal from "./components/GalleryModal";
 import usePhotos from "./hooks/usePhotos";
 import AestheticLoader from "./components/Loader";
 import Header from "./components/MotionHeader";
+import MobileTopBar from "./components/MobileTopBar";
 import AmbientBackground from "./components/AmbientBackground";
-import MasonryGalleryView from "./components/MasonryGalleryView";
+import GalleryBackground from "./components/GalleryBackground";
+import GalleryModeView from "./components/GalleryModeView";
 import ErrorScreen from "./components/ErrorScreen";
 import { motion } from "framer-motion";
-import { FaMapMarkedAlt, FaImages } from "react-icons/fa";
 import { ThemeProvider } from "./context/ThemeContext";
-import ThemeToggle from "./components/ThemeToggle";
 import BottomSheet from "./components/BottomSheet";
+import { useMediaQuery } from "./hooks/useMediaQuery";
+import ViewModeToggle from "./components/ViewModeToggle";
 import "./App.css";
 import ReactGA from "react-ga4";
 
@@ -22,12 +24,14 @@ if (GA_MEASUREMENT_ID) {
 
 export default function App(): JSX.Element {
   const { images, loading, error } = usePhotos();
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [selected, setSelected] = useState<any[] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [introFinished, setIntroFinished] = useState(false);
 
   const [viewMode, setViewMode] = useState<'map' | 'gallery'>('map');
   const [mapViewState, setMapViewState] = useState<{ center: [number, number], zoom: number } | null>(null);
+  const isGalleryView = viewMode === "gallery";
 
   const openGallery = useCallback((photos: any | any[], previousMapState?: { center: [number, number], zoom: number }) => {
     const selectedPhotos = Array.isArray(photos) ? photos : [photos];
@@ -84,52 +88,50 @@ export default function App(): JSX.Element {
             willChange: 'opacity, transform'
           }}
         >
-          <AmbientBackground />
+          {isGalleryView ? <GalleryBackground /> : <AmbientBackground />}
           <div className="app-container">
-            <Header />
-
-            {/* Main Content Area */}
-            <main className={viewMode === 'map' ? "map-card" : "gallery-3d-container"}>
-              {/* View Toggle Overlay */}
-              <div className="view-toggle">
-                <button
-                  className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
-                  onClick={() => setViewMode('map')}
-                >
-                  <FaMapMarkedAlt /> Map
-                </button>
-                <button
-                  className={`toggle-btn ${viewMode === 'gallery' ? 'active' : ''}`}
-                  onClick={() => setViewMode('gallery')}
-                >
-
-                  <FaImages /> Gallery
-                </button>
-                <div className="mobile-only-toggle">
-                  <ThemeToggle />
-                </div>
-              </div>
-
-              {/* Always render MapView to preserve state, hide via CSS/Z-index when not active */}
-              <div style={{
-                display: viewMode === 'map' ? 'block' : 'none',
-                width: '100%',
-                height: '100%'
-              }}>
-                <MapView
-                  images={images || []}
-                  onMarkerClick={openGallery}
-                  targetState={(!isOpen && viewMode === 'map') ? mapViewState : null}
+            {isMobile ? (
+              <MobileTopBar
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                showBrand
+              />
+            ) : (
+              <>
+                <Header />
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
                 />
-              </div>
+              </>
+            )}
 
-              {viewMode === 'gallery' && (
-                <MasonryGalleryView images={images || []} onPhotoClick={openGallery} />
-              )}
-            </main>
+            {!isGalleryView && (
+              <>
+                <main className="map-card">
+                  <div style={{
+                    display: 'block',
+                    width: '100%',
+                    height: '100%'
+                  }}>
+                    <MapView
+                      images={images || []}
+                      onMarkerClick={openGallery}
+                      targetState={(!isOpen && viewMode === 'map') ? mapViewState : null}
+                    />
+                  </div>
+                </main>
 
-            {/* Bottom Sheet for both Mobile and Desktop */}
-            {!loading && <BottomSheet />}
+                {!loading && <BottomSheet />}
+              </>
+            )}
+
+            {isGalleryView && (
+              <GalleryModeView
+                images={images || []}
+                onPhotoClick={openGallery}
+              />
+            )}
 
             <GalleryModal isOpen={isOpen} onClose={closeGallery} images={selected} />
           </div>

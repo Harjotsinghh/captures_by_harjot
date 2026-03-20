@@ -3,143 +3,114 @@ import { motion } from "framer-motion";
 import { FaLinkedin, FaInstagram, FaGithub } from "react-icons/fa";
 import { SiReact, SiVite } from "react-icons/si";
 import { config } from "../config";
+import "./Footer.css";
 
 interface FooterProps {
   inBottomSheet?: boolean;
 }
 
-const Footer: React.FC<FooterProps> = ({ inBottomSheet }) => {
+const socialItems = [
+  { icon: FaLinkedin, href: config.social.linkedin, color: "#0a66c2", label: "LinkedIn" },
+  { icon: FaInstagram, href: config.social.instagram, color: "#e4405f", label: "Instagram" },
+  { icon: FaGithub, href: config.social.github, color: "var(--text-primary)", label: "GitHub" },
+];
 
+const Footer: React.FC<FooterProps> = ({ inBottomSheet = false }) => {
+  if (inBottomSheet) {
+    return (
+      <footer className="site-footer site-footer--sheet">
+        <div className="site-footer__sheet-main">
+          <div className="site-footer__sheet-copy">
+            <span>© {new Date().getFullYear()}</span>
+            <strong>{config.author.name}</strong>
+          </div>
 
-  const socialLinkStyle = {
-    color: "#6b7280",
-    transition: "all 0.2s ease",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "32px",
-    height: "32px",
-    borderRadius: "8px",
-    background: "rgba(0,0,0,0.03)",
-  };
+          <div className="site-footer__sheet-socials">
+            {socialItems.map((item) => (
+              <motion.a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="site-footer__sheet-link"
+                aria-label={item.label}
+                whileHover={{ y: -2, backgroundColor: item.color, color: "#fff", borderColor: item.color }}
+                whileTap={{ scale: 0.96 }}
+              >
+                <item.icon size={14} />
+              </motion.a>
+            ))}
+          </div>
+        </div>
 
-  return (
-    <footer
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        padding: inBottomSheet ? "0 1.5rem 1.5rem" : "1rem 1.5rem 2rem",
-        marginTop: "auto",
-        fontFamily: "'Outfit', sans-serif",
-        borderRadius: inBottomSheet ? "0" : undefined, // Ensure no rounded corners on container
-      }}
-    >
-      <div
-        className="responsive-footer-top"
-        style={{
-          width: "100%",
-        }}
-      >
-        {/* Left: Copyright */}
-        <div
-          className="footer-copyright"
-          style={{
-            fontSize: "0.85rem",
-            color: "#6b7280",
-            fontWeight: 500,
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-          }}
-        >
-          <span>© {2025}</span>
-          <span style={{ fontWeight: 600, color: "#374151" }}>
-            {config.author.name}
+        <div className="site-footer__sheet-meta">
+          <span className="site-footer__sheet-note">{config.meta.disclaimer}</span>
+          <span className="site-footer__sheet-tech">
+            Built with
+            <a href="https://react.dev/" target="_blank" rel="noreferrer" aria-label="React">
+              <SiReact size={11} />
+            </a>
+            <span>&</span>
+            <a href="https://vite.dev/" target="_blank" rel="noreferrer" aria-label="Vite">
+              <SiVite size={11} />
+            </a>
           </span>
         </div>
+      </footer>
+    );
+  }
 
-        {/* Right: Socials */}
-        <div className="footer-socials" style={{ display: "flex", gap: "0.8rem" }}>
-          {[
-            {
-              icon: FaLinkedin,
-              href: config.social.linkedin,
-              color: "#0a66c2",
-            },
-            {
-              icon: FaInstagram,
-              href: config.social.instagram,
-              color: "#e4405f",
-            },
-            {
-              icon: FaGithub,
-              href: config.social.github,
-              color: "#333",
-            },
-          ].map((item, index) => (
-            <motion.a
-              key={index}
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={socialLinkStyle}
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: item.color,
-                color: "#fff",
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <item.icon size={14} />
-            </motion.a>
-          ))}
+  return (
+    <footer className="site-footer site-footer--gallery">
+      <div className="site-footer__gallery-rule" />
+      <div className="site-footer__gallery-inner">
+        <div className="site-footer__gallery-glow" aria-hidden="true" />
+        
+        <div className="site-footer__gallery-main">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8 }}
+            className="site-footer__gallery-center"
+          >
+            <h2 className="site-footer__gallery-brand">
+              {config.author.name}
+              <span className="brand-dot">.</span>
+            </h2>
+            <p className="site-footer__gallery-caption">
+              Selected frames from the archive, presented as a quiet scrolling journal of places and light.
+            </p>
+
+            <div className="site-footer__gallery-socials">
+              {socialItems.map((item) => (
+                <motion.a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="site-footer__gallery-social-link"
+                  aria-label={item.label}
+                  whileHover={{ y: -3, backgroundColor: item.color, color: "#fff", borderColor: item.color }}
+                  whileTap={{ scale: 0.96 }}
+                >
+                  <item.icon size={18} />
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="site-footer__gallery-bottom">
+          <p className="site-footer__gallery-copyright">
+            © {new Date().getFullYear()} {config.author.name}
+          </p>
+          <p className="site-footer__gallery-note">
+            {config.meta.disclaimer}
+          </p>
         </div>
       </div>
-
-      {/* Bottom: Disclaimer & Tech */}
-      <div
-        className="responsive-footer-bottom"
-        style={{
-          fontSize: "0.7rem",
-          color: "#9ca3af",
-          borderTop: "1px solid rgba(0,0,0,0.05)",
-          paddingTop: "1rem",
-          width: "100%",
-        }}
-      >
-        <div className="footer-disclaimer" style={{ fontStyle: "italic" }}>{config.meta.disclaimer}</div>
-
-        <div
-          className="footer-built-with"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.4rem",
-          }}
-        >
-          Built with
-          <a
-            href="https://react.dev/"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "#9ca3af", display: "flex" }}
-          >
-            <SiReact size={11} />
-          </a>
-          <span>&</span>
-          <a
-            href="https://vite.dev/"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "#9ca3af", display: "flex" }}
-          >
-            <SiVite size={11} />
-          </a>
-        </div>
-      </div>
-    </footer >
+    </footer>
   );
 };
 

@@ -1,0 +1,98 @@
+.gallery-mode-shell {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
+.gallery-mode-header {
+  padding: 8.5rem 2rem 0;
+  position: relative;
+}
+
+
+.gallery-mode-hero {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 0 0 2rem;
+}
+
+.gallery-mode-kicker {
+  margin: 0 0 1rem;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  opacity: 0.9;
+}
+
+.gallery-mode-title {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+}
+
+.gallery-title-dot {
+  color: var(--accent-color);
+}
+
+.gallery-mode-description {
+  margin: 1.25rem 0 0;
+  max-width: 680px;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.gallery-mode-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-family: "Outfit", sans-serif;
+}
+
+.gallery-mode-meta span:not(.gallery-mode-meta-sep) {
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-color) 8%, var(--bg-secondary) 50%);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 15%, transparent);
+}
+
+.gallery-mode-meta-sep {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .gallery-mode-header {
+    padding: 5.5rem 1.25rem 0;
+  }
+
+  .gallery-mode-hero {
+    padding: 0.5rem 0 1.2rem;
+  }
+
+  .gallery-mode-meta.mobile {
+    gap: 0.34rem;
+    margin-top: 0;
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    justify-content: center;
+  }
+}

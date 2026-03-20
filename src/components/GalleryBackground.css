@@ -1,0 +1,150 @@
+.gallery-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, var(--gallery-glow-one), transparent 26%),
+    radial-gradient(circle at 82% 18%, var(--gallery-glow-two), transparent 20%),
+    linear-gradient(180deg, var(--gallery-bg-start) 0%, var(--gallery-bg-mid) 48%, var(--gallery-bg-end) 100%);
+}
+
+.gallery-background__glow,
+.gallery-background__orb {
+  position: absolute;
+  border-radius: 999px;
+  will-change: transform;
+}
+
+.gallery-background__glow {
+  filter: blur(92px);
+  opacity: 0.72;
+}
+
+.gallery-background__glow--one {
+  top: -8%;
+  left: -6%;
+  width: 44vw;
+  height: 44vw;
+  background: radial-gradient(circle, var(--gallery-glow-one), transparent 72%);
+}
+
+.gallery-background__glow--two {
+  right: -10%;
+  bottom: 8%;
+  width: 32vw;
+  height: 32vw;
+  background: radial-gradient(circle, var(--gallery-glow-two), transparent 72%);
+}
+
+.gallery-background__orb {
+  filter: blur(0);
+  opacity: 0.34;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 22%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--gallery-surface) 58%, transparent), transparent),
+    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-color) 12%, transparent), transparent 60%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.gallery-background__orb--one {
+  top: 16%;
+  right: 16%;
+  width: 180px;
+  height: 180px;
+  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * -40px), 0);
+}
+
+.gallery-background__orb--two {
+  left: 9%;
+  bottom: 12%;
+  width: 120px;
+  height: 120px;
+  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * 54px), 0);
+}
+
+.gallery-background__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  background-image:
+    linear-gradient(var(--gallery-grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gallery-grid-color) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 92%);
+  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * 26px), 0);
+}
+
+.gallery-background__rings {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--gallery-grid-color) 68%, transparent);
+  opacity: 0.32;
+}
+
+.gallery-background__rings--one {
+  top: 22%;
+  left: -4%;
+  width: 360px;
+  height: 360px;
+  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * -70px), 0);
+}
+
+.gallery-background__rings--two {
+  right: 8%;
+  bottom: 14%;
+  width: 260px;
+  height: 260px;
+  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * 58px), 0);
+}
+
+.gallery-background__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.74' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.12'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .gallery-background__glow--one {
+    width: 68vw;
+    height: 68vw;
+  }
+
+  .gallery-background__glow--two {
+    width: 58vw;
+    height: 58vw;
+  }
+
+  .gallery-background__orb--one {
+    width: 120px;
+    height: 120px;
+    top: 14%;
+    right: -8%;
+  }
+
+  .gallery-background__orb--two {
+    width: 88px;
+    height: 88px;
+    left: -4%;
+    bottom: 18%;
+  }
+
+  .gallery-background__grid {
+    background-size: 32px 32px;
+    opacity: 0.18;
+  }
+
+  .gallery-background__rings--one {
+    width: 220px;
+    height: 220px;
+  }
+
+  .gallery-background__rings--two {
+    width: 180px;
+    height: 180px;
+    right: -6%;
+  }
+}

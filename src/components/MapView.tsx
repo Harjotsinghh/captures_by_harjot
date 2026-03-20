@@ -1,5 +1,5 @@
-import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
-import { useEffect, useMemo, useState, useCallback, memo } from "react";
+import { MapContainer, TileLayer, useMap, useMapEvents, LayerGroup, Pane } from "react-leaflet";
+import { useEffect, useState, useCallback, memo } from "react";
 import L from "leaflet";
 import type { Photo } from "../data/images";
 import "leaflet/dist/leaflet.css";
@@ -71,6 +71,55 @@ const ZoomTracker = ({ onZoomChange }: { onZoomChange: (zoom: number) => void })
   return null;
 };
 
+// Unified Map Controls (Zoom In/Out + Layer Toggle with Dropdown)
+const MapUnifiedControls = memo(({ mapType, setMapType, theme }: any) => {
+  const map = useMap();
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className={`map-unified-controls ${theme === 'dark' ? 'dark' : ''}`}>
+      <div className="muc-pill">
+        <button className="muc-btn" onClick={(e) => { e.stopPropagation(); map.zoomIn(); }} title="Zoom In">
+          <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <div className="muc-divider" />
+        <button className="muc-btn" onClick={(e) => { e.stopPropagation(); map.zoomOut(); }} title="Zoom Out">
+          <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <div className="muc-divider" />
+        
+        <div className="muc-dropdown-wrapper">
+          <button 
+            className={`muc-btn ${isOpen ? 'active' : ''}`} 
+            onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }} 
+            title="Map Layers"
+          >
+            <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          </button>
+          
+          {isOpen && (
+             <div className="muc-dropdown">
+               <button 
+                 className={`muc-dropdown-item ${mapType === 'simple' ? 'selected' : ''}`}
+                 onClick={(e) => { e.stopPropagation(); setMapType('simple'); setIsOpen(false); }}
+               >
+                 Simple
+               </button>
+               <button 
+                 className={`muc-dropdown-item ${mapType === 'satellite' ? 'selected' : ''}`}
+                 onClick={(e) => { e.stopPropagation(); setMapType('satellite'); setIsOpen(false); }}
+               >
+                 Satellite
+               </button>
+             </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
+MapUnifiedControls.displayName = "MapUnifiedControls";
+
 function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
   const { center, places } = useMapData(images);
   const { theme } = useTheme();
@@ -80,16 +129,16 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
     setZoom(newZoom);
   }, []);
 
-  const tileUrl = useMemo(
-    () =>
-      theme === "dark"
-        ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    [theme]
-  );
+  const [mapType, setMapType] = useState<"simple" | "satellite">("simple");
+
+  const cartoUrl = "https://{s}.basemaps.cartocdn.com/" + (theme === "dark" ? "dark_all" : "light_all") + "/{z}/{x}/{y}{r}.png";
+  
+  const esriImageryUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+  const esriLabelsUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}";
 
   return (
     <div
+      className={`map-wrapper ${theme === 'dark' ? 'map-dark-mode' : ''} ${mapType === 'satellite' ? 'map-satellite-mode' : ''}`}
       style={{
         position: "absolute",
         top: 0,
@@ -102,18 +151,51 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
       <MapContainer
         center={center}
         zoom={6}
+        minZoom={3}
+        maxBounds={[
+          [-90, -180],
+          [90, 180]
+        ]}
+        maxBoundsViscosity={1.0}
         trackResize={true}
         touchZoom={true}
-        className={`mapBox ${theme === 'dark' ? 'map-dark-mode' : ''}`}
+        className="mapBox"
+        zoomControl={false}
       >
+        <MapUnifiedControls mapType={mapType} setMapType={setMapType} theme={theme} />
+        
         <AutoCenterMap places={places} />
         <FlyToController targetState={targetState} />
         <ZoomTracker onZoomChange={handleZoomChange} />
         <JourneyPath places={places} />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url={tileUrl}
-        />
+        
+        {mapType === "simple" && (
+          <TileLayer
+            key="simple-map"
+            attribution='&copy; CARTO'
+            url={cartoUrl}
+            noWrap={true}
+          />
+        )}
+        
+        {mapType === "satellite" && (
+          <LayerGroup key="sat-map">
+            <Pane name="satellite-imagery" style={{ zIndex: 100 }}>
+              <TileLayer
+                attribution='Tiles &copy; Esri'
+                url={esriImageryUrl}
+                noWrap={true}
+              />
+            </Pane>
+            <Pane name="satellite-labels" style={{ zIndex: 150 }}>
+              <TileLayer
+                url={esriLabelsUrl}
+                noWrap={true}
+              />
+            </Pane>
+          </LayerGroup>
+        )}
+
         {places.map((place, idx) => (
           <MapMarker key={idx} place={place} onClick={onMarkerClick} zoom={zoom} />
         ))}
