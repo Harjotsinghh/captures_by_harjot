@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, useMap, useMapEvents, LayerGroup, Pane } from "react-leaflet";
-import { useEffect, useState, useCallback, memo, Fragment } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import L from "leaflet";
 import type { Photo } from "../data/images";
 import "leaflet/dist/leaflet.css";
@@ -141,7 +141,7 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
   const cartoUrl = "https://{s}.basemaps.cartocdn.com/" + (theme === "dark" ? "dark_all" : "light_all") + "/{z}/{x}/{y}{r}.png";
 
   const esriImageryUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-  const cartoLabelsUrl = theme === "dark" 
+  const cartoLabelsUrl = theme === "dark"
     ? "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
     : "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png";
 
