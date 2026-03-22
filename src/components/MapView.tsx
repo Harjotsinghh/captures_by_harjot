@@ -206,17 +206,14 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
           </LayerGroup>
         )}
 
-        {[-360, 0, 360].map((offset) => (
-          <Fragment key={offset}>
-            {places.map((place, idx) => (
-              <MapMarker
-                key={`${idx}-${offset}`}
-                place={{ ...place, lng: place.lng + offset }}
-                onClick={onMarkerClick}
-                zoom={zoom}
-              />
-            ))}
-          </Fragment>
+        {/* Render markers only once, not three times */}
+        {places.map((place, idx) => (
+          <MapMarker
+            key={idx}
+            place={place}
+            onClick={onMarkerClick}
+            zoom={zoom}
+          />
         ))}
       </MapContainer>
     </div>

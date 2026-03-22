@@ -101,14 +101,14 @@ function MapMarker({ place, onClick, zoom }: MapMarkerProps) {
           const currentZoom = map.getZoom();
           const savedState = { center: [currentCenter.lat, currentCenter.lng] as [number, number], zoom: currentZoom };
 
+          // Start flyTo animation
           map.flyTo([place.lat, place.lng], 14, {
             duration: 1.5,
             easeLinearity: 0.25
           });
 
-          setTimeout(() => {
-            onClick(place.images, savedState);
-          }, 1000);
+          // Call onClick immediately, not after 1 second delay
+          onClick(place.images, savedState);
         },
       }}
     />
