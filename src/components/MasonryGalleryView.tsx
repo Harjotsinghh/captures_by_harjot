@@ -3,11 +3,14 @@ import { MasonryPhotoAlbum } from "react-photo-album";
 import "react-photo-album/masonry.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMapMarkerAlt, FaCompass } from "react-icons/fa";
+import { LuGrid2X2, LuGrid3X3, LuChevronDown } from "react-icons/lu";
 import type { Photo } from "../data/images";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import "./MasonryGalleryView.css";
+
+type Density = "comfortable" | "compact";
 
 interface MasonryGalleryViewProps {
     images: Photo[];
@@ -26,6 +29,12 @@ interface LocationGroup {
 const DEFAULT_WIDTH = 4;
 const DEFAULT_HEIGHT = 3;
 
+// How many photos to show before collapsing
+const PREVIEW_LIMITS: Record<Density, number> = {
+    comfortable: 6,
+    compact: 12,
+};
+
 const sectionVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -42,10 +51,43 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
         const [hideDial, setHideDial] = useState(false);
         const [hoveredDot, setHoveredDot] = useState<string | null>(null);
         const [dialOpen, setDialOpen] = useState(false);
+        const [density, setDensity] = useState<Density>("comfortable");
+        const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
         const labelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
         const isMobile = useMediaQuery("(max-width: 768px)");
         const isEditorial = variant === "editorial";
 
+        const previewLimit = PREVIEW_LIMITS[density];
+
+        const toggleSection = useCallback((sectionId: string) => {
+            setExpandedSections((prev) => {
+                const wasExpanded = prev.has(sectionId);
+                const next = new Set(prev);
+                if (wasExpanded) {
+                    next.delete(sectionId);
+                    // Scroll back to section header on collapse
+                    requestAnimationFrame(() => {
+                        const el = document.getElementById(sectionId);
+                        if (el && scrollContainerRef.current) {
+                            const containerRect = scrollContainerRef.current.getBoundingClientRect();
+                            const elementRect = el.getBoundingClientRect();
+                            const offset =
+                                elementRect.top -
+                                containerRect.top +
+                                scrollContainerRef.current.scrollTop -
+                                (isEditorial ? (isMobile ? 108 : 118) : 150);
+                            scrollContainerRef.current.scrollTo({
+                                top: offset,
+                                behavior: "smooth",
+                            });
+                        }
+                    });
+                } else {
+                    next.add(sectionId);
+                }
+                return next;
+            });
+        }, [isEditorial, isMobile]);
 
         // Group images by location
         const locationGroups: LocationGroup[] = useMemo(() => {
@@ -147,6 +189,38 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             }, 200);
         }, [scrollToSection]);
 
+        // Switch density and snap back to the current section
+        const switchDensity = useCallback((newDensity: Density) => {
+            if (newDensity === density) return;
+            setDensity(newDensity);
+            // Wait for re-layout, then scroll to the section that was in view
+            requestAnimationFrame(() => {
+                if (activeId) {
+                    scrollToSection(activeId);
+                }
+            });
+        }, [density, activeId, scrollToSection]);
+
+        // Column config per density
+        const getColumns = useCallback((containerWidth: number) => {
+            if (density === "compact") {
+                if (containerWidth < 400) return 4;
+                if (containerWidth < 600) return 5;
+                if (containerWidth < 900) return 6;
+                return 8;
+            }
+            // comfortable (default)
+            if (containerWidth < 400) return 3;
+            if (containerWidth < 600) return 4;
+            if (containerWidth < 900) return 4;
+            return 5;
+        }, [density]);
+
+        const getSpacing = useCallback((containerWidth: number) => {
+            if (density === "compact") return containerWidth < 500 ? 4 : 6;
+            return containerWidth < 500 ? 6 : 10;
+        }, [density]);
+
         if (!images || images.length === 0) {
             return (
                 <div className={`masonry-gallery-wrapper ${isEditorial ? "editorial" : ""}`}>
@@ -166,79 +240,125 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
 
 
                 {/* Photo Content */}
-                <div className={`masonry-content ${isEditorial ? "editorial" : ""}`}>
-                    {locationGroups.map((group) => (
-                        <motion.section
-                            key={group.id}
-                            id={group.id}
-                            className="location-section"
-                            variants={sectionVariants}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-50px" }}
-                        >
-                            <div className="location-section-header">
-                                <div className="location-icon">
-                                    <FaMapMarkerAlt />
-                                </div>
-                                <h2 className="location-section-title">{group.location}</h2>
-                                <span className="location-section-count">
-                                    {group.photos.length}{" "}
-                                    {group.photos.length === 1 ? "photo" : "photos"}
-                                </span>
-                            </div>
+                <div className={`masonry-content ${isEditorial ? "editorial" : ""} ${density === "compact" ? "density-compact" : ""}`}>
+                    {locationGroups.map((group) => {
+                        const isExpanded = expandedSections.has(group.id);
+                        const hasMore = group.photos.length > previewLimit;
+                        const visiblePhotos = isExpanded || !hasMore
+                            ? group.photos
+                            : group.photos.slice(0, previewLimit);
+                        const hiddenCount = group.photos.length - previewLimit;
 
-                            <MasonryPhotoAlbum
-                                photos={group.photos.map((photo) => {
-                                    return {
-                                        src: photo.fileUrl,
-                                        width: photo.width ?? DEFAULT_WIDTH,
-                                        height: photo.height ?? DEFAULT_HEIGHT,
-                                        key: photo.id,
-                                        title: photo.title,
-                                    };
-                                })}
-                                columns={(containerWidth) => {
-                                    if (containerWidth < 400) return 3;
-                                    if (containerWidth < 600) return 4;
-                                    if (containerWidth < 900) return 4;
-                                    return 5;
-                                }}
-                                spacing={(containerWidth) =>
-                                    containerWidth < 500 ? 6 : 10
-                                }
-                                onClick={({ index }) => {
-                                    const reordered = [
-                                        ...group.photos.slice(index),
-                                        ...group.photos.slice(0, index),
-                                    ];
-                                    onPhotoClick(reordered);
-                                }}
-                                render={{
-                                    image: (props, context) => (
-                                        <div className="masonry-photo-wrapper">
-                                            <img
-                                                {...props}
-                                                loading="lazy"
-                                                referrerPolicy="no-referrer"
-                                            />
-                                            <div className="masonry-photo-overlay">
-                                                <p className="masonry-photo-title">
-                                                    {group.photos[context.index]?.title}
-                                                </p>
-                                                <p className="masonry-photo-date">
-                                                    📅 {group.photos[context.index]?.date}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ),
-                                }}
-                                componentsProps={{
-                                    container: { className: "masonry-album-container" },
-                                }}
-                            />
-                        </motion.section>
-                    ))}
+                        return (
+                            <motion.section
+                                key={group.id}
+                                id={group.id}
+                                className="location-section"
+                                variants={sectionVariants}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, margin: "-50px" }}
+                            >
+                                <div className="location-section-header">
+                                    <div className="location-icon">
+                                        <FaMapMarkerAlt />
+                                    </div>
+                                    <h2 className="location-section-title">{group.location}</h2>
+                                    <span className="location-section-count">
+                                        {group.photos.length}{" "}
+                                        {group.photos.length === 1 ? "photo" : "photos"}
+                                    </span>
+                                </div>
+
+                                <div className={`section-masonry-wrap ${hasMore && !isExpanded ? "is-truncated" : ""}`}>
+                                    <MasonryPhotoAlbum
+                                        photos={visiblePhotos.map((photo) => {
+                                            return {
+                                                src: photo.fileUrl,
+                                                width: photo.width ?? DEFAULT_WIDTH,
+                                                height: photo.height ?? DEFAULT_HEIGHT,
+                                                key: photo.id,
+                                                title: photo.title,
+                                            };
+                                        })}
+                                        columns={getColumns}
+                                        spacing={getSpacing}
+                                        onClick={({ index }) => {
+                                            const allPhotos = group.photos;
+                                            const reordered = [
+                                                ...allPhotos.slice(index),
+                                                ...allPhotos.slice(0, index),
+                                            ];
+                                            onPhotoClick(reordered);
+                                        }}
+                                        render={{
+                                            image: (props, context) => {
+                                                // Only stagger the initial preview; expanded photos appear instantly
+                                                const delay = !isExpanded || context.index < previewLimit
+                                                    ? Math.min(context.index, 12) * 60
+                                                    : 0;
+                                                return (
+                                                <div
+                                                    className="masonry-photo-wrapper"
+                                                    style={{ "--stagger-delay": `${delay}ms` } as React.CSSProperties}
+                                                >
+                                                    <img
+                                                        {...props}
+                                                        loading="lazy"
+                                                        referrerPolicy="no-referrer"
+                                                    />
+                                                    <div className="masonry-photo-overlay">
+                                                        <p className="masonry-photo-title">
+                                                            {visiblePhotos[context.index]?.title}
+                                                        </p>
+                                                        <p className="masonry-photo-date">
+                                                            📅 {visiblePhotos[context.index]?.date}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            );
+                                            },
+                                        }}
+                                        componentsProps={{
+                                            container: { className: "masonry-album-container" },
+                                        }}
+                                    />
+
+                                    {/* Invisible clickable area over faded region */}
+                                    {hasMore && !isExpanded && (
+                                        <div
+                                            className="section-fade-overlay"
+                                            onClick={() => toggleSection(group.id)}
+                                        />
+                                    )}
+                                </div>
+
+                                {/* "Show more" label — outside the mask so it's fully visible */}
+                                {hasMore && !isExpanded && (
+                                    <div className="section-expand-bar">
+                                        <span
+                                            className="section-fade-label"
+                                            onClick={() => toggleSection(group.id)}
+                                        >
+                                            Show {hiddenCount} more photos
+                                        </span>
+                                    </div>
+                                )}
+
+                                {hasMore && isExpanded && (
+                                    <div className="section-expand-bar">
+                                        <button
+                                            className="section-expand-btn expanded"
+                                            onClick={() => toggleSection(group.id)}
+                                        >
+                                            Show less
+                                            <LuChevronDown size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                            </motion.section>
+                        );
+                    })}
 
                     {footer && !isEditorial && (
                         <div className="masonry-footer-shell">
@@ -252,6 +372,29 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                         {footer}
                     </div>
                 )}
+
+                {/* Density Toggle — bottom-left */}
+                <div
+                    className={`density-toggle ${isEditorial ? "editorial" : ""}`}
+                    style={{ position: "fixed", bottom: isMobile ? (isEditorial ? 22 : 74) : 24, left: isMobile ? 16 : 24, zIndex: 1100 }}
+                >
+                    <button
+                        className={`density-toggle-btn ${density === "comfortable" ? "active" : ""}`}
+                        onClick={() => switchDensity("comfortable")}
+                        title="Comfortable"
+                        aria-label="Comfortable density"
+                    >
+                        <LuGrid2X2 size={isMobile ? 14 : 16} />
+                    </button>
+                    <button
+                        className={`density-toggle-btn ${density === "compact" ? "active" : ""}`}
+                        onClick={() => switchDensity("compact")}
+                        title="Compact"
+                        aria-label="Compact density"
+                    >
+                        <LuGrid3X3 size={isMobile ? 14 : 16} />
+                    </button>
+                </div>
 
                 {/* Desktop: Side Location Navigator */}
                 {!isMobile && (

@@ -9,6 +9,8 @@
   --glass-bg: rgba(255, 255, 255, 0.25);
   --glass-border: rgba(255, 255, 255, 0.5);
   --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --frame-color: #ffffff;
+  --frame-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 14px rgba(0, 0, 0, 0.05);
   --overlay-bg: rgba(255, 255, 255, 0.9);
   --gallery-bg-start: #f5f1e8;
   --gallery-bg-mid: #eef7f5;
@@ -35,6 +37,8 @@
   --glass-bg: rgba(30, 41, 59, 0.4);
   --glass-border: rgba(255, 255, 255, 0.1);
   --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --frame-color: #1e293b;
+  --frame-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 14px rgba(0, 0, 0, 0.15);
   --overlay-bg: rgba(15, 23, 42, 0.9);
   --gallery-bg-start: #08111f;
   --gallery-bg-mid: #0d1729;

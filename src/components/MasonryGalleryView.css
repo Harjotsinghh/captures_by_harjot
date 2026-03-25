@@ -67,6 +67,18 @@
   margin-bottom: 20px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-color);
+  animation: headerSlideIn 0.4s ease-out both;
+}
+
+@keyframes headerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .masonry-gallery-wrapper.editorial .location-section-header {
@@ -120,32 +132,65 @@
 }
 
 /* ---- Photo Items in Masonry ---- */
-.masonry-photo-wrapper {
-  position: relative;
-  border-radius: 6px;
-  overflow: hidden;
-  cursor: pointer;
-  background: var(--bg-secondary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+@keyframes photoSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.masonry-photo-wrapper:hover {
-  transform: translateY(-4px) scale(1.015);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.masonry-photo-wrapper {
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--frame-color);
+  padding: 5px;
+  box-shadow: var(--frame-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: photoSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--stagger-delay, 0ms);
+}
+
+/* Shimmer skeleton — visible until image paints over it */
+.masonry-photo-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--bg-secondary) 25%,
+      color-mix(in srgb, var(--text-secondary) 12%, var(--bg-secondary)) 50%,
+      var(--bg-secondary) 75%
+    );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  z-index: 0;
 }
 
 .masonry-photo-wrapper img {
+  position: relative;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0;
+  z-index: 1;
 }
 
-.masonry-photo-wrapper:hover img {
-  transform: scale(1.06);
+.masonry-photo-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .masonry-photo-overlay {
@@ -183,11 +228,165 @@
 
 /* ---- react-photo-album overrides ---- */
 .masonry-album-container {
-  gap: 12px !important;
+  gap: 14px !important;
 }
 
 .masonry-album-container>div {
-  gap: 12px !important;
+  gap: 14px !important;
+}
+
+/* ---- Collapsible Section ---- */
+.section-expand-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -8px;
+  padding-bottom: 8px;
+}
+
+/* When showing "Show less", give breathing room from images */
+.section-expand-bar:has(.expanded) {
+  margin-top: 20px;
+}
+
+.section-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  background: var(--frame-color);
+  color: var(--text-secondary);
+  font-family: "Outfit", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.section-expand-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: 0 4px 16px rgba(14, 165, 164, 0.12);
+  transform: translateY(-1px);
+}
+
+.section-expand-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.section-expand-btn.expanded svg {
+  transform: rotate(180deg);
+}
+
+/* Masonry wrap — contains grid + optional fade overlay */
+.section-masonry-wrap {
+  position: relative;
+}
+
+/* When truncated, mask the grid to fade out at the bottom */
+.section-masonry-wrap.is-truncated {
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 45%,
+    transparent 92%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 45%,
+    transparent 92%
+  );
+}
+
+/* Clickable area over the faded region */
+.section-fade-overlay {
+  position: absolute;
+  bottom: 0;
+  left: -40px;
+  right: -40px;
+  height: 50%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.section-fade-label {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.25s ease;
+}
+
+.section-fade-label:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- Density: Compact mode ---- */
+.masonry-content.density-compact .masonry-photo-wrapper {
+  padding: 3px;
+  border-radius: 3px;
+}
+
+.masonry-content.density-compact .masonry-album-container {
+  gap: 8px !important;
+}
+
+.masonry-content.density-compact .masonry-album-container>div {
+  gap: 8px !important;
+}
+
+
+
+/* Density toggle control */
+.density-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.density-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.7rem;
+}
+
+.density-toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.density-toggle-btn.active {
+  background: color-mix(in srgb, var(--accent-color) 16%, var(--bg-secondary));
+  color: var(--accent-color);
+  box-shadow: 0 2px 8px rgba(14, 165, 164, 0.12);
 }
 
 /* ==========================================
@@ -384,6 +583,10 @@
     font-size: 1.1rem;
   }
 
+  .masonry-photo-wrapper {
+    padding: 3px;
+  }
+
   .masonry-photo-overlay {
     opacity: 1;
     transform: translateY(0);
@@ -396,6 +599,24 @@
 
   .masonry-photo-date {
     font-size: 0.55rem;
+  }
+
+  .masonry-content.density-compact .masonry-photo-wrapper {
+    padding: 2px;
+  }
+
+  .section-fade-overlay {
+    left: -20px;
+    right: -20px;
+  }
+
+  .section-fade-label {
+    font-size: 0.74rem;
+  }
+
+  .section-expand-btn {
+    font-size: 0.76rem;
+    padding: 8px 20px;
   }
 
   .masonry-gallery-wrapper.editorial .location-section-header {
