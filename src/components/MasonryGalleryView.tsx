@@ -1,13 +1,14 @@
 import { useMemo, useRef, useCallback, useState, useEffect, memo, type ReactNode } from "react";
 import { MasonryPhotoAlbum } from "react-photo-album";
 import "react-photo-album/masonry.css";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaMapMarkerAlt, FaCompass } from "react-icons/fa";
+import { motion, AnimatePresence, useScroll, useTransform, useVelocity, useSpring, useMotionTemplate, type MotionValue } from "framer-motion";
+import { FaCompass } from "react-icons/fa";
 import { LuGrid2X2, LuGrid3X3, LuChevronDown } from "react-icons/lu";
 import type { Photo } from "../data/images";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 
 import { useMediaQuery } from "../hooks/useMediaQuery";
+import Lenis from "lenis";
 import "./MasonryGalleryView.css";
 
 type Density = "comfortable" | "compact";
@@ -16,7 +17,7 @@ interface MasonryGalleryViewProps {
     images: Photo[];
     onPhotoClick: (photos: Photo[]) => void;
     variant?: "overlay" | "editorial";
-    header?: ReactNode;
+    header?: ReactNode | ((props: { scrollY: MotionValue<number>; scrollYProgress: MotionValue<number> }) => ReactNode);
     footer?: ReactNode;
 }
 
@@ -44,9 +45,46 @@ const sectionVariants = {
     },
 } as const;
 
+const SectionMarquee = memo(({ text, count, index, scrollContainerRef }: { text: string, count: number, index: number, scrollContainerRef: React.RefObject<HTMLElement | null> }) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        container: scrollContainerRef as React.RefObject<HTMLElement>,
+        offset: ["start end", "end start"]
+    });
+    
+    // Alternate direction based on index
+    const direction = index % 2 === 0 ? 1 : -1;
+    const xTransform = useTransform(scrollYProgress, [0, 1], [`${direction * 15}%`, `${direction * -15}%`]);
+
+    const RepeatedText = () => (
+        <>
+            <span>{text} <span className="marquee-count">{count}</span></span>
+            <span className="marquee-separator">✦</span>
+        </>
+    );
+
+    return (
+        <div ref={ref} className="location-marquee-container">
+            <motion.div className="location-marquee-track" style={{ x: xTransform }}>
+                <RepeatedText />
+                <RepeatedText />
+                <RepeatedText />
+                <RepeatedText />
+                <RepeatedText />
+                <RepeatedText />
+                <RepeatedText />
+                <RepeatedText />
+            </motion.div>
+        </div>
+    );
+});
+SectionMarquee.displayName = "SectionMarquee";
+
 const MasonryGalleryView = memo<MasonryGalleryViewProps>(
     ({ images, onPhotoClick, variant = "overlay", header, footer }) => {
         const scrollContainerRef = useRef<HTMLDivElement>(null);
+        const lenisRef = useRef<Lenis>(null);
         const [scrollProgress, setScrollProgress] = useState(0);
         const [hideDial, setHideDial] = useState(false);
         const [hoveredDot, setHoveredDot] = useState<string | null>(null);
@@ -76,10 +114,15 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                 containerRect.top +
                                 scrollContainerRef.current.scrollTop -
                                 (isEditorial ? (isMobile ? 108 : 118) : 150);
-                            scrollContainerRef.current.scrollTo({
-                                top: offset,
-                                behavior: "smooth",
-                            });
+                            
+                            if (lenisRef.current) {
+                                lenisRef.current.scrollTo(offset, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+                            } else {
+                                scrollContainerRef.current.scrollTo({
+                                    top: offset,
+                                    behavior: "smooth",
+                                });
+                            }
                         }
                     });
                 } else {
@@ -121,30 +164,65 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             [locationGroups, activeId]
         );
 
+        // Framer Motion useScroll & Velocity
+        const { scrollY, scrollYProgress } = useScroll({ container: scrollContainerRef });
+        
+        const scrollVelocity = useVelocity(scrollY);
+        const smoothVelocity = useSpring(scrollVelocity, {
+            damping: 30,
+            stiffness: 350
+        });
+        const skewVelocity = useTransform(smoothVelocity, [-1000, 1000], [-1.5, 1.5]);
+
+        // Chameleon Ambient Canvas Background - Stronger opacity so the user can easily see it
+        const bgColors1 = ["rgba(14, 165, 164, 0.2)", "rgba(102, 126, 234, 0.5)", "rgba(236, 72, 153, 0.4)", "rgba(14, 165, 164, 0.2)"];
+        const bgColors2 = ["rgba(255, 123, 84, 0.2)", "rgba(118, 75, 162, 0.5)", "rgba(244, 63, 94, 0.4)", "rgba(255, 159, 67, 0.2)"];
+        const color1 = useTransform(scrollYProgress, [0, 0.33, 0.66, 1], bgColors1);
+        const color2 = useTransform(scrollYProgress, [0, 0.33, 0.66, 1], bgColors2);
+        const bgTemplate = useMotionTemplate`radial-gradient(circle at 20% 0%, ${color1} 0%, transparent 60%), radial-gradient(circle at 80% 100%, ${color2} 0%, transparent 60%)`;
+
+        // Init Lenis smooth scroll
+        useEffect(() => {
+            if (!scrollContainerRef.current) return;
+            const contentElement = scrollContainerRef.current.querySelector('.masonry-scroll-content') as HTMLElement;
+            
+            const lenis = new Lenis({
+                wrapper: scrollContainerRef.current,
+                content: contentElement || undefined,
+                lerp: 0.14,
+                wheelMultiplier: 1.15,
+                smoothWheel: true,
+            });
+            lenisRef.current = lenis;
+
+            const raf = (time: number) => {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            };
+            requestAnimationFrame(raf);
+
+            return () => {
+                lenis.destroy();
+                lenisRef.current = null;
+            };
+        }, []);
+
         // Track scroll progress
         useEffect(() => {
-            const container = scrollContainerRef.current;
-            if (!container) return;
-            const onScroll = () => {
-                const { scrollTop, scrollHeight, clientHeight } = container;
-                const progress = scrollTop / (scrollHeight - clientHeight);
-                const normalized = Math.min(Math.max(progress, 0), 1);
+            return scrollYProgress.on("change", (latest) => {
+                const container = scrollContainerRef.current;
+                if (!container) return;
+                setScrollProgress(latest);
+                
+                const { scrollHeight, clientHeight, scrollTop } = container;
                 const remaining = scrollHeight - clientHeight - scrollTop;
-                setScrollProgress(normalized);
                 setHideDial(isEditorial && remaining < 180);
+                
                 if (isEditorial) {
-                    document.documentElement.style.setProperty("--gallery-scroll-progress", normalized.toFixed(4));
+                    document.documentElement.style.setProperty("--gallery-scroll-progress", latest.toFixed(4));
                 }
-            };
-            onScroll();
-            container.addEventListener("scroll", onScroll, { passive: true });
-            return () => {
-                container.removeEventListener("scroll", onScroll);
-                if (isEditorial) {
-                    document.documentElement.style.removeProperty("--gallery-scroll-progress");
-                }
-            };
-        }, [isEditorial]);
+            });
+        }, [isEditorial, scrollYProgress]);
 
         const scrollToSection = useCallback((sectionId: string) => {
             const el = document.getElementById(sectionId);
@@ -157,10 +235,15 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                     containerRect.top +
                     scrollContainerRef.current.scrollTop -
                     (isEditorial ? (isMobile ? 108 : 118) : 150);
-                scrollContainerRef.current.scrollTo({
-                    top: offset,
-                    behavior: "smooth",
-                });
+                
+                if (lenisRef.current) {
+                    lenisRef.current.scrollTo(offset, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+                } else {
+                    scrollContainerRef.current.scrollTo({
+                        top: offset,
+                        behavior: "smooth",
+                    });
+                }
             }
         }, [isEditorial, isMobile]);
 
@@ -234,14 +317,20 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
 
         return (
             <div className={`masonry-gallery-wrapper ${isEditorial ? "editorial" : ""}`} ref={scrollContainerRef}>
-                {!isEditorial && <div className="masonry-header-spacer" />}
-                {header && <div className="masonry-header-shell">{header}</div>}
+                {isEditorial && <motion.div className="chameleon-ambient-canvas" style={{ background: bgTemplate }} />}
+                <div className="masonry-scroll-content">
+                    {!isEditorial && <div className="masonry-header-spacer" />}
+                    {header && (
+                        <div className="masonry-header-shell">
+                            {typeof header === 'function' ? header({ scrollY, scrollYProgress }) : header}
+                        </div>
+                    )}
 
 
 
                 {/* Photo Content */}
                 <div className={`masonry-content ${isEditorial ? "editorial" : ""} ${density === "compact" ? "density-compact" : ""}`}>
-                    {locationGroups.map((group) => {
+                    {locationGroups.map((group, index) => {
                         const isExpanded = expandedSections.has(group.id);
                         const hasMore = group.photos.length > previewLimit;
                         const visiblePhotos = isExpanded || !hasMore
@@ -259,18 +348,17 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                 whileInView="visible"
                                 viewport={{ once: true, margin: "-50px" }}
                             >
-                                <div className="location-section-header">
-                                    <div className="location-icon">
-                                        <FaMapMarkerAlt />
-                                    </div>
-                                    <h2 className="location-section-title">{group.location}</h2>
-                                    <span className="location-section-count">
-                                        {group.photos.length}{" "}
-                                        {group.photos.length === 1 ? "photo" : "photos"}
-                                    </span>
-                                </div>
+                                <SectionMarquee 
+                                    text={group.location} 
+                                    count={group.photos.length}
+                                    index={index} 
+                                    scrollContainerRef={scrollContainerRef} 
+                                />
 
-                                <div className={`section-masonry-wrap ${hasMore && !isExpanded ? "is-truncated" : ""}`}>
+                                <motion.div 
+                                    className={`section-masonry-wrap ${hasMore && !isExpanded ? "is-truncated" : ""}`}
+                                    style={{ skewY: skewVelocity }}
+                                >
                                     <MasonryPhotoAlbum
                                         photos={visiblePhotos.map((photo) => {
                                             return {
@@ -331,7 +419,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                             onClick={() => toggleSection(group.id)}
                                         />
                                     )}
-                                </div>
+                                </motion.div>
 
                                 {/* "Show more" label — outside the mask so it's fully visible */}
                                 {hasMore && !isExpanded && (
@@ -372,6 +460,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                         {footer}
                     </div>
                 )}
+                </div>
 
                 {/* Density Toggle — bottom-left */}
                 <div

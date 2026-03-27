@@ -12,7 +12,7 @@
   overflow-x: hidden;
   background: var(--bg-primary);
   z-index: 1;
-  scroll-behavior: smooth;
+  /* Smooth behavior removed because Lenis takes over logic */
   /* Hide default scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -24,6 +24,15 @@
 
 .masonry-gallery-wrapper.editorial {
   background: transparent;
+}
+
+.chameleon-ambient-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* Behind everything */
+  pointer-events: none;
+  filter: blur(80px); /* Aggressive blur for aura */
+  will-change: background;
 }
 
 
@@ -49,86 +58,73 @@
   padding: 0 64px 160px;
 }
 
-/* ---- Location Section ---- */
 .location-section {
-  padding-top: 24px;
-  margin-bottom: 48px;
+  padding-top: 0;
+  margin-bottom: 32px;
 }
 
 .masonry-gallery-wrapper.editorial .location-section {
-  margin-bottom: 56px;
+  margin-bottom: 40px;
   position: relative;
 }
 
-.location-section-header {
+/* ---- Location Marquee Background ---- */
+.location-marquee-container {
+  overflow: hidden;
+  width: 100vw;
+  margin-left: -64px; /* Offset the 64px masonry-content padding on desktop */
+  padding: 40px 0 30px;
+  margin-bottom: -30px; /* Pulls masonry up over the text tightly */
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color);
-  animation: headerSlideIn 0.4s ease-out both;
+  position: relative;
+  z-index: 0;
+  pointer-events: none; /* Let clicks pass through if needed */
 }
 
-@keyframes headerSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.masonry-gallery-wrapper.editorial .location-marquee-container {
+  padding: 60px 0 40px;
+  margin-bottom: -40px;
 }
 
-.masonry-gallery-wrapper.editorial .location-section-header {
-  margin-bottom: 24px;
-  padding-bottom: 14px;
-  border-bottom-color: var(--gallery-divider);
-}
-
-.masonry-gallery-wrapper.editorial .location-icon {
-  box-shadow: 0 10px 20px rgba(14, 165, 164, 0.18);
-}
-
-.masonry-gallery-wrapper.editorial .location-section-title {
-  color: var(--gallery-title-color);
-}
-
-.masonry-gallery-wrapper.editorial .location-section-count {
-  color: var(--gallery-muted);
-}
-
-.location-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent-color), #06b6d4);
+.location-marquee-track {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 0.9rem;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(14, 165, 164, 0.25);
+  white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.5rem); /* Significantly reduced from 6rem */
+  font-weight: 800;
+  color: color-mix(in srgb, var(--text-primary) 6%, transparent);
+  -webkit-text-stroke: 2px color-mix(in srgb, var(--text-primary) 40%, transparent);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  will-change: transform;
+  text-shadow: 0px 4px 24px color-mix(in srgb, var(--accent-color) 10%, transparent);
 }
 
-.location-section-title {
-  font-family: "Outfit", sans-serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  letter-spacing: -0.01em;
+.marquee-count {
+  font-size: 0.35em;
+  font-weight: 600;
+  vertical-align: super;
+  margin-left: 8px;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--accent-color) 80%, transparent);
+  color: color-mix(in srgb, var(--accent-color) 15%, transparent);
 }
 
-.location-section-count {
-  font-family: "Outfit", sans-serif;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  font-weight: 400;
-  margin-left: auto;
-  flex-shrink: 0;
+.marquee-separator {
+  margin: 0 24px;
+  opacity: 0.6;
+  font-size: 0.6em;
+  transform: translateY(-10%);
+  -webkit-text-stroke: 0;
+  color: var(--accent-color);
+}
+
+/* Make sure the masonry wrapper stays above the marquee */
+.section-masonry-wrap {
+  position: relative;
+  z-index: 2;
+  will-change: transform;
+  transform-origin: center center;
 }
 
 /* ---- Photo Items in Masonry ---- */
@@ -279,11 +275,6 @@
 
 .section-expand-btn.expanded svg {
   transform: rotate(180deg);
-}
-
-/* Masonry wrap — contains grid + optional fade overlay */
-.section-masonry-wrap {
-  position: relative;
 }
 
 /* When truncated, mask the grid to fade out at the bottom */
@@ -565,24 +556,20 @@
   }
 
   .location-section {
-    padding-top: 14px;
-    margin-bottom: 32px;
+    padding-top: 0;
+    margin-bottom: 24px;
   }
 
-  .location-section-header {
-    margin-bottom: 16px;
+  .location-marquee-container {
+    margin-left: -14px; /* Offset mobile padding */
+    padding: 20px 0 15px;
+    margin-bottom: -15px;
   }
-
-  .location-icon {
-    width: 30px;
-    height: 30px;
-    font-size: 0.78rem;
+  
+  .location-marquee-track {
+    font-size: clamp(1.4rem, 6vw, 2.2rem);
+    -webkit-text-stroke: 1.5px color-mix(in srgb, var(--text-primary) 30%, transparent);
   }
-
-  .location-section-title {
-    font-size: 1.1rem;
-  }
-
   .masonry-photo-wrapper {
     padding: 3px;
   }

@@ -1,0 +1,70 @@
+.magnetic-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 10px rgba(14, 165, 164, 0.5);
+  margin-top: -6px;
+  margin-left: -6px;
+}
+
+/* UI Hover - Shrink to tiny precise dot */
+.magnetic-cursor.hover-ui {
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  margin-top: -4px;
+  margin-left: -4px;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+  border: none;
+}
+
+/* Photo Hover - Expand to "VIEW" sticker */
+.magnetic-cursor.hover-photo {
+  width: 56px;
+  height: 56px;
+  background: var(--accent-color);
+  border-color: transparent;
+  margin-top: -28px;
+  margin-left: -28px;
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--accent-color) 40%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.magnetic-cursor-text {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.70rem;
+  font-weight: 800;
+  color: #fff;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  letter-spacing: 0.1em;
+}
+
+.magnetic-cursor.hover-photo .magnetic-cursor-text {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Scoped Cursor Hiding: Only hide native cursor when MagneticCursor is active in Gallery */
+.gallery-mode-active, 
+.gallery-mode-active * {
+  cursor: none !important;
+}
+
+/* Ensure common UI elements inside gallery also hide cursor */
+.gallery-mode-active .view-toggle,
+.gallery-mode-active .section-show-more,
+.gallery-mode-active .masonry-photo-wrapper {
+  cursor: none !important;
+}

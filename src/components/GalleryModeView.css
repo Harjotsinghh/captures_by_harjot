@@ -11,10 +11,51 @@
 }
 
 
-.gallery-mode-hero {
-  width: min(1180px, 100%);
+.waterfall-hero-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Don't center against the massive 700px image column */
+  padding: 18vh 2rem 2rem; /* Clean, responsive optical top spacing */
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 0 2rem;
+  min-height: 80vh; /* Ensure it takes up enough vertical runway */
+  gap: 30px;
+}
+
+.waterfall-hero-left {
+  flex: 1;
+  max-width: 500px;
+  z-index: 10;
+}
+
+.waterfall-hero-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none; /* Let the scroll work */
+}
+
+.waterfall-header-track {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 400px;
+  transform: rotate(-3deg) scale(1);
+}
+
+.waterfall-img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 16px 32px rgba(0,0,0,0.2);
+}
+
+.waterfall-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .gallery-mode-kicker {

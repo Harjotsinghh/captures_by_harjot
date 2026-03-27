@@ -12,6 +12,7 @@ import ErrorScreen from "./components/ErrorScreen";
 import { motion } from "framer-motion";
 import { ThemeProvider } from "./context/ThemeContext";
 import BottomSheet from "./components/BottomSheet";
+import MagneticCursor from "./components/MagneticCursor";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import ViewModeToggle from "./components/ViewModeToggle";
 import "./App.css";
@@ -49,6 +50,8 @@ export default function App(): JSX.Element {
 
   return (
     <ThemeProvider>
+      {isGalleryView && <MagneticCursor />}
+      
       {/* Loader Layer (Background) - Only show if intro not finished */}
       {!introFinished && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
@@ -78,16 +81,17 @@ export default function App(): JSX.Element {
           onAnimationComplete={() => {
             if (!loading) setIntroFinished(true);
           }}
-          style={{
-            position: 'relative',
-            zIndex: 10,
-            background: 'var(--bg-primary)',
-            minHeight: '100vh',
-            color: 'var(--text-primary)',
-            transition: 'background-color 0.3s ease, color 0.3s ease',
-            willChange: 'opacity, transform'
-          }}
-        >
+            style={{
+              position: 'relative',
+              zIndex: 10,
+              background: 'var(--bg-primary)',
+              minHeight: '100vh',
+              color: 'var(--text-primary)',
+              transition: 'background-color 0.3s ease, color 0.3s ease',
+              willChange: 'opacity, transform'
+            }}
+            className={isGalleryView ? "gallery-mode-active" : ""}
+          >
           {isGalleryView ? <GalleryBackground /> : <AmbientBackground />}
           <div className="app-container">
             {isMobile ? (
