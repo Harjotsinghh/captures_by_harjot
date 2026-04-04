@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "preinstall": "if [ -f package.json ] && grep -q '\"axios\"' package.json; then echo 'ERROR: axios is forbidden for security. Use fetch instead.'; exit 1; fi",
+    "preinstall": "node -e \"const p=JSON.parse(require('fs').readFileSync('package.json')); if(p.dependencies?.axios || p.devDependencies?.axios) { console.error('ERROR: axios is forbidden for security. Use fetch instead.'); process.exit(1) }\"",
     "check-axios": "npm ls axios || echo 'PASS: axios not found in dependency tree'"
   },
   "dependencies": {
@@ -24,7 +24,6 @@
     "react-ga4": "^2.1.0",
     "react-icons": "^5.5.0",
     "react-leaflet": "^5.0.0",
-    "react-loading-overlay-ts": "^2.0.2",
     "react-modal": "^3.16.3",
     "react-modal-sheet": "^5.2.1",
     "react-photo-album": "^3.2.1",
