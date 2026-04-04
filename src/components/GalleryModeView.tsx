@@ -40,6 +40,18 @@ const GalleryModeView = memo(
       };
     }, [images]);
 
+    // Pick 6 random hero images (randomized on each page load)
+    const heroImages = useMemo(() => {
+      if (images.length <= 6) return images;
+      const shuffled = [...images];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled.slice(0, 6);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [images.length]);
+
     const lineVariants = {
       hidden: { opacity: 0, y: 20 },
       visible: { opacity: 1, y: 0 }
@@ -113,7 +125,7 @@ const GalleryModeView = memo(
           images={images}
           onPhotoClick={onPhotoClick}
           variant="editorial"
-          header={({ scrollY }) => <WaterfallHero scrollY={scrollY} stats={stats} isMobile={isMobile} heroImages={images.slice(0, 6)} />}
+          header={({ scrollY }) => <WaterfallHero scrollY={scrollY} stats={stats} isMobile={isMobile} heroImages={heroImages} />}
           footer={<Footer />}
         />
       </section>

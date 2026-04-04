@@ -4,7 +4,7 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 import "./MagneticCursor.css";
 
 export default function MagneticCursor() {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const hasPointer = useMediaQuery("(hover: hover) and (pointer: fine)");
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   
@@ -17,7 +17,7 @@ export default function MagneticCursor() {
   const [hoveredText, setHoveredText] = useState("");
 
   useEffect(() => {
-    if (isMobile) return;
+    if (!hasPointer) return;
 
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
@@ -53,9 +53,9 @@ export default function MagneticCursor() {
       window.removeEventListener("mousemove", moveCursor);
       window.removeEventListener("mouseover", handleMouseOver);
     };
-  }, [cursorX, cursorY, isMobile]);
+  }, [cursorX, cursorY, hasPointer]);
 
-  if (isMobile) return null;
+  if (!hasPointer) return null;
 
   return (
     <motion.div

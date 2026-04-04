@@ -1,5 +1,5 @@
 /* ==========================================
-   Masonry Gallery View
+   Masonry Gallery View — Reimagined
    ========================================== */
 
 .masonry-gallery-wrapper {
@@ -12,8 +12,6 @@
   overflow-x: hidden;
   background: var(--bg-primary);
   z-index: 1;
-  /* Smooth behavior removed because Lenis takes over logic */
-  /* Hide default scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -29,12 +27,11 @@
 .chameleon-ambient-canvas {
   position: fixed;
   inset: 0;
-  z-index: 0; /* Behind everything */
+  z-index: 0;
   pointer-events: none;
-  filter: blur(80px); /* Aggressive blur for aura */
+  filter: blur(80px);
   will-change: background;
 }
-
 
 /* ---- Spacer for header + view toggle ---- */
 .masonry-header-spacer {
@@ -50,7 +47,6 @@
 .masonry-content {
   max-width: 1200px;
   margin: 0 auto;
-  /* Symmetric padding keeps the grid nicely centered while leaving 64px safe space on edges for dots to sit */
   padding: 0 64px 120px;
 }
 
@@ -68,70 +64,89 @@
   position: relative;
 }
 
-/* ---- Location Marquee Background ---- */
-.location-marquee-container {
-  overflow: hidden;
-  width: 100vw;
-  margin-left: -64px; /* Offset the 64px masonry-content padding on desktop */
-  padding: 40px 0 30px;
-  margin-bottom: -30px; /* Pulls masonry up over the text tightly */
+/* ==========================================
+   Split Line Divider (replaces marquee)
+   ========================================== */
+
+.split-line-divider {
   display: flex;
   align-items: center;
-  position: relative;
-  z-index: 0;
-  pointer-events: none; /* Let clicks pass through if needed */
+  gap: 20px;
+  padding: 48px 0 28px;
 }
 
-.masonry-gallery-wrapper.editorial .location-marquee-container {
-  padding: 60px 0 40px;
-  margin-bottom: -40px;
+.masonry-gallery-wrapper.editorial .split-line-divider {
+  padding: 56px 0 32px;
 }
 
-.location-marquee-track {
+.split-line-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent-color) 40%, transparent),
+    color-mix(in srgb, var(--border-color) 60%, transparent)
+  );
+  transform-origin: center;
+}
+
+.split-line-left {
+  transform-origin: right center;
+}
+
+.split-line-right {
+  transform-origin: left center;
+}
+
+.split-line-content {
   display: flex;
+  align-items: center;
+  gap: 10px;
   white-space: nowrap;
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(2rem, 4vw, 3.5rem); /* Significantly reduced from 6rem */
-  font-weight: 800;
-  color: color-mix(in srgb, var(--text-primary) 6%, transparent);
-  -webkit-text-stroke: 2px color-mix(in srgb, var(--text-primary) 40%, transparent);
-  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.split-line-location {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  will-change: transform;
-  text-shadow: 0px 4px 24px color-mix(in srgb, var(--accent-color) 10%, transparent);
+  color: var(--text-primary);
 }
 
-.marquee-count {
-  font-size: 0.35em;
+.split-line-sep {
+  color: var(--text-secondary);
+  opacity: 0.4;
+  font-size: 1rem;
+}
+
+.split-line-count {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.72rem;
   font-weight: 600;
-  vertical-align: super;
-  margin-left: 8px;
-  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--accent-color) 80%, transparent);
-  color: color-mix(in srgb, var(--accent-color) 15%, transparent);
-}
-
-.marquee-separator {
-  margin: 0 24px;
-  opacity: 0.6;
-  font-size: 0.6em;
-  transform: translateY(-10%);
-  -webkit-text-stroke: 0;
   color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  padding: 3px 10px;
+  border-radius: 100px;
+  letter-spacing: 0.04em;
 }
 
-/* Make sure the masonry wrapper stays above the marquee */
+/* ---- Section Masonry Wrap ---- */
 .section-masonry-wrap {
   position: relative;
   z-index: 2;
-  will-change: transform;
   transform-origin: center center;
 }
 
-/* ---- Photo Items in Masonry ---- */
+/* ==========================================
+   Photo Items — 3D Tilt + Glow
+   ========================================== */
+
 @keyframes photoSlideIn {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.97);
+    transform: translateY(40px) scale(0.92);
   }
   to {
     opacity: 1;
@@ -152,8 +167,7 @@
   background: var(--frame-color);
   padding: 5px;
   box-shadow: var(--frame-shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: photoSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: photoSlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--stagger-delay, 0ms);
 }
 
@@ -174,7 +188,24 @@
   z-index: 0;
 }
 
-.masonry-photo-wrapper img {
+/* ---- Tilt Wrapper (3D perspective) ---- */
+.photo-tilt-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.35s cubic-bezier(0.03, 0.98, 0.52, 0.99),
+              box-shadow 0.35s ease;
+  transform-style: preserve-3d;
+}
+
+.photo-tilt-wrap:hover {
+  transform: perspective(800px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(1.03);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 5;
+  will-change: transform;
+}
+
+.photo-tilt-wrap img {
   position: relative;
   width: 100%;
   height: 100%;
@@ -184,26 +215,42 @@
   z-index: 1;
 }
 
-.masonry-photo-wrapper:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
+/* Cursor-tracking ambient glow */
+.photo-tilt-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    400px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(14, 165, 164, 0.2),
+    transparent 60%
+  );
+  transition: opacity 0.35s ease;
 }
 
+.photo-tilt-wrap:hover .photo-tilt-glow {
+  opacity: 1;
+}
+
+/* ---- Photo Overlay (slide-up glass panel) ---- */
 .masonry-photo-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 16px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+  padding: 24px 16px 14px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
   color: #fff;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
+  z-index: 3;
 }
 
-.masonry-photo-wrapper:hover .masonry-photo-overlay {
+.photo-tilt-wrap:hover .masonry-photo-overlay {
   opacity: 1;
   transform: translateY(0);
 }
@@ -213,7 +260,7 @@
   font-size: 0.85rem;
   font-weight: 600;
   margin: 0 0 2px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .masonry-photo-date {
@@ -231,98 +278,70 @@
   gap: 14px !important;
 }
 
-/* ---- Collapsible Section ---- */
+/* ==========================================
+   Collapsible Section — Glass Pill
+   ========================================== */
+
 .section-expand-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -8px;
+  margin-top: 4px;
   padding-bottom: 8px;
 }
 
-/* When showing "Show less", give breathing room from images */
 .section-expand-bar:has(.expanded) {
   margin-top: 20px;
 }
 
-.section-expand-btn {
+.section-expand-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 10px 24px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--glass-border);
   border-radius: 100px;
-  background: var(--frame-color);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: var(--text-secondary);
   font-family: "Outfit", sans-serif;
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
-.section-expand-btn:hover {
+.section-expand-pill:hover {
   border-color: var(--accent-color);
   color: var(--accent-color);
-  box-shadow: 0 4px 16px rgba(14, 165, 164, 0.12);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(14, 165, 164, 0.15);
+  background: color-mix(in srgb, var(--accent-color) 6%, var(--glass-bg));
 }
 
-.section-expand-btn svg {
-  transition: transform 0.3s ease;
+.section-expand-pill svg {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.section-expand-btn.expanded svg {
+.section-expand-pill.expanded svg {
   transform: rotate(180deg);
 }
 
-/* When truncated, mask the grid to fade out at the bottom */
+/* Softer truncation mask */
 .section-masonry-wrap.is-truncated {
   mask-image: linear-gradient(
     to bottom,
     black 0%,
-    black 45%,
-    transparent 92%
+    black 70%,
+    transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     to bottom,
     black 0%,
-    black 45%,
-    transparent 92%
+    black 70%,
+    transparent 100%
   );
-}
-
-/* Clickable area over the faded region */
-.section-fade-overlay {
-  position: absolute;
-  bottom: 0;
-  left: -40px;
-  right: -40px;
-  height: 50%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 4px;
-  cursor: pointer;
-  z-index: 3;
-}
-
-.section-fade-label {
-  font-family: "Outfit", sans-serif;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--accent-color);
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  opacity: 0.85;
-  transition: opacity 0.25s ease;
-}
-
-.section-fade-label:hover {
-  opacity: 1;
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 /* ---- Density: Compact mode ---- */
@@ -339,9 +358,7 @@
   gap: 8px !important;
 }
 
-
-
-/* Density toggle control */
+/* ---- Density toggle control ---- */
 .density-toggle {
   display: inline-flex;
   align-items: center;
@@ -477,39 +494,52 @@
     transform: scale(1);
     opacity: 0.6;
   }
-
   100% {
     transform: scale(1.8);
     opacity: 0;
   }
 }
 
-/* Tooltip label on hover */
+/* Tooltip label on hover — now with thumbnail */
 .side-loc-label {
   position: absolute;
   right: calc(100% + 12px);
   white-space: nowrap;
-  padding: 6px 14px;
-  border-radius: 8px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 10px;
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   font-family: "Outfit", sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-primary);
   pointer-events: none;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+}
+
+.side-loc-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.side-loc-label-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .side-loc-label-count {
   font-weight: 400;
   opacity: 0.6;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
 }
 
 /* ---- Empty State ---- */
@@ -560,55 +590,52 @@
     margin-bottom: 24px;
   }
 
-  .location-marquee-container {
-    margin-left: -14px; /* Offset mobile padding */
-    padding: 20px 0 15px;
-    margin-bottom: -15px;
+  /* Split line divider — mobile */
+  .split-line-divider {
+    gap: 12px;
+    padding: 28px 0 18px;
   }
-  
-  .location-marquee-track {
-    font-size: clamp(1.4rem, 6vw, 2.2rem);
-    -webkit-text-stroke: 1.5px color-mix(in srgb, var(--text-primary) 30%, transparent);
+
+  .split-line-location {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
   }
+
+  .split-line-count {
+    font-size: 0.64rem;
+    padding: 2px 8px;
+  }
+
+  /* Photos — mobile */
   .masonry-photo-wrapper {
     padding: 3px;
   }
 
-  .masonry-photo-overlay {
-    opacity: 1;
-    transform: translateY(0);
-    padding: 8px 10px;
+  /* Mobile: tap spring effect instead of 3D tilt */
+  .photo-tilt-wrap {
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .masonry-photo-title {
+  .photo-tilt-wrap:active {
+    transform: scale(0.96) !important;
+  }
+
+  .masonry-photo-overlay {
     display: none;
   }
 
-  .masonry-photo-date {
-    font-size: 0.55rem;
+  .photo-tilt-glow {
+    display: none;
   }
 
   .masonry-content.density-compact .masonry-photo-wrapper {
     padding: 2px;
   }
 
-  .section-fade-overlay {
-    left: -20px;
-    right: -20px;
-  }
-
-  .section-fade-label {
-    font-size: 0.74rem;
-  }
-
-  .section-expand-btn {
+  /* Expand pill — mobile */
+  .section-expand-pill {
     font-size: 0.76rem;
     padding: 8px 20px;
-  }
-
-  .masonry-gallery-wrapper.editorial .location-section-header {
-    margin-bottom: 14px;
-    padding-bottom: 11px;
   }
 
   .masonry-gallery-wrapper.editorial .location-section:first-child {
@@ -632,10 +659,8 @@
 .loc-dial-fab {
   position: fixed;
   bottom: 74px;
-  /* Higher than the 50px BottomSheet */
   right: 16px;
   z-index: 1001;
-  /* Higher than BottomSheet (1000) */
   display: flex;
   align-items: center;
   gap: 8px;
@@ -692,7 +717,6 @@
 .loc-dial-sheet {
   position: fixed;
   bottom: 130px;
-  /* Floats right above the FAB */
   right: 16px;
   width: 240px;
   z-index: 1003;
@@ -705,16 +729,12 @@
   max-height: 50vh;
   overflow-y: auto;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-/* Hide scrollbar for the popover */
-.loc-dial-sheet::-webkit-scrollbar {
-  display: none;
-}
-
-.loc-dial-sheet {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.loc-dial-sheet::-webkit-scrollbar {
+  display: none;
 }
 
 .loc-dial-header {

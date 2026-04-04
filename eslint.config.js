@@ -19,5 +19,18 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'axios',
+              message: 'axios is forbidden for security. Please use native fetch instead.',
+            },
+          ],
+        },
+      ],
+    },
   },
 ])

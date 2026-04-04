@@ -199,7 +199,7 @@ body {
 /* Journey Path Animation */
 .journey-line-path {
   animation: journey-dash 8s linear infinite;
-  filter: drop-shadow(0 0 4px var(--accent-color)) drop-shadow(0 0 10px var(--accent-color));
+  filter: drop-shadow(0 0 3px var(--accent-color));
   stroke-dasharray: 8, 16;
   stroke-linecap: round;
   will-change: stroke-dashoffset;
@@ -469,7 +469,7 @@ body {
 
 /* Global base map background (so edges don't stick out white before load) */
 .mapBox {
-  background-color: #0b0f19 !important;
+  background-color: var(--bg-primary) !important;
 }
 
 /* Post-Processing: Light Mode Satellite (Bright & Sunny) */

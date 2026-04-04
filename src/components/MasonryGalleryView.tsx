@@ -45,41 +45,39 @@ const sectionVariants = {
     },
 } as const;
 
-const SectionMarquee = memo(({ text, count, index, scrollContainerRef }: { text: string, count: number, index: number, scrollContainerRef: React.RefObject<HTMLElement | null> }) => {
-    const ref = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        container: scrollContainerRef as React.RefObject<HTMLElement>,
-        offset: ["start end", "end start"]
-    });
-    
-    // Alternate direction based on index
-    const direction = index % 2 === 0 ? 1 : -1;
-    const xTransform = useTransform(scrollYProgress, [0, 1], [`${direction * 15}%`, `${direction * -15}%`]);
-
-    const RepeatedText = () => (
-        <>
-            <span>{text} <span className="marquee-count">{count}</span></span>
-            <span className="marquee-separator">✦</span>
-        </>
-    );
+const SplitLineDivider = memo(({ location, count }: { location: string; count: number }) => {
+    const containerVariants = {
+        hidden: {},
+        visible: { transition: { staggerChildren: 0.12 } },
+    };
+    const lineVariants = {
+        hidden: { scaleX: 0 },
+        visible: { scaleX: 1, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
+    };
+    const textVariants = {
+        hidden: { opacity: 0, y: 6 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.3, ease: "easeOut" as const } },
+    };
 
     return (
-        <div ref={ref} className="location-marquee-container">
-            <motion.div className="location-marquee-track" style={{ x: xTransform }}>
-                <RepeatedText />
-                <RepeatedText />
-                <RepeatedText />
-                <RepeatedText />
-                <RepeatedText />
-                <RepeatedText />
-                <RepeatedText />
-                <RepeatedText />
+        <motion.div
+            className="split-line-divider"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+        >
+            <motion.div className="split-line-rule split-line-left" variants={lineVariants} />
+            <motion.div className="split-line-content" variants={textVariants}>
+                <span className="split-line-location">{location}</span>
+                <span className="split-line-sep">·</span>
+                <span className="split-line-count">{count}</span>
             </motion.div>
-        </div>
+            <motion.div className="split-line-rule split-line-right" variants={lineVariants} />
+        </motion.div>
     );
 });
-SectionMarquee.displayName = "SectionMarquee";
+SplitLineDivider.displayName = "SplitLineDivider";
 
 const MasonryGalleryView = memo<MasonryGalleryViewProps>(
     ({ images, onPhotoClick, variant = "overlay", header, footer }) => {
@@ -93,6 +91,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
         const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
         const labelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
         const isMobile = useMediaQuery("(max-width: 768px)");
+        const hasPointer = useMediaQuery("(hover: hover) and (pointer: fine)");
         const isEditorial = variant === "editorial";
 
         const previewLimit = PREVIEW_LIMITS[density];
@@ -172,7 +171,8 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             damping: 30,
             stiffness: 350
         });
-        const skewVelocity = useTransform(smoothVelocity, [-1000, 1000], [-1.5, 1.5]);
+        const scaleBreathing = useTransform(smoothVelocity, [-2000, 0, 2000], [0.985, 1, 0.985]);
+        const smoothScale = useSpring(scaleBreathing, { damping: 40, stiffness: 200 });
 
         // Chameleon Ambient Canvas Background - Stronger opacity so the user can easily see it
         const bgColors1 = ["rgba(14, 165, 164, 0.2)", "rgba(102, 126, 234, 0.5)", "rgba(236, 72, 153, 0.4)", "rgba(14, 165, 164, 0.2)"];
@@ -304,6 +304,32 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             return containerWidth < 500 ? 6 : 10;
         }, [density]);
 
+        // 3D tilt on hover (desktop only) — rAF-throttled
+        const tiltRaf = useRef<number>(0);
+        const handleTiltMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+            if (!hasPointer) return;
+            const el = e.currentTarget;
+            const clientX = e.clientX;
+            const clientY = e.clientY;
+            cancelAnimationFrame(tiltRaf.current);
+            tiltRaf.current = requestAnimationFrame(() => {
+                const rect = el.getBoundingClientRect();
+                const x = (clientX - rect.left) / rect.width;
+                const y = (clientY - rect.top) / rect.height;
+                el.style.setProperty('--tilt-x', `${(0.5 - y) * 8}deg`);
+                el.style.setProperty('--tilt-y', `${(x - 0.5) * 8}deg`);
+                el.style.setProperty('--glow-x', `${x * 100}%`);
+                el.style.setProperty('--glow-y', `${y * 100}%`);
+            });
+        }, [hasPointer]);
+
+        const handleTiltLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+            cancelAnimationFrame(tiltRaf.current);
+            const el = e.currentTarget;
+            el.style.setProperty('--tilt-x', '0deg');
+            el.style.setProperty('--tilt-y', '0deg');
+        }, []);
+
         if (!images || images.length === 0) {
             return (
                 <div className={`masonry-gallery-wrapper ${isEditorial ? "editorial" : ""}`}>
@@ -330,7 +356,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
 
                 {/* Photo Content */}
                 <div className={`masonry-content ${isEditorial ? "editorial" : ""} ${density === "compact" ? "density-compact" : ""}`}>
-                    {locationGroups.map((group, index) => {
+                    {locationGroups.map((group) => {
                         const isExpanded = expandedSections.has(group.id);
                         const hasMore = group.photos.length > previewLimit;
                         const visiblePhotos = isExpanded || !hasMore
@@ -348,16 +374,14 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                 whileInView="visible"
                                 viewport={{ once: true, margin: "-50px" }}
                             >
-                                <SectionMarquee 
-                                    text={group.location} 
+                                <SplitLineDivider
+                                    location={group.location}
                                     count={group.photos.length}
-                                    index={index} 
-                                    scrollContainerRef={scrollContainerRef} 
                                 />
 
                                 <motion.div 
                                     className={`section-masonry-wrap ${hasMore && !isExpanded ? "is-truncated" : ""}`}
-                                    style={{ skewY: skewVelocity }}
+                                    style={{ scale: smoothScale }}
                                 >
                                     <MasonryPhotoAlbum
                                         photos={visiblePhotos.map((photo) => {
@@ -381,27 +405,33 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                         }}
                                         render={{
                                             image: (props, context) => {
-                                                // Only stagger the initial preview; expanded photos appear instantly
                                                 const delay = !isExpanded || context.index < previewLimit
                                                     ? Math.min(context.index, 12) * 60
-                                                    : 0;
+                                                    : Math.min(context.index - previewLimit, 8) * 50;
                                                 return (
                                                 <div
                                                     className="masonry-photo-wrapper"
                                                     style={{ "--stagger-delay": `${delay}ms` } as React.CSSProperties}
                                                 >
-                                                    <img
-                                                        {...props}
-                                                        loading="lazy"
-                                                        referrerPolicy="no-referrer"
-                                                    />
-                                                    <div className="masonry-photo-overlay">
-                                                        <p className="masonry-photo-title">
-                                                            {visiblePhotos[context.index]?.title}
-                                                        </p>
-                                                        <p className="masonry-photo-date">
-                                                            📅 {visiblePhotos[context.index]?.date}
-                                                        </p>
+                                                    <div
+                                                        className="photo-tilt-wrap"
+                                                        onMouseMove={handleTiltMove}
+                                                        onMouseLeave={handleTiltLeave}
+                                                    >
+                                                        <img
+                                                            {...props}
+                                                            loading="lazy"
+                                                            referrerPolicy="no-referrer"
+                                                        />
+                                                        <div className="photo-tilt-glow" />
+                                                        <div className="masonry-photo-overlay">
+                                                            <p className="masonry-photo-title">
+                                                                {visiblePhotos[context.index]?.title}
+                                                            </p>
+                                                            <p className="masonry-photo-date">
+                                                                📅 {visiblePhotos[context.index]?.date}
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             );
@@ -412,36 +442,33 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                         }}
                                     />
 
-                                    {/* Invisible clickable area over faded region */}
-                                    {hasMore && !isExpanded && (
-                                        <div
-                                            className="section-fade-overlay"
-                                            onClick={() => toggleSection(group.id)}
-                                        />
-                                    )}
                                 </motion.div>
 
-                                {/* "Show more" label — outside the mask so it's fully visible */}
                                 {hasMore && !isExpanded && (
                                     <div className="section-expand-bar">
-                                        <span
-                                            className="section-fade-label"
+                                        <motion.button
+                                            className="section-expand-pill"
                                             onClick={() => toggleSection(group.id)}
+                                            whileHover={{ scale: 1.04, y: -1 }}
+                                            whileTap={{ scale: 0.97 }}
                                         >
-                                            Show {hiddenCount} more photos
-                                        </span>
+                                            <span>Show {hiddenCount} more</span>
+                                            <LuChevronDown size={14} />
+                                        </motion.button>
                                     </div>
                                 )}
 
                                 {hasMore && isExpanded && (
                                     <div className="section-expand-bar">
-                                        <button
-                                            className="section-expand-btn expanded"
+                                        <motion.button
+                                            className="section-expand-pill expanded"
                                             onClick={() => toggleSection(group.id)}
+                                            whileHover={{ scale: 1.04, y: -1 }}
+                                            whileTap={{ scale: 0.97 }}
                                         >
-                                            Show less
-                                            <LuChevronDown size={16} />
-                                        </button>
+                                            <span>Show less</span>
+                                            <LuChevronDown size={14} />
+                                        </motion.button>
                                     </div>
                                 )}
                             </motion.section>
@@ -513,10 +540,19 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                             exit={{ opacity: 0, x: 6 }}
                                             transition={{ duration: 0.15 }}
                                         >
-                                            {group.location}
-                                            <span className="side-loc-label-count">
-                                                {group.photos.length}
-                                            </span>
+                                            <img
+                                                className="side-loc-thumb"
+                                                src={group.photos[0]?.fileUrl}
+                                                alt=""
+                                                loading="lazy"
+                                                referrerPolicy="no-referrer"
+                                            />
+                                            <div className="side-loc-label-text">
+                                                {group.location}
+                                                <span className="side-loc-label-count">
+                                                    {group.photos.length}
+                                                </span>
+                                            </div>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>

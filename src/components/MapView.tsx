@@ -160,7 +160,7 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
       <MapContainer
         center={center}
         zoom={5}
-        minZoom={2}
+        minZoom={3}
         maxBounds={[
           [-85, -Infinity],
           [85, Infinity]
