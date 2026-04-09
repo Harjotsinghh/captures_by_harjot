@@ -1,5 +1,6 @@
 /* =========================================
-   Lightbox Custom UI Overlays
+   Lightbox Custom UI Overlays — Redesigned
+   Linear glass panels · Frosted depth
 ========================================= */
 
 /* Floating Info Button (Bottom Right) */
@@ -8,48 +9,45 @@
   bottom: 24px;
   right: 24px;
   z-index: 10;
-  background: rgba(30, 30, 30, 0.15);
-  /* Significantly more transparent */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.6);
-  width: 48px;
-  height: 48px;
+  background: rgba(20, 20, 22, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px;
 }
 
 .gallery-floating-info-btn:hover {
-  background: rgba(40, 40, 40, 0.6);
-  /* Translucent hover state */
+  background: rgba(30, 30, 34, 0.6);
   color: #fff;
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 8px 20px;
 }
 
 @media (max-width: 768px) {
   .gallery-floating-info-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     bottom: 16px;
     right: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   }
 
   .gallery-floating-info-btn svg {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
   }
 }
 
-/* Glass Sidebar Panel */
+/* Glass Sidebar Panel — Linear-style dark glass */
 .gallery-sidebar {
   position: fixed;
   top: 0;
@@ -57,15 +55,15 @@
   bottom: 0;
   width: 340px;
   z-index: 10005;
-  /* Above lightbox */
-  background: rgba(15, 15, 15, 0.65);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.3);
+  background: rgba(10, 10, 12, 0.72);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11", "ss03";
   color: rgba(255, 255, 255, 0.9);
   padding: 0;
 }
@@ -81,24 +79,24 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 24px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .sidebar-header h3 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.02em;
   color: #fff;
 }
 
 .close-sidebar {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.5);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,7 +105,7 @@
 }
 
 .close-sidebar:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
 }
 
@@ -117,7 +115,7 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 /* Hide scrollbar in sidebar */
@@ -134,67 +132,69 @@
 .info-card {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
   padding: 0 4px;
 }
 
 .info-card-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-color);
-  font-size: 1.1rem;
+  color: #0099ff;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
 .info-card-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   padding-top: 2px;
 }
 
 .info-label {
-  font-size: 0.72rem;
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .info-value {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.95);
-  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
 .info-subvalue {
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 2px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 1px;
 }
 
-/* Exposure Pills */
+/* Exposure Pills — Vercel badge style */
 .exposure-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
   margin-top: 4px;
 }
 
 .exp-pill {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 3px 8px;
   border-radius: 6px;
-  font-size: 0.75rem;
-  font-family: inherit;
-  color: rgba(255, 255, 255, 0.85);
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.8);
   font-variant-numeric: tabular-nums;
 }

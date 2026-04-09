@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 0 10px rgba(14, 165, 164, 0.5);
+  box-shadow: 0 0 12px var(--accent-glow);
   margin-top: -6px;
   margin-left: -6px;
 }
@@ -36,14 +36,15 @@
   border-color: transparent;
   margin-top: -28px;
   margin-left: -28px;
-  box-shadow: 0 4px 20px color-mix(in srgb, var(--accent-color) 40%, transparent);
+  box-shadow: 0 4px 20px var(--accent-glow);
   backdrop-filter: blur(8px);
 }
 
 .magnetic-cursor-text {
-  font-family: "Outfit", sans-serif;
-  font-size: 0.70rem;
-  font-weight: 800;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
+  font-size: 0.62rem;
+  font-weight: 700;
   color: #fff;
   opacity: 0;
   transform: scale(0);

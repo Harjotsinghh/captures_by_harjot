@@ -1,5 +1,7 @@
 /* ==========================================
-   Masonry Gallery View — Reimagined
+   Masonry Gallery View — Redesigned
+   Linear precision · Vercel shadow-as-border · Framer dark elegance
+   Pinterest photography-first density · Apple cinematic breathing
    ========================================== */
 
 .masonry-gallery-wrapper {
@@ -24,12 +26,14 @@
   background: transparent;
 }
 
+/* ---- Chameleon Ambient Canvas ---- */
 .chameleon-ambient-canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  filter: blur(80px);
+  filter: blur(100px);
+  opacity: 0.7;
   will-change: background;
 }
 
@@ -43,110 +47,104 @@
   z-index: 5;
 }
 
-/* ---- Content Area ---- */
+/* ==========================================
+   Content Area
+   ========================================== */
 .masonry-content {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 0 64px 120px;
+  padding: 0 48px 120px;
 }
 
 .masonry-content.editorial {
-  padding: 0 64px 160px;
+  padding: 0 48px 160px;
 }
 
 .location-section {
   padding-top: 0;
-  margin-bottom: 32px;
+  margin-bottom: 48px;
 }
 
 .masonry-gallery-wrapper.editorial .location-section {
-  margin-bottom: 40px;
+  margin-bottom: 56px;
   position: relative;
 }
 
 /* ==========================================
-   Split Line Divider (replaces marquee)
+   Split Line Divider — Redesigned
+   Vercel-style minimal divider with mono typography
    ========================================== */
 
 .split-line-divider {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 48px 0 28px;
+  gap: 24px;
+  padding: 80px 0 40px;
 }
 
 .masonry-gallery-wrapper.editorial .split-line-divider {
-  padding: 56px 0 32px;
+  padding: 96px 0 48px;
 }
 
 .split-line-rule {
   flex: 1;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--accent-color) 40%, transparent),
-    color-mix(in srgb, var(--border-color) 60%, transparent)
-  );
-  transform-origin: center;
+  background: var(--border-color);
+  opacity: 0.8;
 }
 
 .split-line-left {
-  transform-origin: right center;
+  mask-image: linear-gradient(to right, black 40%, transparent 100%);
 }
 
 .split-line-right {
-  transform-origin: left center;
+  mask-image: linear-gradient(to left, black 40%, transparent 100%);
 }
 
 .split-line-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  white-space: nowrap;
-  flex-shrink: 0;
+  gap: 8px;
+  text-align: center;
 }
 
 .split-line-location {
-  font-family: "Outfit", sans-serif;
-  font-size: 0.88rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
-}
-
-.split-line-sep {
-  color: var(--text-secondary);
-  opacity: 0.4;
-  font-size: 1rem;
+  text-transform: none;
 }
 
 .split-line-count {
-  font-family: "Outfit", sans-serif;
-  font-size: 0.72rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
   font-weight: 600;
-  color: var(--accent-color);
-  background: color-mix(in srgb, var(--accent-color) 10%, transparent);
-  padding: 3px 10px;
-  border-radius: 100px;
-  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
 }
 
-/* ---- Section Masonry Wrap ---- */
+.split-line-sep {
+  display: none;
+}
+
+/* ==========================================
+   Photo Items — Refined Hover & Elevation
+   ========================================== */
 .section-masonry-wrap {
   position: relative;
   z-index: 2;
   transform-origin: center center;
 }
 
-/* ==========================================
-   Photo Items — 3D Tilt + Glow
-   ========================================== */
-
 @keyframes photoSlideIn {
   from {
     opacity: 0;
-    transform: translateY(40px) scale(0.92);
+    transform: translateY(24px) scale(0.97);
   }
   to {
     opacity: 1;
@@ -154,68 +152,55 @@
   }
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
+
 
 .masonry-photo-wrapper {
   position: relative;
-  border-radius: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
   overflow: hidden;
+  background: var(--bg-secondary);
+  box-shadow: var(--ring-shadow);
   cursor: pointer;
-  background: var(--frame-color);
-  padding: 5px;
-  box-shadow: var(--frame-shadow);
-  animation: photoSlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), 
+              box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: photoSlideIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--stagger-delay, 0ms);
 }
 
-/* Shimmer skeleton — visible until image paints over it */
-.masonry-photo-wrapper::before {
-  content: "";
-  position: absolute;
-  inset: 5px;
-  background:
-    linear-gradient(
-      90deg,
-      var(--bg-secondary) 25%,
-      color-mix(in srgb, var(--text-secondary) 12%, var(--bg-secondary)) 50%,
-      var(--bg-secondary) 75%
-    );
-  background-size: 200% 100%;
-  animation: shimmer 1.6s ease-in-out infinite;
-  z-index: 0;
-}
-
-/* ---- Tilt Wrapper (3D perspective) ---- */
-.photo-tilt-wrap {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.35s cubic-bezier(0.03, 0.98, 0.52, 0.99),
-              box-shadow 0.35s ease;
-  transform-style: preserve-3d;
-}
-
-.photo-tilt-wrap:hover {
-  transform: perspective(800px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(1.03);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+.masonry-photo-wrapper:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px) scale(var(--hover-scale, 1.025));
   z-index: 5;
-  will-change: transform;
 }
 
-.photo-tilt-wrap img {
-  position: relative;
+.masonry-photo-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 0;
-  z-index: 1;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  /* Hide alt text during lazy load */
+  color: transparent;
+  text-indent: -9999px;
 }
 
-/* Cursor-tracking ambient glow */
+/* Shimmer skeleton */
+.masonry-photo-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-elevated) 50%, var(--bg-secondary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+  z-index: 0;
+}
+
+/* Cursor-tracking ambient glow — Sentry Bioluminescent */
 .photo-tilt-glow {
   position: absolute;
   inset: 0;
@@ -223,14 +208,16 @@
   opacity: 0;
   pointer-events: none;
   background: radial-gradient(
-    400px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(14, 165, 164, 0.2),
-    transparent 60%
+    600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(106, 95, 193, 0.45),      /* Sentry primary purple */
+    rgba(194, 239, 78, 0.15) 30%,  /* Sentry lime green edge */
+    transparent 70%
   );
-  transition: opacity 0.35s ease;
+  mix-blend-mode: screen;
+  transition: opacity 0.4s ease;
 }
 
-.photo-tilt-wrap:hover .photo-tilt-glow {
+.masonry-photo-wrapper:hover .photo-tilt-glow {
   opacity: 1;
 }
 
@@ -240,84 +227,94 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 24px 16px 14px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
+  padding: 28px 14px 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
   color: #fff;
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
   z-index: 3;
+  border-radius: 0 0 16px 16px;
 }
 
-.photo-tilt-wrap:hover .masonry-photo-overlay {
+.masonry-photo-wrapper:hover .masonry-photo-overlay {
   opacity: 1;
   transform: translateY(0);
 }
 
 .masonry-photo-title {
-  font-family: "Outfit", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   margin: 0 0 2px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .masonry-photo-date {
-  font-size: 0.72rem;
-  opacity: 0.85;
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-size: 0.58rem;
+  font-weight: 500;
+  opacity: 0.9;
   margin: 0;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
 }
 
 /* ---- react-photo-album overrides ---- */
 .masonry-album-container {
-  gap: 14px !important;
+  gap: 10px !important;
 }
 
 .masonry-album-container>div {
-  gap: 14px !important;
+  gap: 10px !important;
 }
 
 /* ==========================================
-   Collapsible Section — Glass Pill
+   Collapsible Section — Minimal Pill
+   Vercel-style shadow-bordered pill button
    ========================================== */
 
 .section-expand-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 4px;
+  margin-top: 8px;
   padding-bottom: 8px;
 }
 
 .section-expand-bar:has(.expanded) {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .section-expand-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 24px;
-  border: 1px solid var(--glass-border);
+  gap: 6px;
+  padding: 8px 20px;
+  border: 1px solid var(--border-strong);
   border-radius: 100px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--bg-secondary);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--text-secondary);
-  font-family: "Outfit", sans-serif;
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
+  font-size: 0.76rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: var(--ring-shadow);
 }
 
 .section-expand-pill:hover {
   border-color: var(--accent-color);
   color: var(--accent-color);
-  box-shadow: 0 6px 24px rgba(14, 165, 164, 0.15);
-  background: color-mix(in srgb, var(--accent-color) 6%, var(--glass-bg));
+  box-shadow: var(--ring-shadow), 0 0 0 3px var(--accent-subtle);
+  background: var(--bg-secondary);
 }
 
 .section-expand-pill svg {
@@ -333,55 +330,64 @@
   mask-image: linear-gradient(
     to bottom,
     black 0%,
-    black 70%,
+    black 65%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     to bottom,
     black 0%,
-    black 70%,
+    black 65%,
     transparent 100%
   );
 }
 
 /* ---- Density: Compact mode ---- */
 .masonry-content.density-compact .masonry-photo-wrapper {
-  padding: 3px;
-  border-radius: 3px;
+  padding: 0;
+  border-radius: 6px;
+}
+
+.masonry-content.density-compact .photo-tilt-wrap,
+.masonry-content.density-compact .photo-tilt-wrap img,
+.masonry-content.density-compact .photo-tilt-glow,
+.masonry-content.density-compact .masonry-photo-overlay {
+  border-radius: 6px;
 }
 
 .masonry-content.density-compact .masonry-album-container {
-  gap: 8px !important;
+  gap: 6px !important;
 }
 
 .masonry-content.density-compact .masonry-album-container>div {
-  gap: 8px !important;
+  gap: 6px !important;
 }
 
-/* ---- Density toggle control ---- */
+/* ==========================================
+   Density Toggle — Frosted Glass Pill (Framer-style)
+   ========================================== */
 .density-toggle {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 4px;
-  border-radius: 12px;
+  padding: 3px;
+  border-radius: 10px;
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
 }
 
 .density-toggle-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 28px;
+  width: 28px;
+  height: 26px;
   border: none;
-  border-radius: 8px;
+  border-radius: 7px;
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.7rem;
@@ -392,18 +398,19 @@
 }
 
 .density-toggle-btn.active {
-  background: color-mix(in srgb, var(--accent-color) 16%, var(--bg-secondary));
+  background: var(--accent-subtle);
   color: var(--accent-color);
-  box-shadow: 0 2px 8px rgba(14, 165, 164, 0.12);
+  box-shadow: 0 0 0 1px var(--accent-glow);
 }
 
 /* ==========================================
-   Side Location Navigator (scroll track)
+   Side Location Navigator — Redesigned
+   Linear-style vertical track with glow dots
    ========================================== */
 
 .side-loc-nav {
   position: fixed;
-  right: 8px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 100;
@@ -411,33 +418,33 @@
   flex-direction: column;
   align-items: center;
   gap: 0;
-  padding: 12px 6px;
+  padding: 14px 6px;
 }
 
 .masonry-gallery-wrapper.editorial .side-loc-nav {
-  right: 18px;
+  right: 20px;
 }
 
 /* The vertical track line */
 .side-loc-track {
   position: absolute;
-  top: 12px;
-  bottom: 12px;
+  top: 14px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
-  width: 2px;
+  width: 1.5px;
   background: var(--border-color);
   border-radius: 2px;
   overflow: hidden;
 }
 
-/* Progress fill on the track */
+/* Progress fill on the track — accent gradient */
 .side-loc-track-fill {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(180deg, var(--accent-color), #06b6d4);
+  background: linear-gradient(180deg, var(--accent-color), rgba(99, 102, 241, 0.6));
   border-radius: 2px;
   transition: height 0.3s ease;
 }
@@ -454,26 +461,27 @@
 }
 
 .side-loc-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--bg-elevated);
+  border: 1.5px solid var(--border-strong);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   z-index: 2;
 }
 
 .side-loc-dot-wrapper:hover .side-loc-dot {
   border-color: var(--accent-color);
-  transform: scale(1.3);
+  transform: scale(1.4);
+  background: var(--bg-secondary);
 }
 
 .side-loc-dot-wrapper.active .side-loc-dot {
   background: var(--accent-color);
   border-color: var(--accent-color);
-  transform: scale(1.3);
-  box-shadow: 0 0 12px rgba(14, 165, 164, 0.5);
+  transform: scale(1.4);
+  box-shadow: 0 0 12px var(--accent-glow), 0 0 0 3px var(--accent-subtle);
 }
 
 /* Pulse ring on active dot */
@@ -485,34 +493,25 @@
   right: -5px;
   bottom: -5px;
   border-radius: 50%;
-  border: 1.5px solid var(--accent-color);
-  animation: pulse-ring 2s ease-out infinite;
+  border: 1px solid var(--accent-color);
 }
 
-@keyframes pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-}
 
-/* Tooltip label on hover — now with thumbnail */
+
+/* Tooltip label on hover — redesigned glass card */
 .side-loc-label {
   position: absolute;
-  right: calc(100% + 12px);
+  right: calc(100% + 14px);
   white-space: nowrap;
   padding: 6px 14px 6px 6px;
   border-radius: 10px;
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  font-family: "Outfit", sans-serif;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -520,26 +519,29 @@
 }
 
 .side-loc-thumb {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
   object-fit: cover;
   flex-shrink: 0;
+  box-shadow: var(--ring-shadow);
 }
 
 .side-loc-label-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
 .side-loc-label-count {
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
   font-weight: 400;
-  opacity: 0.6;
-  font-size: 0.68rem;
+  opacity: 0.5;
+  font-size: 0.6rem;
 }
 
 /* ---- Empty State ---- */
@@ -549,14 +551,14 @@
   align-items: center;
   justify-content: center;
   min-height: 40vh;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   gap: 12px;
-  font-family: "Outfit", sans-serif;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
 }
 
 .masonry-empty-icon {
   font-size: 3rem;
-  opacity: 0.3;
+  opacity: 0.2;
 }
 
 .masonry-footer-shell {
@@ -566,7 +568,7 @@
 
 .masonry-editorial-footer-shell {
   width: 100%;
-  margin-top: 3.4rem;
+  margin-top: 4rem;
 }
 
 /* ==========================================
@@ -578,37 +580,47 @@
   }
 
   .masonry-content {
-    padding: 0 14px 108px;
+    padding: 0 12px 108px;
   }
 
   .masonry-content.editorial {
-    padding: 0 14px 120px;
+    padding: 0 12px 120px;
   }
 
   .location-section {
     padding-top: 0;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
 
   /* Split line divider — mobile */
   .split-line-divider {
     gap: 12px;
-    padding: 28px 0 18px;
+    padding: 32px 0 18px;
   }
 
   .split-line-location {
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
   }
 
   .split-line-count {
-    font-size: 0.64rem;
+    font-size: 0.58rem;
     padding: 2px 8px;
   }
 
   /* Photos — mobile */
   .masonry-photo-wrapper {
-    padding: 3px;
+    border-radius: 8px;
+  }
+
+  .photo-tilt-wrap,
+  .photo-tilt-wrap img,
+  .photo-tilt-glow {
+    border-radius: 8px;
+  }
+
+  .masonry-photo-overlay {
+    border-radius: 0 0 8px 8px;
   }
 
   /* Mobile: tap spring effect instead of 3D tilt */
@@ -617,7 +629,7 @@
   }
 
   .photo-tilt-wrap:active {
-    transform: scale(0.96) !important;
+    transform: scale(0.97) !important;
   }
 
   .masonry-photo-overlay {
@@ -629,13 +641,13 @@
   }
 
   .masonry-content.density-compact .masonry-photo-wrapper {
-    padding: 2px;
+    border-radius: 4px;
   }
 
   /* Expand pill — mobile */
   .section-expand-pill {
-    font-size: 0.76rem;
-    padding: 8px 20px;
+    font-size: 0.72rem;
+    padding: 7px 16px;
   }
 
   .masonry-gallery-wrapper.editorial .location-section:first-child {
@@ -653,7 +665,8 @@
 }
 
 /* ==========================================
-   Mobile Floating Location Dial
+   Mobile Floating Location Dial — Redesigned
+   Linear-style frosted glass with accent ring
    ========================================== */
 
 .loc-dial-fab {
@@ -666,17 +679,19 @@
   gap: 8px;
   padding: 10px 16px;
   border-radius: 100px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-strong);
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--card-shadow);
   color: var(--text-primary);
-  font-family: "Outfit", sans-serif;
-  font-size: 0.78rem;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
+  font-size: 0.74rem;
   font-weight: 600;
   cursor: pointer;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  letter-spacing: -0.01em;
 }
 
 .loc-dial-fab.editorial {
@@ -690,7 +705,8 @@
 }
 
 .loc-dial-fab:active {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--card-shadow-hover);
+  transform: scale(0.97);
 }
 
 .loc-dial-fab svg {
@@ -713,7 +729,7 @@
   z-index: 1002;
 }
 
-/* Floating Glass Popover Menu */
+/* Floating Glass Popover Menu — Linear-style */
 .loc-dial-sheet {
   position: fixed;
   bottom: 130px;
@@ -721,14 +737,14 @@
   width: 240px;
   z-index: 1003;
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 16px 12px;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 14px 10px;
   max-height: 50vh;
   overflow-y: auto;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: var(--card-shadow-hover);
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -742,73 +758,77 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  margin-bottom: 16px;
-  padding-bottom: 14px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border-color);
 }
 
 .loc-dial-title {
-  font-family: "Outfit", sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
+  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 .loc-dial-subtitle {
-  font-family: "Outfit", sans-serif;
-  font-size: 0.72rem;
-  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
+  color: var(--text-tertiary);
   font-weight: 400;
 }
 
 .loc-dial-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .loc-dial-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
   border: none;
   background: transparent;
   cursor: pointer;
   transition: background 0.2s ease;
   width: 100%;
   text-align: left;
-  font-family: "Outfit", sans-serif;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
 }
 
 .loc-dial-item:active {
-  background: var(--bg-secondary);
+  background: var(--bg-elevated);
 }
 
 .loc-dial-item.active {
-  background: var(--bg-secondary);
+  background: var(--accent-subtle);
 }
 
 .loc-dial-item-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--border-color);
+  background: var(--border-strong);
   flex-shrink: 0;
   transition: all 0.3s ease;
 }
 
 .loc-dial-item.active .loc-dial-item-dot {
   background: var(--accent-color);
-  box-shadow: 0 0 8px rgba(14, 165, 164, 0.4);
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .loc-dial-item-name {
   flex: 1;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
 .loc-dial-item.active .loc-dial-item-name {
@@ -816,7 +836,9 @@
 }
 
 .loc-dial-item-count {
-  font-size: 0.72rem;
-  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
+  color: var(--text-tertiary);
   font-weight: 400;
+  font-feature-settings: "tnum";
 }

@@ -1,3 +1,8 @@
+/* ==========================================
+   Gallery Mode View — Redesigned
+   Linear dark elegance · Framer compression · Apple hero
+   ========================================== */
+
 .gallery-mode-shell {
   position: relative;
   z-index: 10;
@@ -5,76 +10,68 @@
   color: var(--text-primary);
 }
 
+/* ---- Mobile Header ---- */
 .gallery-mode-header {
-  padding: 8.5rem 2rem 0;
+  padding: 6rem 1.25rem 0;
   position: relative;
 }
 
+/* ==========================================
+   Waterfall Hero — Desktop
+   Cinematic split-layout inspired by Apple + Framer
+   ========================================== */
 
 .waterfall-hero-container {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* Don't center against the massive 700px image column */
-  padding: 18vh 2rem 2rem; /* Clean, responsive optical top spacing */
-  max-width: 1200px;
+  align-items: flex-start;
+  padding: 16vh 3rem 3rem;
+  max-width: 1240px;
   margin: 0 auto;
-  min-height: 80vh; /* Ensure it takes up enough vertical runway */
-  gap: 30px;
+  min-height: 82vh;
+  gap: 48px;
 }
 
 .waterfall-hero-left {
   flex: 1;
-  max-width: 500px;
+  max-width: 520px;
   z-index: 10;
+  padding-top: 4vh;
 }
 
 .waterfall-hero-right {
   flex: 1;
   display: flex;
   justify-content: flex-end;
-  pointer-events: none; /* Let the scroll work */
+  pointer-events: none;
 }
 
-.waterfall-header-track {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  width: 100%;
-  max-width: 400px;
-  transform: rotate(-3deg) scale(1);
-}
-
-.waterfall-img {
-  width: 100%;
-  aspect-ratio: 4/5;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 16px 32px rgba(0,0,0,0.2);
-}
-
-.waterfall-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
+/* ---- Kicker Line — Vercel-style mono label ---- */
 .gallery-mode-kicker {
-  margin: 0 0 1rem;
-  font-family: "Outfit", sans-serif;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.3em;
+  margin: 0 0 1.5rem;
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--accent-color);
-  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-glow);
+  border-radius: 100px;
 }
 
+/* ---- Title — Framer-style compressed display ---- */
 .gallery-mode-title {
   margin: 0;
-  font-family: "Outfit", sans-serif;
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  font-weight: 800;
-  line-height: 1.05;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11", "ss03";
+  font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.0;
   letter-spacing: -0.04em;
   color: var(--text-primary);
 }
@@ -83,34 +80,46 @@
   color: var(--accent-color);
 }
 
+/* ---- Description ---- */
 .gallery-mode-description {
-  margin: 1.25rem 0 0;
-  max-width: 680px;
-  font-size: 1.15rem;
-  line-height: 1.6;
+  margin: 1.5rem 0 0;
+  max-width: 440px;
+  font-size: 1.05rem;
+  line-height: 1.65;
   color: var(--text-secondary);
   font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
+/* ---- Meta Pills — Vercel badge style ---- */
 .gallery-mode-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem;
-  margin: 1.5rem 0 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  gap: 0.5rem;
+  margin: 2rem 0 0;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  font-family: "Outfit", sans-serif;
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
 }
 
 .gallery-mode-meta span:not(.gallery-mode-meta-sep) {
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-color) 8%, var(--bg-secondary) 50%);
-  border: 1px solid color-mix(in srgb, var(--accent-color) 15%, transparent);
+  padding: 0.35rem 0.75rem;
+  border-radius: 100px;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--ring-shadow);
+  font-feature-settings: "tnum";
+  transition: all 0.2s ease;
+}
+
+.gallery-mode-meta span:not(.gallery-mode-meta-sep):hover {
+  border-color: var(--accent-glow);
+  background: var(--accent-subtle);
+  color: var(--accent-color);
 }
 
 .gallery-mode-meta-sep {
@@ -120,20 +129,81 @@
   display: none;
 }
 
+/* ---- Waterfall Image Grid — Right Column ---- */
+.waterfall-header-track {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 380px;
+  transform: rotate(-2deg);
+}
+
+.waterfall-img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+  position: relative;
+  background: var(--bg-secondary);
+}
+
+/* Shimmer skeleton */
+.waterfall-img::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-elevated) 50%, var(--bg-secondary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+  z-index: 0;
+}
+
+.waterfall-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.waterfall-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Hide alt text during lazy load */
+  color: transparent;
+  text-indent: -9999px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================
+   Mobile Adjustments
+   ========================================== */
 @media (max-width: 768px) {
   .gallery-mode-header {
-    padding: 5.5rem 1.25rem 0;
+    padding: 5.5rem 1rem 0;
   }
 
   .gallery-mode-hero {
-    padding: 0.5rem 0 1.2rem;
+    padding: 0.5rem 0 1rem;
   }
 
   .gallery-mode-meta.mobile {
-    gap: 0.34rem;
+    gap: 0.3rem;
     margin-top: 0;
-    font-size: 0.64rem;
-    letter-spacing: 0.12em;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
     justify-content: center;
+  }
+
+  .gallery-mode-meta.mobile span:not(.gallery-mode-meta-sep) {
+    padding: 0.3rem 0.6rem;
+    border-radius: 100px;
   }
 }

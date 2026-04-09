@@ -25,36 +25,32 @@ function JourneyPath({ places, mapType }: JourneyPathProps) {
 
   const isSat = mapType === "satellite";
   
-  // Theme-based colors
-  const mainColor = isSat 
-    ? (theme === "dark" ? "#00ffff" : "#f43f5e") // Cyan Glow vs Rose Pink
-    : (theme === "dark" ? "#0ea5a4" : "#ec4899");
+  // Theme-based colors (using design tokens)
+  const mainColor = "var(--accent-color)";
 
   return (
     <>
-      {/* SHADOW/GLOW LAYER: Only for Satellite Mode to separate path from busy terrain */}
-      {isSat && (
-        <Polyline
-          positions={curvedPositions}
-          pathOptions={{
-            color: theme === "dark" ? "rgba(0,0,0,0.8)" : "rgba(255,255,255,0.7)",
-            weight: 8,
-            opacity: 0.5,
-            lineCap: "round",
-            interactive: false
-          }}
-        />
-      )}
+      {/* SHADOW/GLOW LAYER: Subtle depth for all modes */}
+      <Polyline
+        positions={curvedPositions}
+        pathOptions={{
+          color: theme === "dark" ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.4)",
+          weight: isSat ? 7 : 5,
+          opacity: 0.3,
+          lineCap: "round",
+          interactive: false
+        }}
+      />
       
-      {/* MAIN JOURNEY LINE */}
+      {/* MAIN JOURNEY LINE: Dotted/Dashed technical line */}
       <Polyline
         positions={curvedPositions}
         pathOptions={{
           className: "journey-line-path",
           color: mainColor,
-          weight: isSat ? 4 : 3,
-          dashArray: isSat ? "8, 12" : "10, 20",
-          opacity: isSat ? 1.0 : 0.6,
+          weight: isSat ? 3 : 2,
+          dashArray: "1, 12", // Clean aeronautical dots
+          opacity: 0.9,
           lineCap: "round",
           interactive: false
         }}

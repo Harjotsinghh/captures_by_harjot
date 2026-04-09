@@ -21,7 +21,7 @@ const Footer: React.FC<FooterProps> = ({ inBottomSheet = false }) => {
       <footer className="site-footer site-footer--sheet">
         <div className="site-footer__sheet-main">
           <div className="site-footer__sheet-copy">
-            <span>© {new Date().getFullYear()}</span>
+            <span>© 2025–{new Date().getFullYear()}</span>
             <strong>{config.author.name}</strong>
           </div>
 
@@ -65,9 +65,9 @@ const Footer: React.FC<FooterProps> = ({ inBottomSheet = false }) => {
       <div className="site-footer__gallery-rule" />
       <div className="site-footer__gallery-inner">
         <div className="site-footer__gallery-glow" aria-hidden="true" />
-        
+
         <div className="site-footer__gallery-main">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
@@ -103,7 +103,7 @@ const Footer: React.FC<FooterProps> = ({ inBottomSheet = false }) => {
 
         <div className="site-footer__gallery-bottom">
           <p className="site-footer__gallery-copyright">
-            © {new Date().getFullYear()} {config.author.name}
+            © 2025–{new Date().getFullYear()} · {config.author.name}
           </p>
           <p className="site-footer__gallery-note">
             {config.meta.disclaimer}

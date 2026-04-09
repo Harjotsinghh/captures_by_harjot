@@ -1,9 +1,12 @@
 :root {
-  font-family: "Manrope", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: "cv01", "cv11", "ss03";
   line-height: 1.5;
   font-weight: 400;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html,
@@ -102,16 +105,21 @@ body {
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Circular photo pin — fully restored */
+/* Circular photo pin — redesigned elevation */
 .marker-pin {
   border-radius: 50%;
   background: var(--bg-primary);
-  border: 2.5px solid white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid white;
+  box-shadow:
+    rgba(0, 0, 0, 0.04) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.08) 0px 2px 6px,
+    rgba(0, 0, 0, 0.16) 0px 8px 16px;
   overflow: hidden;
   position: relative;
   z-index: 3;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s ease,
+              transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .marker-pin img {
@@ -141,33 +149,65 @@ body {
   position: absolute;
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: white;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+  gap: 8px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: 
+    rgba(0, 0, 0, 0.04) 0px 0px 0px 1px, 
+    rgba(0, 0, 0, 0.08) 0px 4px 12px, 
+    rgba(0, 0, 0, 0.12) 0px 8px 24px;
   white-space: nowrap;
-  font-family: "Outfit", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
-  color: #333;
-  padding: 0 12px 0 8px;
-  z-index: 1;
+  color: var(--text-primary);
+  z-index: -1;
   opacity: 0;
-  transform: translateX(-20px);
+  transform: translateX(-12px) scale(0.95);
   pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .marker-label-text {
   font-weight: 600;
-}
-
-.marker-label-sep {
-  opacity: 0.35;
-  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .marker-label-num {
-  color: var(--accent-color);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
   font-weight: 700;
+  color: var(--bg-primary);
+  background: var(--text-primary); /* High contrast inverse badge */
+  padding: 2px 6px;
+  border-radius: 999px;
+  line-height: normal;
+}
+
+.map-dark-mode .marker-label-card {
+  background: #ffffff; /* Pure white for max contrast against dark map */
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    rgba(255, 255, 255, 0.15) 0px 0px 0px 1px, 
+    rgba(0, 0, 0, 0.4) 0px 4px 16px, 
+    rgba(0, 0, 0, 0.4) 0px 8px 32px;
+}
+
+.map-dark-mode .marker-label-text {
+  color: #000000;
+}
+
+.map-dark-mode .marker-label-num {
+  color: #ffffff;
+  background: #000000;
+}
+
+.map-dark-mode .marker-pin {
+  border-color: #ffffff;
+  box-shadow:
+    rgba(255, 255, 255, 0.15) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.6) 0px 4px 12px,
+    rgba(0, 0, 0, 0.6) 0px 12px 24px;
 }
 
 /* Hover: slide out label, hide badge */
@@ -184,7 +224,11 @@ body {
 
 .custom-map-marker:hover .marker-pin {
   border-color: var(--accent-color);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 0 0 2px var(--accent-glow),
+    rgba(0, 0, 0, 0.12) 0px 8px 24px,
+    rgba(0, 0, 0, 0.15) 0px 16px 40px -6px;
+  transform: scale(1.08);
 }
 
 .custom-map-marker:hover .marker-badge {
@@ -215,26 +259,34 @@ body {
   width: 0;
   height: 0;
   margin-top: -2px;
+  border-top-color: white;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
   z-index: 1;
   transition: border-color 0.3s ease;
 }
 
+.map-dark-mode .marker-leg {
+  border-top-color: #ffffff;
+}
+
 .marker-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -4px;
+  right: -4px;
   background: var(--accent-color);
   color: white;
-  font-weight: 800;
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-weight: 700;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1.5px solid white;
+  box-shadow:
+    rgba(0, 0, 0, 0.1) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.15) 0px 2px 6px;
   z-index: 10;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.2s ease;
 }
 
@@ -250,22 +302,28 @@ body {
   }
 }
 
-/* Leaflet Zoom Control Theming */
+/* Leaflet Zoom Control Theming — Glass Island Style */
 .leaflet-control-zoom {
   border: none !important;
   box-shadow: var(--card-shadow) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  background: var(--glass-bg) !important;
 }
 
 .leaflet-control-zoom a {
-  background-color: var(--bg-secondary) !important;
+  background-color: transparent !important;
   color: var(--text-primary) !important;
   border-bottom: 1px solid var(--border-color) !important;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background-color: var(--bg-primary) !important;
+  background-color: var(--glass-border) !important;
   color: var(--accent-color) !important;
+  box-shadow: inset 0 0 12px var(--accent-subtle) !important;
 }
 
 .leaflet-control-zoom a:first-child {
@@ -283,21 +341,21 @@ body {
 .theme-toggle-btn {
   background: transparent;
   border: 1px solid transparent;
-  color: var(--text-primary);
-  padding: 8px;
-  border-radius: 12px;
+  color: var(--text-secondary);
+  padding: 7px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: none;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .theme-toggle-btn:hover {
-  background: color-mix(in srgb, var(--bg-secondary) 88%, transparent);
-  border-color: color-mix(in srgb, var(--accent-color) 22%, var(--border-color));
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+  background: var(--accent-subtle);
+  border-color: var(--accent-glow);
+  color: var(--accent-color);
 }
 
 .toggle-theme-slot {
@@ -309,57 +367,59 @@ body {
 .view-toggle {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
-  background: color-mix(in srgb, var(--bg-secondary) 72%, transparent);
-  backdrop-filter: blur(18px) saturate(145%);
-  -webkit-backdrop-filter: blur(18px) saturate(145%);
-  padding: 0.35rem;
-  border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
+  gap: 0.15rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  padding: 0.3rem;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
   position: fixed;
   top: 1rem;
   right: 1.5rem;
   left: auto;
   transform: none;
   z-index: 1100;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+  box-shadow: var(--card-shadow);
 }
 
 .toggle-btn {
-  padding: 0.72rem 1rem;
+  padding: 0.6rem 0.9rem;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-secondary);
-  font-family: "Outfit", sans-serif;
-  font-weight: 600;
-  font-size: 0.88rem;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
+  font-weight: 500;
+  font-size: 0.8rem;
   cursor: pointer;
-  border-radius: 14px;
+  border-radius: 10px;
   transition: all 0.25s ease;
   display: flex;
   align-items: center;
   gap: 6px;
+  letter-spacing: -0.01em;
   will-change: background-color, border-color;
   transform: translateZ(0);
 }
 
 .toggle-btn.active {
-  background: color-mix(in srgb, var(--accent-color) 16%, var(--bg-secondary));
-  border: 1px solid color-mix(in srgb, var(--accent-color) 56%, var(--border-color));
-  color: var(--text-primary);
-  box-shadow: 0 10px 20px rgba(14, 165, 164, 0.18);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-glow);
+  color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
 }
 
 .toggle-btn:hover:not(.active) {
-  background: color-mix(in srgb, var(--bg-secondary) 86%, transparent);
+  background: var(--bg-elevated);
   color: var(--text-primary);
 }
 
 .toggle-divider {
   width: 1px;
-  height: 28px;
-  margin: 0 0.15rem;
-  background: color-mix(in srgb, var(--border-color) 80%, transparent);
+  height: 24px;
+  margin: 0 0.1rem;
+  background: var(--border-color);
   border-radius: 999px;
 }
 
@@ -411,50 +471,50 @@ body {
     bottom: auto;
     right: auto;
     z-index: 1100;
-    background: color-mix(in srgb, var(--bg-secondary) 78%, transparent);
-    backdrop-filter: blur(16px) saturate(145%);
-    -webkit-backdrop-filter: blur(16px) saturate(145%);
-    border: 1px solid color-mix(in srgb, var(--border-color) 74%, transparent);
-    padding: 0.22rem;
-    border-radius: 15px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--border-color);
+    padding: 0.2rem;
+    border-radius: 12px;
     display: flex;
-    gap: 0.12rem;
+    gap: 0.1rem;
     align-items: center;
-    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
+    box-shadow: var(--card-shadow);
     margin-bottom: 0;
   }
 
   .view-toggle .toggle-btn {
-    padding: 0.5rem 0.66rem;
-    font-size: 0.72rem;
-    gap: 0.28rem;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.68rem;
+    gap: 0.25rem;
     background: transparent;
     border: 1px solid transparent;
     box-shadow: none;
-    border-radius: 12px;
+    border-radius: 8px;
   }
 
   .view-toggle .toggle-btn.active {
-    background: color-mix(in srgb, var(--accent-color) 20%, var(--bg-secondary));
-    border: 1px solid color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
-    box-shadow: 0 6px 14px rgba(14, 165, 164, 0.16);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-glow);
+    box-shadow: 0 0 0 2px var(--accent-subtle);
   }
 
   .view-toggle .theme-toggle-btn {
     background: transparent;
     border: 1px solid transparent;
     box-shadow: none;
-    padding: 0.52rem;
-    border-radius: 11px;
+    padding: 0.45rem;
+    border-radius: 8px;
   }
 
   .view-toggle .theme-toggle-btn svg {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
   }
 
   .toggle-divider {
-    height: 22px;
+    height: 20px;
     margin: 0 0.04rem;
   }
 
@@ -504,15 +564,15 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* Essential: Let clicks pass through to map */
-  z-index: 800; /* Usually leaflet layers are 400-600, controls are 1000 */
-  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.15); /* Significantly softer light-mode vignette */
+  pointer-events: none;
+  z-index: 800;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.10);
   transition: box-shadow 0.5s ease;
 }
 
-/* Deepen vignette moderately in dark mode */
+/* Deepen vignette in dark mode */
 .map-wrapper.map-dark-mode .mapBox::after {
-  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.45); /* Softened from 240px @ 0.95 opacity */
+  box-shadow: inset 0 0 180px rgba(0, 0, 0, 0.50);
 }
 
 /* ====================================
@@ -531,34 +591,35 @@ body {
 .muc-pill {
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.85); /* Solid default for light mode */
-  backdrop-filter: blur(14px) saturate(145%);
-  -webkit-backdrop-filter: blur(14px) saturate(145%);
-  border: 1px solid rgba(0, 0, 0, 0.08); /* Darker border for light mode readability */
-  border-radius: 12px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
   padding: 3px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  box-shadow: var(--card-shadow);
 }
 
 .muc-btn {
   background: transparent;
   border: none;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #111; /* Explicitly dark icons for light mode map */
-  opacity: 0.75;
+  color: var(--text-primary);
+  opacity: 0.7;
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 1.05rem;
+  border-radius: 7px;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  font-size: 0.95rem;
   padding: 0;
 }
 
 .muc-btn:hover, .muc-btn.active {
-  background: rgba(0, 0, 0, 0.05); /* Hover effect for light mode */
+  background: var(--accent-subtle);
+  color: var(--accent-color);
   opacity: 1;
 }
 
@@ -581,78 +642,50 @@ body {
 .muc-dropdown {
   position: absolute;
   top: 0;
-  left: 38px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(18px) saturate(145%);
-  -webkit-backdrop-filter: blur(18px) saturate(145%);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  padding: 4px;
+  left: 36px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 3px;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  min-width: 100px;
-  font-family: inherit;
-  font-family: "Outfit", sans-serif;
+  box-shadow: var(--card-shadow);
+  min-width: 96px;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
 }
 
 .muc-dropdown-item {
   background: transparent;
   border: none;
-  padding: 6px 10px;
+  padding: 5px 10px;
   text-align: left;
   font-family: inherit;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 500;
-  color: #555;
-  border-radius: 8px;
+  color: var(--text-secondary);
+  border-radius: 7px;
   cursor: pointer;
   transition: all 0.2s ease;
+  letter-spacing: -0.01em;
 }
 
 .muc-dropdown-item:hover {
-  color: #111;
-  background: rgba(0, 0, 0, 0.04);
+  color: var(--text-primary);
+  background: var(--bg-elevated);
 }
 
 .muc-dropdown-item.selected {
-  background: #f0f0f0;
-  color: #111;
+  background: var(--accent-subtle);
+  color: var(--accent-color);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 0 0 1px var(--accent-glow);
 }
 
-/* Dark Mode fixes for unified controls */
-.map-dark-mode .muc-pill,
-.map-dark-mode .muc-dropdown {
-  background: rgba(22, 22, 22, 0.8);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-
+/* Dark Mode for unified controls — uses tokens so mostly handled automatically */
 .map-dark-mode .muc-divider {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.map-dark-mode .muc-dropdown-item.selected {
-  background: #2a2a2a;
-  color: #fff;
-}
-
-.map-dark-mode .muc-btn {
-  color: #fff;
-}
-
-.map-dark-mode .muc-btn:hover, .map-dark-mode .muc-btn.active {
-  background: rgba(255, 255, 255, 0.08); /* Light hover for dark mode */
-}
-
-.map-dark-mode .muc-dropdown-item {
-  color: #aaa;
-}
-
-.map-dark-mode .muc-dropdown-item:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
 }

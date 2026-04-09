@@ -12,12 +12,12 @@
   justify-content: space-between;
   gap: 0.45rem;
   padding: 0.34rem 0.38rem 0.34rem 0.42rem;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--bg-secondary) 78%, transparent);
-  backdrop-filter: blur(18px) saturate(145%);
-  -webkit-backdrop-filter: blur(18px) saturate(145%);
-  border: 1px solid color-mix(in srgb, var(--border-color) 78%, transparent);
-  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.18);
+  border-radius: 14px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -43,10 +43,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--text-primary);
-  background: color-mix(in srgb, var(--bg-secondary) 90%, transparent);
-  border: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-glow);
 }
 
 .mobile-topbar__text {
@@ -58,10 +58,11 @@
 
 .mobile-topbar__title {
   min-width: 0;
-  font-family: "Outfit", sans-serif;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   white-space: nowrap;
   color: var(--text-primary);
   overflow: hidden;
@@ -70,10 +71,10 @@
 }
 
 .mobile-topbar__subtitle {
-  font-family: "Outfit", sans-serif;
-  font-size: 0.5rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-size: 0.46rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-secondary);
   line-height: 1;
@@ -85,7 +86,7 @@
   height: 24px;
   flex-shrink: 0;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--border-color) 82%, transparent);
+  background: var(--border-color);
 }
 
 .mobile-topbar__controls {
@@ -107,12 +108,13 @@
   gap: 0.32rem;
   padding: 0.44rem 0.54rem;
   border: 1px solid transparent;
-  border-radius: 11px;
+  border-radius: 8px;
   background: transparent;
   color: var(--text-secondary);
-  font-family: "Outfit", sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "cv01", "cv11";
+  font-size: 0.68rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.22s ease;
   white-space: nowrap;
@@ -120,10 +122,10 @@
 }
 
 .mobile-topbar__button.active {
-  color: var(--text-primary);
-  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-secondary));
-  border-color: color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
-  box-shadow: 0 8px 18px rgba(14, 165, 164, 0.16);
+  color: var(--accent-color);
+  background: var(--accent-subtle);
+  border-color: var(--accent-glow);
+  box-shadow: 0 0 0 2px var(--accent-subtle);
 }
 
 .mobile-topbar__button svg {

@@ -1,127 +1,128 @@
+/* ==========================================
+   Motion Header — Redesigned
+   Apple glass navigation · Linear precision
+   ========================================== */
+
 .responsive-header {
-    padding: 1rem 1.5rem 0;
-    display: flex;
-    justify-content: flex-start;
-    pointer-events: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 1000;
+  padding: 1rem 1.5rem 0;
+  display: flex;
+  justify-content: flex-start;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 .header-frame {
-    width: fit-content;
-    max-width: min(calc(100vw - 9.5rem), 300px);
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 52px;
-    padding: 0.42rem 0.82rem;
-    border-radius: 18px;
-    background: color-mix(in srgb, var(--bg-secondary) 72%, transparent);
-    backdrop-filter: blur(16px) saturate(135%);
-    -webkit-backdrop-filter: blur(16px) saturate(135%);
-    border: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
-    pointer-events: auto;
-    box-sizing: border-box;
+  width: fit-content;
+  max-width: min(calc(100vw - 9.5rem), 300px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 48px;
+  padding: 0.35rem 0.8rem;
+  border-radius: 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  pointer-events: auto;
+  box-sizing: border-box;
 }
 
 .header-top {
-    display: flex;
-    align-items: center;
-    gap: 0.62rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    background: color-mix(in srgb, var(--bg-secondary) 84%, transparent);
-    border-radius: 12px;
-    border: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
-    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--accent-subtle);
+  border-radius: 12px;
+  border: 1px solid var(--accent-glow);
 }
 
 .logo-container svg {
-    width: 19px;
-    height: 19px;
+  width: 17px;
+  height: 17px;
 }
 
 .logo-text-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.08rem;
-    line-height: 1;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.06rem;
+  line-height: 1;
+  align-items: flex-start;
 }
 
 .logo-text-main {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    text-transform: uppercase;
-    display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 0.96; /* Superhuman display compression */
+  letter-spacing: -0.05em; /* Superhuman ultra-tight tracking */
+  color: var(--text-primary);
+  display: inline-block;
 }
 
 .logo-text-sub {
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.58rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--text-secondary);
-    opacity: 0.78;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.24em; /* Warp blueprint-scale tracking */
+  color: var(--accent-color);
+  opacity: 0.9;
 }
 
-/* Mobile Styles */
+/* ==========================================
+   Mobile Styles
+   ========================================== */
 @media (max-width: 768px) {
-    .responsive-header {
-        padding: 0.7rem 0.75rem 0;
-        justify-content: center;
-    }
+  .responsive-header {
+    padding: 0.7rem 0.75rem 0;
+    justify-content: center;
+  }
 
-    .header-frame {
-        width: fit-content;
-        max-width: calc(100vw - 1.5rem);
-        justify-content: center;
-        padding: 0.58rem 0.82rem;
-        border-radius: 16px;
-        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
-    }
+  .header-frame {
+    width: fit-content;
+    max-width: calc(100vw - 1.5rem);
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+  }
 
-    .header-top {
-        gap: 0.68rem;
-    }
+  .header-top {
+    gap: 0.6rem;
+  }
 
-    .logo-container {
-        width: 36px;
-        height: 36px;
-        border-radius: 12px;
-    }
+  .logo-container {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
 
-    .logo-container svg {
-        width: 18px;
-        height: 18px;
-    }
+  .logo-container svg {
+    width: 16px;
+    height: 16px;
+  }
 
-    .logo-text-main {
-        font-size: 0.96rem;
-        font-weight: 700;
-    }
+  .logo-text-main {
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
 
-    .logo-text-sub {
-        font-size: 0.54rem;
-        letter-spacing: 0.22em;
-    }
+  .logo-text-sub {
+    font-size: 0.48rem;
+    letter-spacing: 0.16em;
+  }
 }

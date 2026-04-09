@@ -32,8 +32,8 @@ const DEFAULT_HEIGHT = 3;
 
 // How many photos to show before collapsing
 const PREVIEW_LIMITS: Record<Density, number> = {
-    comfortable: 6,
-    compact: 12,
+    comfortable: 12, // ~2 rows on desktop
+    compact: 24,
 };
 
 const sectionVariants = {
@@ -171,15 +171,15 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             damping: 30,
             stiffness: 350
         });
-        const scaleBreathing = useTransform(smoothVelocity, [-2000, 0, 2000], [0.985, 1, 0.985]);
-        const smoothScale = useSpring(scaleBreathing, { damping: 40, stiffness: 200 });
+        const scaleBreathing = useTransform(smoothVelocity, [-2000, 0, 2000], [0.992, 1, 0.992]);
+        const smoothScale = useSpring(scaleBreathing, { damping: 50, stiffness: 200 });
 
-        // Chameleon Ambient Canvas Background - Stronger opacity so the user can easily see it
-        const bgColors1 = ["rgba(14, 165, 164, 0.2)", "rgba(102, 126, 234, 0.5)", "rgba(236, 72, 153, 0.4)", "rgba(14, 165, 164, 0.2)"];
-        const bgColors2 = ["rgba(255, 123, 84, 0.2)", "rgba(118, 75, 162, 0.5)", "rgba(244, 63, 94, 0.4)", "rgba(255, 159, 67, 0.2)"];
+        // Chameleon Ambient Canvas Background — cooler blue-indigo palette
+        const bgColors1 = ["rgba(0, 120, 255, 0.12)", "rgba(99, 102, 241, 0.25)", "rgba(139, 92, 246, 0.18)", "rgba(0, 120, 255, 0.12)"];
+        const bgColors2 = ["rgba(56, 189, 248, 0.10)", "rgba(99, 102, 241, 0.22)", "rgba(167, 139, 250, 0.16)", "rgba(56, 189, 248, 0.10)"];
         const color1 = useTransform(scrollYProgress, [0, 0.33, 0.66, 1], bgColors1);
         const color2 = useTransform(scrollYProgress, [0, 0.33, 0.66, 1], bgColors2);
-        const bgTemplate = useMotionTemplate`radial-gradient(circle at 20% 0%, ${color1} 0%, transparent 60%), radial-gradient(circle at 80% 100%, ${color2} 0%, transparent 60%)`;
+        const bgTemplate = useMotionTemplate`radial-gradient(ellipse at 20% 0%, ${color1} 0%, transparent 55%), radial-gradient(ellipse at 80% 100%, ${color2} 0%, transparent 55%)`;
 
         // Init Lenis smooth scroll
         useEffect(() => {
@@ -189,8 +189,8 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             const lenis = new Lenis({
                 wrapper: scrollContainerRef.current,
                 content: contentElement || undefined,
-                lerp: 0.14,
-                wheelMultiplier: 1.15,
+                lerp: 0.12, 
+                wheelMultiplier: 1.4,
                 smoothWheel: true,
             });
             lenisRef.current = lenis;
@@ -288,20 +288,20 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
         const getColumns = useCallback((containerWidth: number) => {
             if (density === "compact") {
                 if (containerWidth < 400) return 4;
-                if (containerWidth < 600) return 5;
-                if (containerWidth < 900) return 6;
-                return 8;
+                if (containerWidth < 600) return 6;
+                if (containerWidth < 900) return 8;
+                return 10;
             }
             // comfortable (default)
             if (containerWidth < 400) return 3;
             if (containerWidth < 600) return 4;
-            if (containerWidth < 900) return 4;
-            return 5;
+            if (containerWidth < 900) return 5;
+            return 6;
         }, [density]);
 
         const getSpacing = useCallback((containerWidth: number) => {
-            if (density === "compact") return containerWidth < 500 ? 4 : 6;
-            return containerWidth < 500 ? 6 : 10;
+            if (density === "compact") return containerWidth < 500 ? 6 : 10;
+            return containerWidth < 500 ? 8 : 16;
         }, [density]);
 
         // 3D tilt on hover (desktop only) — rAF-throttled
@@ -316,8 +316,9 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                 const rect = el.getBoundingClientRect();
                 const x = (clientX - rect.left) / rect.width;
                 const y = (clientY - rect.top) / rect.height;
-                el.style.setProperty('--tilt-x', `${(0.5 - y) * 8}deg`);
-                el.style.setProperty('--tilt-y', `${(x - 0.5) * 8}deg`);
+                el.style.setProperty('--tilt-x', `${(0.5 - y) * 12}deg`); // Increased from 8
+                el.style.setProperty('--tilt-y', `${(x - 0.5) * 12}deg`); // Increased from 8
+                el.style.setProperty('--hover-scale', '1.025');
                 el.style.setProperty('--glow-x', `${x * 100}%`);
                 el.style.setProperty('--glow-y', `${y * 100}%`);
             });
@@ -328,6 +329,7 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             const el = e.currentTarget;
             el.style.setProperty('--tilt-x', '0deg');
             el.style.setProperty('--tilt-y', '0deg');
+            el.style.setProperty('--hover-scale', '1');
         }, []);
 
         if (!images || images.length === 0) {
@@ -412,26 +414,22 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                                 <div
                                                     className="masonry-photo-wrapper"
                                                     style={{ "--stagger-delay": `${delay}ms` } as React.CSSProperties}
+                                                    onMouseMove={handleTiltMove}
+                                                    onMouseLeave={handleTiltLeave}
                                                 >
-                                                    <div
-                                                        className="photo-tilt-wrap"
-                                                        onMouseMove={handleTiltMove}
-                                                        onMouseLeave={handleTiltLeave}
-                                                    >
-                                                        <img
-                                                            {...props}
-                                                            loading="lazy"
-                                                            referrerPolicy="no-referrer"
-                                                        />
-                                                        <div className="photo-tilt-glow" />
-                                                        <div className="masonry-photo-overlay">
-                                                            <p className="masonry-photo-title">
-                                                                {visiblePhotos[context.index]?.title}
-                                                            </p>
-                                                            <p className="masonry-photo-date">
-                                                                📅 {visiblePhotos[context.index]?.date}
-                                                            </p>
-                                                        </div>
+                                                    <img
+                                                        {...props}
+                                                        loading="lazy"
+                                                        referrerPolicy="no-referrer"
+                                                    />
+                                                    <div className="photo-tilt-glow" />
+                                                    <div className="masonry-photo-overlay">
+                                                        <p className="masonry-photo-title">
+                                                            {visiblePhotos[context.index]?.title}
+                                                        </p>
+                                                        <p className="masonry-photo-date">
+                                                            📅 {visiblePhotos[context.index]?.date}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             );

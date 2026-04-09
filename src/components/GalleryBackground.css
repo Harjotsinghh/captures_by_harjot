@@ -1,14 +1,20 @@
+/* ==========================================
+   Gallery Background — Redesigned
+   Linear void canvas · Subtle geometric depth
+   ========================================== */
+
 .gallery-background {
   position: fixed;
   inset: 0;
   z-index: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at top, var(--gallery-glow-one), transparent 26%),
-    radial-gradient(circle at 82% 18%, var(--gallery-glow-two), transparent 20%),
-    linear-gradient(180deg, var(--gallery-bg-start) 0%, var(--gallery-bg-mid) 48%, var(--gallery-bg-end) 100%);
+    radial-gradient(ellipse at 20% 0%, var(--gallery-glow-one) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, var(--gallery-glow-two) 0%, transparent 50%),
+    linear-gradient(180deg, var(--gallery-bg-start) 0%, var(--gallery-bg-mid) 50%, var(--gallery-bg-end) 100%);
 }
 
+/* ---- Glow Orbs — Subtle accent auras ---- */
 .gallery-background__glow,
 .gallery-background__orb {
   position: absolute;
@@ -17,134 +23,156 @@
 }
 
 .gallery-background__glow {
-  filter: blur(92px);
-  opacity: 0.72;
+  filter: blur(100px);
+  opacity: 0.5;
 }
 
 .gallery-background__glow--one {
-  top: -8%;
-  left: -6%;
-  width: 44vw;
-  height: 44vw;
-  background: radial-gradient(circle, var(--gallery-glow-one), transparent 72%);
+  top: -10%;
+  left: -8%;
+  width: 40vw;
+  height: 40vw;
+  background: radial-gradient(circle, var(--gallery-glow-one), transparent 70%);
 }
 
 .gallery-background__glow--two {
   right: -10%;
-  bottom: 8%;
-  width: 32vw;
-  height: 32vw;
-  background: radial-gradient(circle, var(--gallery-glow-two), transparent 72%);
+  bottom: 6%;
+  width: 30vw;
+  height: 30vw;
+  background: radial-gradient(circle, var(--gallery-glow-two), transparent 70%);
 }
 
+/* ---- Floating Orbs — Glass spheres ---- */
 .gallery-background__orb {
   filter: blur(0);
-  opacity: 0.34;
-  border: 1px solid color-mix(in srgb, var(--accent-color) 22%, transparent);
+  opacity: 0.2;
+  border: 1px solid var(--accent-glow);
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--gallery-surface) 58%, transparent), transparent),
-    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-color) 12%, transparent), transparent 60%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    linear-gradient(135deg, var(--gallery-surface) 0%, transparent 60%),
+    radial-gradient(circle at 30% 30%, var(--accent-subtle), transparent 60%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .gallery-background__orb--one {
   top: 16%;
   right: 16%;
-  width: 180px;
-  height: 180px;
+  width: 160px;
+  height: 160px;
   transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * -40px), 0);
 }
 
 .gallery-background__orb--two {
   left: 9%;
   bottom: 12%;
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * 54px), 0);
 }
 
+/* ---- Grid Pattern — Vercel-style subtle structure ---- */
 .gallery-background__grid {
   position: absolute;
   inset: 0;
-  opacity: 0.3;
+  opacity: 0.2;
   background-image:
     linear-gradient(var(--gallery-grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--gallery-grid-color) 1px, transparent 1px);
-  background-size: 46px 46px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 92%);
-  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * 26px), 0);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 85%);
+  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * 20px), 0);
 }
 
+/* ---- Decorative Rings ---- */
 .gallery-background__rings {
   position: absolute;
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--gallery-grid-color) 68%, transparent);
-  opacity: 0.32;
+  border: 1px solid var(--border-color);
+  opacity: 0.2;
 }
 
 .gallery-background__rings--one {
   top: 22%;
-  left: -4%;
-  width: 360px;
-  height: 360px;
-  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * -70px), 0);
+  left: -5%;
+  width: 320px;
+  height: 320px;
+  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * -60px), 0);
 }
 
 .gallery-background__rings--two {
   right: 8%;
   bottom: 14%;
-  width: 260px;
-  height: 260px;
-  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * 58px), 0);
+  width: 220px;
+  height: 220px;
+  transform: translate3d(0, calc(var(--gallery-scroll-progress, 0) * 50px), 0);
 }
 
+/* ---- Warm Ambient Glow — Raycast-inspired ---- */
+.gallery-background__warm-glow {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, rgba(215, 201, 175, 0.04) 0%, transparent 60%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---- Film Grain Overlay ---- */
 .gallery-background__grain {
   position: absolute;
   inset: 0;
-  opacity: 0.16;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.74' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.12'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
   pointer-events: none;
+  z-index: 10;
 }
 
+/* ==========================================
+   Mobile Adjustments
+   ========================================== */
 @media (max-width: 768px) {
   .gallery-background__glow--one {
-    width: 68vw;
-    height: 68vw;
+    width: 60vw;
+    height: 60vw;
   }
 
   .gallery-background__glow--two {
-    width: 58vw;
-    height: 58vw;
+    width: 50vw;
+    height: 50vw;
   }
 
   .gallery-background__orb--one {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     top: 14%;
     right: -8%;
   }
 
   .gallery-background__orb--two {
-    width: 88px;
-    height: 88px;
+    width: 70px;
+    height: 70px;
     left: -4%;
     bottom: 18%;
   }
 
   .gallery-background__grid {
-    background-size: 32px 32px;
-    opacity: 0.18;
+    background-size: 36px 36px;
+    opacity: 0.12;
   }
 
   .gallery-background__rings--one {
-    width: 220px;
-    height: 220px;
+    width: 200px;
+    height: 200px;
   }
 
   .gallery-background__rings--two {
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
     right: -6%;
   }
 }

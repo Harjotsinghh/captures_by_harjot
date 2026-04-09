@@ -24,6 +24,11 @@ export default function GalleryBackground() {
         animate={{ y: [0, 22, 0], x: [0, -12, 0] }}
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       />
+      <motion.div 
+        className="gallery-background__warm-glow"
+        animate={{ opacity: [0.15, 0.25, 0.15] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
       <div className="gallery-background__grid" />
       <div className="gallery-background__rings gallery-background__rings--one" />
       <div className="gallery-background__rings gallery-background__rings--two" />

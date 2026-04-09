@@ -61,20 +61,21 @@ function MapMarker({ place, onClick, zoom }: MapMarkerProps) {
           ${getMarkerContent()}
         </div>
         <div class="marker-label-card" style="
-          left: ${size - 4}px;
-          height: ${Math.round(size * 0.65)}px;
+          left: ${size - 2}px;
+          height: ${Math.round(size * 0.58)}px;
           font-size: ${labelFontSize}px;
-          border-radius: 0 ${Math.round(size * 0.3)}px ${Math.round(size * 0.3)}px 0;
-          top: ${Math.round(size * 0.175 + borderWidth)}px;
+          padding: 0 ${Math.round(size * 0.35)}px 0 ${Math.round(size * 0.35)}px;
+          border-radius: 999px;
+          top: ${Math.round(size * 0.21)}px;
         ">
           <span class="marker-label-text">${locationName}</span>
-          <span class="marker-label-sep">·</span>
           <span class="marker-label-num">${photoCount}</span>
         </div>
         <div class="marker-leg" style="
           border-left: ${legW}px solid transparent;
           border-right: ${legW}px solid transparent;
-          border-top: ${legH}px solid white;
+          border-top-width: ${legH}px;
+          border-top-style: solid;
         "></div>
         ${hasMultiple ? `
           <div class="marker-badge" style="

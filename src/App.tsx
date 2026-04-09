@@ -75,8 +75,8 @@ export default function App(): JSX.Element {
             scale: loading ? 0.95 : 1
           }}
           transition={{
-            duration: 0.8,
-            ease: [0.43, 0.13, 0.23, 0.96]
+            duration: 0.35, /* Sped up from 0.8s to feel responsive */
+            ease: "easeOut"
           }}
           onAnimationComplete={() => {
             if (!loading) setIntroFinished(true);

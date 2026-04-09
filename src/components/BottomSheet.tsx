@@ -26,15 +26,15 @@ const BottomSheet = memo(() => {
             detent="content"
         >
             <Sheet.Container
+                className="interactive-bottom-sheet"
                 style={{
-                    backgroundColor: isDarkMode ? "rgba(20, 20, 20, 0.76)" : "rgba(255, 255, 255, 0.82)",
-                    backdropFilter: "blur(20px) saturate(145%)",
-                    WebkitBackdropFilter: "blur(20px) saturate(145%)",
                     zIndex: 1000,
-                    borderTopLeftRadius: "24px",
-                    borderTopRightRadius: "24px",
-                    borderTop: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)"}`,
-                    boxShadow: "0px -8px 30px rgba(0, 0, 0, 0.1)",
+                    borderTopLeftRadius: "18px",
+                    borderTopRightRadius: "18px",
+                    borderTop: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.06)"}`,
+                    boxShadow: isDarkMode
+                      ? "0px -8px 32px rgba(0, 0, 0, 0.4), 0px 0px 0px 1px rgba(255, 255, 255, 0.04)"
+                      : "0px -8px 32px rgba(0, 0, 0, 0.06), 0px 0px 0px 1px rgba(0, 0, 0, 0.04)",
                     width: "100%",
                 }}
             >
