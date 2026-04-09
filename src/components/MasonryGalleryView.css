@@ -29,12 +29,12 @@
 /* ---- Chameleon Ambient Canvas ---- */
 .chameleon-ambient-canvas {
   position: fixed;
-  inset: 0;
+  inset: -80px;
   z-index: 0;
   pointer-events: none;
-  filter: blur(100px);
   opacity: 0.7;
-  will-change: background;
+  will-change: opacity;
+  transform: translateZ(0);
 }
 
 /* ---- Spacer for header + view toggle ---- */
@@ -163,8 +163,7 @@
   background: var(--bg-secondary);
   box-shadow: var(--ring-shadow);
   cursor: pointer;
-  transform-style: preserve-3d;
-  will-change: transform;
+  transform: translateZ(0);
   transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), 
               box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   animation: photoSlideIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -182,14 +181,14 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateZ(0);
   /* Hide alt text during lazy load */
   color: transparent;
   text-indent: -9999px;
 }
 
-/* Shimmer skeleton */
+/* Shimmer skeleton — stops after image loads */
 .masonry-photo-wrapper::before {
   content: "";
   position: absolute;
@@ -198,6 +197,11 @@
   background-size: 200% 100%;
   animation: shimmer 2s linear infinite;
   z-index: 0;
+}
+
+.masonry-photo-wrapper.loaded::before {
+  animation: none;
+  opacity: 0;
 }
 
 /* Cursor-tracking ambient glow — Sentry Bioluminescent */
@@ -209,11 +213,10 @@
   pointer-events: none;
   background: radial-gradient(
     600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(106, 95, 193, 0.45),      /* Sentry primary purple */
-    rgba(194, 239, 78, 0.15) 30%,  /* Sentry lime green edge */
+    rgba(106, 95, 193, 0.30),
+    rgba(194, 239, 78, 0.10) 30%,
     transparent 70%
   );
-  mix-blend-mode: screen;
   transition: opacity 0.4s ease;
 }
 
@@ -298,15 +301,13 @@
   border: 1px solid var(--border-strong);
   border-radius: 100px;
   background: var(--bg-secondary);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   color: var(--text-secondary);
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
   font-feature-settings: "cv01", "cv11";
   font-size: 0.76rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
   box-shadow: var(--ring-shadow);
 }
 
@@ -371,9 +372,7 @@
   gap: 2px;
   padding: 3px;
   border-radius: 10px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   box-shadow: var(--card-shadow);
 }
@@ -389,7 +388,7 @@
   background: transparent;
   color: var(--text-tertiary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
   font-size: 0.7rem;
 }
 
@@ -466,7 +465,7 @@
   border-radius: 50%;
   background: var(--bg-elevated);
   border: 1.5px solid var(--border-strong);
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   z-index: 2;
 }
@@ -498,16 +497,14 @@
 
 
 
-/* Tooltip label on hover — redesigned glass card */
+/* Tooltip label on hover — solid glass card */
 .side-loc-label {
   position: absolute;
   right: calc(100% + 14px);
   white-space: nowrap;
   padding: 6px 14px 6px 6px;
   border-radius: 10px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   box-shadow: var(--card-shadow);
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
@@ -680,9 +677,7 @@
   padding: 10px 16px;
   border-radius: 100px;
   border: 1px solid var(--border-strong);
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: var(--bg-secondary);
   box-shadow: var(--card-shadow);
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
@@ -736,9 +731,7 @@
   right: 16px;
   width: 240px;
   z-index: 1003;
-  background: var(--glass-bg);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 14px 10px;
@@ -815,7 +808,7 @@
   border-radius: 50%;
   background: var(--border-strong);
   flex-shrink: 0;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .loc-dial-item.active .loc-dial-item-dot {

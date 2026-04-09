@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: width 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.1s ease, margin 0.1s ease, box-shadow 0.15s ease;
   box-shadow: 0 0 12px var(--accent-glow);
   margin-top: -6px;
   margin-left: -6px;

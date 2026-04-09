@@ -1,7 +1,7 @@
 import { useMemo, useRef, useCallback, useState, useEffect, memo, type ReactNode } from "react";
 import { MasonryPhotoAlbum } from "react-photo-album";
 import "react-photo-album/masonry.css";
-import { motion, AnimatePresence, useScroll, useTransform, useVelocity, useSpring, useMotionTemplate, type MotionValue } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionTemplate, type MotionValue } from "framer-motion";
 import { FaCompass } from "react-icons/fa";
 import { LuGrid2X2, LuGrid3X3, LuChevronDown } from "react-icons/lu";
 import type { Photo } from "../data/images";
@@ -163,16 +163,12 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             [locationGroups, activeId]
         );
 
-        // Framer Motion useScroll & Velocity
+        // Framer Motion useScroll
         const { scrollY, scrollYProgress } = useScroll({ container: scrollContainerRef });
         
-        const scrollVelocity = useVelocity(scrollY);
-        const smoothVelocity = useSpring(scrollVelocity, {
-            damping: 30,
-            stiffness: 350
-        });
-        const scaleBreathing = useTransform(smoothVelocity, [-2000, 0, 2000], [0.992, 1, 0.992]);
-        const smoothScale = useSpring(scaleBreathing, { damping: 50, stiffness: 200 });
+        // Simplified breathing — single transform, no chained springs
+        const scaleBreathing = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.997, 1]);
+        const smoothScale = useSpring(scaleBreathing, { damping: 60, stiffness: 200 });
 
         // Chameleon Ambient Canvas Background — cooler blue-indigo palette
         const bgColors1 = ["rgba(0, 120, 255, 0.12)", "rgba(99, 102, 241, 0.25)", "rgba(139, 92, 246, 0.18)", "rgba(0, 120, 255, 0.12)"];
@@ -304,9 +300,9 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
             return containerWidth < 500 ? 8 : 16;
         }, [density]);
 
-        // 3D tilt on hover (desktop only) — rAF-throttled
+        // Simple hover feedback (desktop only) — rAF-throttled
         const tiltRaf = useRef<number>(0);
-        const handleTiltMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        const handleHoverMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
             if (!hasPointer) return;
             const el = e.currentTarget;
             const clientX = e.clientX;
@@ -316,20 +312,13 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                 const rect = el.getBoundingClientRect();
                 const x = (clientX - rect.left) / rect.width;
                 const y = (clientY - rect.top) / rect.height;
-                el.style.setProperty('--tilt-x', `${(0.5 - y) * 12}deg`); // Increased from 8
-                el.style.setProperty('--tilt-y', `${(x - 0.5) * 12}deg`); // Increased from 8
-                el.style.setProperty('--hover-scale', '1.025');
                 el.style.setProperty('--glow-x', `${x * 100}%`);
                 el.style.setProperty('--glow-y', `${y * 100}%`);
             });
         }, [hasPointer]);
 
-        const handleTiltLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        const handleHoverLeave = useCallback((_e: React.MouseEvent<HTMLDivElement>) => {
             cancelAnimationFrame(tiltRaf.current);
-            const el = e.currentTarget;
-            el.style.setProperty('--tilt-x', '0deg');
-            el.style.setProperty('--tilt-y', '0deg');
-            el.style.setProperty('--hover-scale', '1');
         }, []);
 
         if (!images || images.length === 0) {
@@ -414,13 +403,16 @@ const MasonryGalleryView = memo<MasonryGalleryViewProps>(
                                                 <div
                                                     className="masonry-photo-wrapper"
                                                     style={{ "--stagger-delay": `${delay}ms` } as React.CSSProperties}
-                                                    onMouseMove={handleTiltMove}
-                                                    onMouseLeave={handleTiltLeave}
+                                                    onMouseMove={handleHoverMove}
+                                                    onMouseLeave={handleHoverLeave}
                                                 >
                                                     <img
                                                         {...props}
                                                         loading="lazy"
                                                         referrerPolicy="no-referrer"
+                                                        onLoad={(e) => {
+                                                            (e.currentTarget.parentElement as HTMLElement)?.classList.add('loaded');
+                                                        }}
                                                     />
                                                     <div className="photo-tilt-glow" />
                                                     <div className="masonry-photo-overlay">
