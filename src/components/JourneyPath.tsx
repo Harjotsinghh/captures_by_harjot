@@ -6,10 +6,9 @@ import { memo, useMemo } from "react";
 
 interface JourneyPathProps {
   places: Place[];
-  mapType: "simple" | "satellite";
 }
 
-function JourneyPath({ places, mapType }: JourneyPathProps) {
+function JourneyPath({ places }: JourneyPathProps) {
   const { theme } = useTheme();
 
   // Extract coordinates and generate curve
@@ -22,8 +21,6 @@ function JourneyPath({ places, mapType }: JourneyPathProps) {
     () => getCurvedPath(rawPositions),
     [rawPositions]
   );
-
-  const isSat = mapType === "satellite";
   
   // Theme-based colors (using design tokens)
   const mainColor = "var(--accent-color)";
@@ -35,7 +32,7 @@ function JourneyPath({ places, mapType }: JourneyPathProps) {
         positions={curvedPositions}
         pathOptions={{
           color: theme === "dark" ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.4)",
-          weight: isSat ? 7 : 5,
+          weight: 5,
           opacity: 0.3,
           lineCap: "round",
           interactive: false
@@ -48,7 +45,7 @@ function JourneyPath({ places, mapType }: JourneyPathProps) {
         pathOptions={{
           className: "journey-line-path",
           color: mainColor,
-          weight: isSat ? 3 : 2,
+          weight: 2,
           dashArray: "1, 12", // Clean aeronautical dots
           opacity: 0.9,
           lineCap: "round",

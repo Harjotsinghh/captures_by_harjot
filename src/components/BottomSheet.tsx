@@ -12,7 +12,7 @@ const BottomSheet = memo(() => {
     const isMobile = useMediaQuery("(max-width: 768px)");
 
     // Snap Points (Ascending Order)
-    // Index 0: 70px from bottom (Peek)
+    // Index 0: fully expanded, Index 1: 38px peek, Index 2: 1px hidden
     const snapPoints = [0, 38, 1];
 
     return (

@@ -1,17 +1,22 @@
-import { useState, useCallback, type JSX } from "react";
-import MapView from "./components/MapView";
-import GalleryModal from "./components/GalleryModal";
+import { useState, useCallback, lazy, Suspense, type JSX } from "react";
+import { motion } from "framer-motion";
+
+// Lazy load heavy components
+const MapView = lazy(() => import("./components/MapView"));
+const GalleryModal = lazy(() => import("./components/GalleryModal"));
+const GalleryModeView = lazy(() => import("./components/GalleryModeView"));
+
+import BottomSheet from "./components/BottomSheet";
+
 import usePhotos from "./hooks/usePhotos";
 import AestheticLoader from "./components/Loader";
 import Header from "./components/MotionHeader";
 import MobileTopBar from "./components/MobileTopBar";
 import AmbientBackground from "./components/AmbientBackground";
 import GalleryBackground from "./components/GalleryBackground";
-import GalleryModeView from "./components/GalleryModeView";
 import ErrorScreen from "./components/ErrorScreen";
-import { motion } from "framer-motion";
+import MasonrySkeleton from "./components/MasonrySkeleton";
 import { ThemeProvider } from "./context/ThemeContext";
-import BottomSheet from "./components/BottomSheet";
 import MagneticCursor from "./components/MagneticCursor";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import ViewModeToggle from "./components/ViewModeToggle";
@@ -32,7 +37,12 @@ export default function App(): JSX.Element {
 
   const [viewMode, setViewMode] = useState<'map' | 'gallery'>('map');
   const [mapViewState, setMapViewState] = useState<{ center: [number, number], zoom: number } | null>(null);
+
   const isGalleryView = viewMode === "gallery";
+
+  const handleViewModeChange = useCallback((newMode: 'map' | 'gallery') => {
+    setViewMode(newMode);
+  }, []);
 
   const openGallery = useCallback((photos: any | any[], previousMapState?: { center: [number, number], zoom: number }) => {
     const selectedPhotos = Array.isArray(photos) ? photos : [photos];
@@ -51,7 +61,7 @@ export default function App(): JSX.Element {
   return (
     <ThemeProvider>
       {isGalleryView && <MagneticCursor />}
-      
+
       {/* Loader Layer (Background) - Only show if intro not finished */}
       {!introFinished && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
@@ -81,23 +91,23 @@ export default function App(): JSX.Element {
           onAnimationComplete={() => {
             if (!loading) setIntroFinished(true);
           }}
-            style={{
-              position: 'relative',
-              zIndex: 10,
-              background: 'var(--bg-primary)',
-              minHeight: '100vh',
-              color: 'var(--text-primary)',
-              transition: 'background-color 0.3s ease, color 0.3s ease',
-              willChange: 'opacity, transform'
-            }}
-            className={isGalleryView ? "gallery-mode-active" : ""}
-          >
+          style={{
+            position: 'relative',
+            zIndex: 10,
+            background: 'var(--bg-primary)',
+            minHeight: '100vh',
+            color: 'var(--text-primary)',
+            transition: 'background-color 0.3s ease, color 0.3s ease',
+            willChange: 'opacity, transform'
+          }}
+          className={isGalleryView ? "gallery-mode-active" : ""}
+        >
           {isGalleryView ? <GalleryBackground /> : <AmbientBackground />}
           <div className="app-container">
             {isMobile ? (
               <MobileTopBar
                 viewMode={viewMode}
-                onViewModeChange={setViewMode}
+                onViewModeChange={handleViewModeChange}
                 showBrand
               />
             ) : (
@@ -105,39 +115,50 @@ export default function App(): JSX.Element {
                 <Header />
                 <ViewModeToggle
                   viewMode={viewMode}
-                  onViewModeChange={setViewMode}
+                  onViewModeChange={handleViewModeChange}
                 />
               </>
             )}
 
-            {!isGalleryView && (
-              <>
+            {/* Instant View Switch */}
+            {!isGalleryView ? (
+              <div key="map-view" style={{ position: 'absolute', inset: 0 }}>
                 <main className="map-card">
                   <div style={{
                     display: 'block',
                     width: '100%',
                     height: '100%'
                   }}>
-                    <MapView
-                      images={images || []}
-                      onMarkerClick={openGallery}
-                      targetState={(!isOpen && viewMode === 'map') ? mapViewState : null}
-                    />
+                    <Suspense fallback={null}>
+                      <MapView
+                        images={images || []}
+                        onMarkerClick={openGallery}
+                        targetState={(!isOpen && viewMode === 'map') ? mapViewState : null}
+                      />
+                    </Suspense>
                   </div>
                 </main>
 
-                {!loading && <BottomSheet />}
-              </>
+                {!loading && (
+                  <BottomSheet />
+                )}
+              </div>
+            ) : (
+              <div key="gallery-view">
+                <Suspense fallback={<MasonrySkeleton />}>
+                  <GalleryModeView
+                    images={images || []}
+                    onPhotoClick={openGallery}
+                  />
+                </Suspense>
+              </div>
             )}
 
-            {isGalleryView && (
-              <GalleryModeView
-                images={images || []}
-                onPhotoClick={openGallery}
-              />
-            )}
+            <Suspense fallback={null}>
+              <GalleryModal isOpen={isOpen} onClose={closeGallery} images={selected} />
+            </Suspense>
 
-            <GalleryModal isOpen={isOpen} onClose={closeGallery} images={selected} />
+
           </div>
         </motion.div>
       )}

@@ -532,28 +532,9 @@ body {
   background-color: var(--bg-primary) !important;
 }
 
-/* Post-Processing: Light Mode Satellite (Bright & Sunny) */
-.map-wrapper.map-satellite-mode .leaflet-satellite-imagery-pane {
-  /* Restored high-brightness for sunny daytime feel */
-  filter: contrast(1.1) brightness(1.35) saturate(1.1) hue-rotate(5deg);
-  transition: filter 0.5s ease;
-}
-
-/* Force sharp contrast and a deep drop-shadow on all Satellite Labels to 'lift' them off the Earth noise */
-.map-wrapper.map-satellite-mode .leaflet-satellite-labels-pane {
-  /* The drop-shadow is key: it adds a sharp black outline to letters so they are readable anywhere */
-  filter: drop-shadow(0px 0px 2px rgba(0,0,0,1)) contrast(1.2) brightness(1.1);
-}
-
-/* Post-Processing: Dark Mode Satellite */
-.map-wrapper.map-dark-mode.map-satellite-mode .leaflet-satellite-imagery-pane {
-  /* Severely darkens the satellite imagery making the oceans midnight black and land subtly green/grey */
-  filter: contrast(1.3) brightness(0.45) saturate(1.0); 
-}
-
 /* Post-Processing: Simple Map (Dark Mode) Contrast Boost */
-.map-wrapper.map-dark-mode .mapBox .leaflet-layer:not(.leaflet-satellite-imagery-pane):not(.leaflet-satellite-labels-pane) {
-  filter: contrast(1.15) brightness(1.1); /* Makes simple dark mode labels much whiter and sharper */
+.map-wrapper.map-dark-mode .mapBox .leaflet-layer {
+  filter: contrast(1.15) brightness(1.1);
 }
 
 /* Cinematic Edge Vignette Overlay */
@@ -591,9 +572,7 @@ body {
 .muc-pill {
   display: flex;
   flex-direction: column;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 3px;
@@ -634,58 +613,7 @@ body {
   margin: 3px auto;
 }
 
-/* Dropdown */
-.muc-dropdown-wrapper {
-  position: relative;
-}
-
-.muc-dropdown {
-  position: absolute;
-  top: 0;
-  left: 36px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  box-shadow: var(--card-shadow);
-  min-width: 96px;
-  font-family: 'Inter', -apple-system, system-ui, sans-serif;
-  font-feature-settings: "cv01", "cv11";
-}
-
-.muc-dropdown-item {
-  background: transparent;
-  border: none;
-  padding: 5px 10px;
-  text-align: left;
-  font-family: inherit;
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  border-radius: 7px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  letter-spacing: -0.01em;
-}
-
-.muc-dropdown-item:hover {
-  color: var(--text-primary);
-  background: var(--bg-elevated);
-}
-
-.muc-dropdown-item.selected {
-  background: var(--accent-subtle);
-  color: var(--accent-color);
-  font-weight: 600;
-  box-shadow: 0 0 0 1px var(--accent-glow);
-}
-
-/* Dark Mode for unified controls — uses tokens so mostly handled automatically */
+/* Dark Mode for unified controls */
 .map-dark-mode .muc-divider {
   background: rgba(255, 255, 255, 0.08);
 }

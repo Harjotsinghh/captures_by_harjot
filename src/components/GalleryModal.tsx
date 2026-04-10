@@ -230,7 +230,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
           ref: thumbnailsRef,
           position: "bottom",
           showToggle: true,
-          hidden: false,
+          hidden: true,
           width: 70,
           height: 50,
           border: 2,
@@ -242,7 +242,7 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
         carousel={{ finite: false, imageFit: "contain" }}
         controller={{ closeOnBackdropClick: true }}
         styles={{
-          container: { backgroundColor: "rgba(0, 0, 0, 0.9)", zIndex: 10000 },
+          container: { backgroundColor: "rgba(0, 0, 0, 1)", zIndex: 10000 },
         }}
       />
     </>
