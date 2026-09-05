@@ -187,18 +187,28 @@ footer {
   width: 100%;
 }
 
-/* Map Dark Mode Enhancements */
-.map-dark-mode .leaflet-tile-pane {
-  filter: contrast(1.1) saturation(1.2) brightness(0.9);
+/* Map Attribution Glass Styling */
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.75) !important;
+  color: #666 !important;
+  border-radius: 6px 0 0 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 11px !important;
+  padding: 3px 8px !important;
+}
+
+.leaflet-control-attribution a {
+  color: #444 !important;
 }
 
 .map-dark-mode .leaflet-control-attribution {
-  background: rgba(0, 0, 0, 0.5) !important;
-  color: #aaa !important;
+  background: rgba(20, 20, 20, 0.75) !important;
+  color: #999 !important;
 }
 
 .map-dark-mode .leaflet-control-attribution a {
-  color: #ccc !important;
+  color: #bbb !important;
 }
 
 /* ==========================================

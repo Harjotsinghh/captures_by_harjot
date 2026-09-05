@@ -1,25 +1,18 @@
 import { Polyline } from "react-leaflet";
 import { getCurvedPath } from "../utils/geometry";
-import type { Place } from "../hooks/useMapData";
 import { useTheme } from "../context/ThemeContext";
 import { memo, useMemo } from "react";
 
 interface JourneyPathProps {
-  places: Place[];
+  waypoints: [number, number][];
 }
 
-function JourneyPath({ places }: JourneyPathProps) {
+function JourneyPath({ waypoints }: JourneyPathProps) {
   const { theme } = useTheme();
 
-  // Extract coordinates and generate curve
-  const rawPositions = useMemo(() => 
-    places.map((place) => [place.lat, place.lng] as [number, number]),
-    [places]
-  );
-  
   const curvedPositions = useMemo(
-    () => getCurvedPath(rawPositions),
-    [rawPositions]
+    () => getCurvedPath(waypoints),
+    [waypoints]
   );
   
   // Theme-based colors (using design tokens)

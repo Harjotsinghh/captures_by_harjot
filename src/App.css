@@ -532,11 +532,6 @@ body {
   background-color: var(--bg-primary) !important;
 }
 
-/* Post-Processing: Simple Map (Dark Mode) Contrast Boost */
-.map-wrapper.map-dark-mode .mapBox .leaflet-layer {
-  filter: contrast(1.15) brightness(1.1);
-}
-
 /* Cinematic Edge Vignette Overlay */
 .mapBox::after {
   content: "";

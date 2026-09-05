@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { MapContainer, useMap, useMapEvents } from "react-leaflet";
 import { useEffect, useState, useCallback, memo } from "react";
 import L from "leaflet";
 import type { Photo } from "../data/images";
@@ -7,6 +7,8 @@ import useMapData from "../hooks/useMapData";
 import MapMarker from "./MapMarker";
 import { useTheme } from "../context/ThemeContext";
 import JourneyPath from "./JourneyPath";
+import 'maplibre-gl/dist/maplibre-gl.css';
+import '@maplibre/maplibre-gl-leaflet';
 
 // Fix default marker icon paths for Vite bundling
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -70,20 +72,83 @@ const ZoomTracker = ({ onZoomChange }: { onZoomChange: (zoom: number) => void })
   return null;
 };
 
-// Map Controls (Zoom In/Out only)
+
+const VectorTileLayer = memo(({ styleUrl }: { styleUrl: string }) => {
+  const map = useMap();
+  const [styleJson, setStyleJson] = useState<any>(null);
+
+  useEffect(() => {
+    if (!styleUrl) return;
+    
+    // Fetch style and modify label densities
+    fetch(styleUrl)
+      .then(res => res.json())
+      .then(data => {
+        const minZooms: Record<string, number> = {
+          place_country_major: 3,
+          place_country_minor: 4,
+          place_country_other: 5,
+          place_state: 5,
+          place_city_large: 6,
+          place_city: 8,
+          place_town: 10,
+          place_village: 12,
+          place_suburb: 13,
+          place_other: 14,
+        };
+
+        if (data && data.layers) {
+          data.layers = data.layers.map((layer: any) => {
+            if (minZooms[layer.id] !== undefined) {
+              return { ...layer, minzoom: minZooms[layer.id] };
+            }
+            return layer;
+          });
+        }
+        
+        setStyleJson(data);
+      })
+      .catch(err => {
+        console.error("Failed to load map style:", err);
+        // Fallback to URL if fetch fails
+        setStyleJson(styleUrl);
+      });
+  }, [styleUrl]);
+
+  useEffect(() => {
+    if (!styleJson) return;
+
+    const layer = (L as any).maplibreGL({
+      style: styleJson,
+      attribution: '&copy; <a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OSM</a>',
+      noWrap: false,
+    });
+
+    layer.addTo(map);
+
+    return () => {
+      map.removeLayer(layer);
+    };
+  }, [map, styleJson]);
+
+  return null;
+});
+
+// Map Controls (Zoom In/Out)
 const MapZoomControls = memo(({ theme }: { theme: string }) => {
   const map = useMap();
 
   return (
     <div className={`map-unified-controls ${theme === 'dark' ? 'dark' : ''}`}>
       <div className="muc-pill">
-        <button className="muc-btn" onClick={(e) => { e.stopPropagation(); map.zoomIn(); }} title="Zoom In">
+        <button className="muc-btn" onClick={(e) => { e.stopPropagation(); map.zoomIn(); }} title="Zoom In" aria-label="Zoom In">
           <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         </button>
         <div className="muc-divider" />
-        <button className="muc-btn" onClick={(e) => { e.stopPropagation(); map.zoomOut(); }} title="Zoom Out">
+        <button className="muc-btn" onClick={(e) => { e.stopPropagation(); map.zoomOut(); }} title="Zoom Out" aria-label="Zoom Out">
           <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         </button>
+        <div className="muc-divider" />
       </div>
     </div>
   );
@@ -91,7 +156,7 @@ const MapZoomControls = memo(({ theme }: { theme: string }) => {
 MapZoomControls.displayName = "MapZoomControls";
 
 function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
-  const { center, places } = useMapData(images);
+  const { center, places, journeyWaypoints } = useMapData(images);
   const { theme } = useTheme();
   const [zoom, setZoom] = useState(6);
 
@@ -99,7 +164,9 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
     setZoom(newZoom);
   }, []);
 
-  const cartoUrl = "https://{s}.basemaps.cartocdn.com/" + (theme === "dark" ? "dark_all" : "light_all") + "/{z}/{x}/{y}{r}.png";
+  const vectorStyleUrl = theme === 'dark' 
+    ? "https://tiles.openfreemap.org/styles/dark"
+    : "https://tiles.openfreemap.org/styles/positron";
 
   return (
     <div
@@ -133,13 +200,9 @@ function MapView({ images, onMarkerClick, targetState }: MapViewProps) {
         <AutoCenterMap places={places} />
         <FlyToController targetState={targetState} />
         <ZoomTracker onZoomChange={handleZoomChange} />
-        <JourneyPath places={places} />
+        <JourneyPath waypoints={journeyWaypoints} />
 
-        <TileLayer
-          attribution='&copy; CARTO'
-          url={cartoUrl}
-          noWrap={false}
-        />
+        <VectorTileLayer styleUrl={vectorStyleUrl} />
 
         {places.map((place, idx) => (
           <MapMarker
